@@ -1,4 +1,4 @@
-name: Validate Repo Index
+name: Build Repo Index
 
 on:
   push:
@@ -6,21 +6,30 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  validate:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Regenerate and check index is up to date
+
+      - name: Generate index (auto rename non-ASCII deb + rebuild)
+        run: python build_repo.py
+
+      - name: Commit and push index
         run: |
-          python build_repo.py
-          if ! git diff --quiet -- Packages Packages.gz Packages.bz2 Release; then
-            echo "::warning::索引与 deb 不同步，请在本地执行 python build_repo.py 后重新提交"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "索引无变化，跳过提交"
           else
-            echo "索引已是最新 ✅"
+            git commit -m "auto: 重建索引 (含 deb 英文名规范化)"
+            git push
           fi

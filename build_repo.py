@@ -12,9 +12,9 @@ REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
 DEBS_DIR = os.path.join(REPO_ROOT, "debs")
 
 # ===================== 改成你自己的 =====================
-REPO_NAME = "A`guang"
-REPO_ORIGIN = "A`guang"
-REPO_DESCRIPTION = "仅用于自己插件备份,勿扰"
+REPO_NAME = "我的越狱源"
+REPO_ORIGIN = "我的越狱源"
+REPO_DESCRIPTION = "我自己用的 tweak / 插件源"
 REPO_SUITE = "stable"
 REPO_CODENAME = "ios"
 REPO_COMPONENTS = "main"
@@ -112,9 +112,47 @@ def parse_stanza(text):
     return fields, order
 
 
+def sanitize_deb_name(name):
+    # 只保留 ASCII（中文名会拖进 URL 导致装不上），保留 .deb 后缀
+    base = "".join(c for c in name if ord(c) < 128)
+    if not base.lower().endswith(".deb"):
+        base = (base if base.lower().endswith(".deb") else base + ".deb")
+    if len(base) <= 4:  # 只剩 ".deb"
+        base = "package.deb"
+    return base
+
+
+def rename_nonascii_debs(debs_dir):
+    # 把 debs/ 里中文名的 .deb 自动改成英文名，返回 [(旧名, 新名)]
+    renamed = []
+    existing = set(os.listdir(debs_dir))
+    n = 0
+    for f in list(existing):
+        if not f.lower().endswith(".deb"):
+            continue
+        try:
+            f.encode("ascii")
+            continue  # 已经是英文名
+        except UnicodeEncodeError:
+            pass
+        new = sanitize_deb_name(f)
+        while new in existing or new == f:
+            n += 1
+            stem = new[:-4] if new.lower().endswith(".deb") else new
+            new = f"{stem}_{n}.deb"
+        os.rename(os.path.join(debs_dir, f), os.path.join(debs_dir, new))
+        existing.add(new)
+        renamed.append((f, new))
+    return renamed
+
+
 def main():
     if not os.path.isdir(DEBS_DIR):
         os.makedirs(DEBS_DIR)
+    # 先规范文件名（中文名 -> 英文），否则手机端下载会失败
+    renamed = rename_nonascii_debs(DEBS_DIR)
+    for old, new in renamed:
+        print(f"  [改名] {old} -> {new}")
     debs = sorted(
         os.path.join(DEBS_DIR, f)
         for f in os.listdir(DEBS_DIR)
@@ -160,8 +198,20 @@ def main():
     if packages and not packages.endswith("\n"):
         packages += "\n"
 
+    # 只有包列表真的变化时才重写索引（含新的 Date），否则不动 Release，
+    # 避免 GitHub Actions 因时间戳变化陷入「提交->触发->再提交」死循环。
+    pkg_path = os.path.join(REPO_ROOT, "Packages")
+    changed = True
+    if os.path.exists(pkg_path):
+        old = open(pkg_path, "rb").read().decode("utf-8", "replace")
+        changed = (old != packages) or bool(renamed)
+    if not changed:
+        print("索引无变化，跳过重写。")
+        print(f"\n完成：共 {len(stanzas)} 个包（索引未改动）。")
+        return
+
     # 以字节写入 (强制 LF, 避免 Windows 把 \\n 变 \\r\\n 导致 Release 校验和不一致)
-    with open(os.path.join(REPO_ROOT, "Packages"), "wb") as f:
+    with open(pkg_path, "wb") as f:
         f.write(packages.encode("utf-8"))
     with gzip.open(os.path.join(REPO_ROOT, "Packages.gz"), "wb") as f:
         f.write(packages.encode("utf-8"))
@@ -204,7 +254,7 @@ def main():
     with open(os.path.join(REPO_ROOT, "Release"), "wb") as f:
         f.write(release.encode("utf-8"))
 
-    print(f"\n完成：共 {len(stanzas)} 个包。已生成 Packages / Packages.gz / Packages.bz2 / Release。")
+    print(f"\n完成：共 {len(stanzas)} 个包。已生成/更新 Packages / Packages.gz / Packages.bz2 / Release。")
 
 
 if __name__ == "__main__":
