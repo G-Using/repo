@@ -12,13 +12,15 @@ REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
 DEBS_DIR = os.path.join(REPO_ROOT, "debs")
 
 # ===================== 改成你自己的 =====================
-REPO_NAME = "我的越狱源"
-REPO_ORIGIN = "我的越狱源"
-REPO_DESCRIPTION = "我自己用的 tweak / 插件源"
+REPO_NAME = "A`guang"
+REPO_ORIGIN = "A`guang"
+REPO_DESCRIPTION = "A`guang 自用的 tweak / 插件源"
 REPO_SUITE = "stable"
 REPO_CODENAME = "ios"
 REPO_COMPONENTS = "main"
 REPO_ARCHS = "iphoneos-arm iphoneos-arm64 iphoneos-arm64e"
+# 源在 Sileo 里显示的头像（留空字符串则不写 Icon 字段，Sileo 会回退到根目录的 icon.png）
+REPO_ICON = "https://g-using.github.io/repo/icon.png"
 # =======================================================
 
 
@@ -198,13 +200,38 @@ def main():
     if packages and not packages.endswith("\n"):
         packages += "\n"
 
-    # 只有包列表真的变化时才重写索引（含新的 Date），否则不动 Release，
+    # 头部字段（不含 Date，Date 每次都会变，不能拿它判断）
+    header_lines = [
+        f"Origin: {REPO_ORIGIN}",
+        f"Label: {REPO_NAME}",
+        f"Suite: {REPO_SUITE}",
+        f"Version: 1.0",
+        f"Codename: {REPO_CODENAME}",
+        f"Architectures: {REPO_ARCHS}",
+        f"Components: {REPO_COMPONENTS}",
+    ]
+    if REPO_ICON:
+        header_lines.append(f"Icon: {REPO_ICON}")
+    header_lines.append(f"Description: {REPO_DESCRIPTION}")
+    header_key = "\n".join(header_lines)
+
+    # 只有包列表或头部字段（源名/描述/头像）真的变化时才重写索引，
+    # 否则连带新 Date 的 Release 也不动，
     # 避免 GitHub Actions 因时间戳变化陷入「提交->触发->再提交」死循环。
     pkg_path = os.path.join(REPO_ROOT, "Packages")
+    rel_path = os.path.join(REPO_ROOT, "Release")
     changed = True
     if os.path.exists(pkg_path):
         old = open(pkg_path, "rb").read().decode("utf-8", "replace")
         changed = (old != packages) or bool(renamed)
+    if not changed and os.path.exists(rel_path):
+        old_rel = open(rel_path, "rb").read().decode("utf-8", "replace")
+        old_head = []
+        for line in old_rel.split("\n"):
+            if line.startswith(("Date:", "MD5Sum:", "SHA1:", "SHA256:")):
+                break
+            old_head.append(line)
+        changed = ("\n".join(old_head) != header_key)
     if not changed:
         print("索引无变化，跳过重写。")
         print(f"\n完成：共 {len(stanzas)} 个包（索引未改动）。")
@@ -213,8 +240,11 @@ def main():
     # 以字节写入 (强制 LF, 避免 Windows 把 \\n 变 \\r\\n 导致 Release 校验和不一致)
     with open(pkg_path, "wb") as f:
         f.write(packages.encode("utf-8"))
-    with gzip.open(os.path.join(REPO_ROOT, "Packages.gz"), "wb") as f:
-        f.write(packages.encode("utf-8"))
+    # mtime=0 → 可复现构建：同样的内容永远产出同样的字节，避免 gzip 头里的
+    # 时间戳导致每次生成的 Packages.gz 哈希都不同
+    with open(os.path.join(REPO_ROOT, "Packages.gz"), "wb") as f:
+        with gzip.GzipFile(fileobj=f, mode="wb", mtime=0) as gz:
+            gz.write(packages.encode("utf-8"))
     with bz2.open(os.path.join(REPO_ROOT, "Packages.bz2"), "wb") as f:
         f.write(packages.encode("utf-8"))
 
@@ -238,15 +268,8 @@ def main():
     date = email.utils.formatdate(time.time(), usegmt=True)
     nl = "\n"
     release = (
-        f"Origin: {REPO_ORIGIN}\n"
-        f"Label: {REPO_NAME}\n"
-        f"Suite: {REPO_SUITE}\n"
-        f"Version: 1.0\n"
-        f"Codename: {REPO_CODENAME}\n"
-        f"Architectures: {REPO_ARCHS}\n"
-        f"Components: {REPO_COMPONENTS}\n"
+        nl.join(header_lines) + "\n"
         f"Date: {date}\n"
-        f"Description: {REPO_DESCRIPTION}\n"
         f"MD5Sum:\n{nl.join(md5b)}\n"
         f"SHA1:\n{nl.join(sha1b)}\n"
         f"SHA256:\n{nl.join(sha256b)}\n"

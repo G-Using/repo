@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>我的越狱源</title>
+<title>A`guang</title>
 <style>
   * { box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -13,19 +13,61 @@
   h1 { margin: 0 0 8px; font-size: 26px; }
   p { color: #b9bce0; line-height: 1.6; }
   code { background: #0f1020; padding: 8px 12px; border-radius: 8px; color: #7ee0c0;
-         display: inline-block; margin: 10px 0; word-break: break-all; }
+         display: inline-block; margin: 10px 0; word-break: break-all; font-size: 13px; }
   .btn { display: inline-block; margin-top: 18px; background: #5b6cff; color: #fff;
          text-decoration: none; padding: 12px 22px; border-radius: 10px; font-weight: 600; }
+  .copy { background: #2a2d4d; color: #cfd2f5; border: 0; padding: 8px 14px;
+          border-radius: 8px; font-size: 13px; cursor: pointer; margin-left: 6px; }
+  .alt { margin-top: 26px; padding-top: 20px; border-top: 1px solid #2a2d4d; }
+  .alt h2 { font-size: 15px; color: #b9bce0; margin: 0 0 4px; font-weight: 600; }
+  .note { font-size: 12px; color: #7b7fa8; margin: 6px 0 0; }
 </style>
 </head>
 <body>
   <div class="card">
     <img src="icon.png" alt="icon" style="width:96px;height:96px;border-radius:20px;margin-bottom:12px">
-    <h1>📦 A`guang</h1>
+    <h1>A`guang</h1>
     <p>在 Sileo / Zebra / Cydia 里添加下面的源地址即可：</p>
-    <code>https://G-Using.github.io/repo/</code>
+    <div>
+      <code id="src-primary">https://g-using.github.io/repo/</code>
+      <button class="copy" onclick="copySrc('src-primary', this)">复制</button>
+    </div>
     <p>添加后刷新，就能看到并安装我发布的 tweak / 插件。</p>
-    <a class="btn" href="sileo://source/https://G-Using.github.io/repo/">用 Sileo 一键添加</a>
+    <a class="btn" href="sileo://source/https://g-using.github.io/repo/">用 Sileo 一键添加</a>
+
+    <div class="alt">
+      <h2>备用地址</h2>
+      <p class="note">主地址加载不出来时（例如 github.io 访问不畅），换用下面这个，内容完全一致。</p>
+      <div>
+        <code id="src-mirror">https://fastly.jsdelivr.net/gh/G-Using/repo@main/</code>
+        <button class="copy" onclick="copySrc('src-mirror', this)">复制</button>
+      </div>
+    </div>
   </div>
+<script>
+function copySrc(id, btn) {
+  var text = document.getElementById(id).textContent.trim();
+  var done = function () {
+    var old = btn.textContent;
+    btn.textContent = '已复制';
+    setTimeout(function () { btn.textContent = old; }, 1500);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text, done); });
+  } else {
+    fallbackCopy(text, done);
+  }
+}
+function fallbackCopy(text, done) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); done(); } catch (e) {}
+  document.body.removeChild(ta);
+}
+</script>
 </body>
 </html>

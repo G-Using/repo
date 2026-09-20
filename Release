@@ -1,21 +1,22 @@
-Origin: 我的越狱源
-Label: 我的越狱源
+Origin: A`guang
+Label: A`guang
 Suite: stable
 Version: 1.0
 Codename: ios
 Architectures: iphoneos-arm iphoneos-arm64 iphoneos-arm64e
 Components: main
-Date: Sun, 20 Sep 2026 03:59:36 GMT
-Description: 我自己用的 tweak / 插件源
+Icon: https://g-using.github.io/repo/icon.png
+Description: A`guang 自用的 tweak / 插件源
+Date: Sun, 20 Sep 2026 07:32:53 GMT
 MD5Sum:
  b5359ceb3c541a574d14c888fedc47c8 1617 Packages
- a204aef116525e89da48f90d2e59e6b8 744 Packages.gz
+ eefb912a33a02b522e3cb53045b4f84a 744 Packages.gz
  ce0eacaa4f715b592c630a8f2e13a77f 889 Packages.bz2
 SHA1:
  4a3a829c6bd4c6788db0fb8f0f2aa62a62f60271 1617 Packages
- f4096341a5b704ec664855b07d8fb28b5b748452 744 Packages.gz
+ ecf96893e2130e6edf36c575aafd0c735dcf3db8 744 Packages.gz
  65f33abd545979123b72008f52f9a09a1e381ec8 889 Packages.bz2
 SHA256:
  a2682af36a673a730ab0042dde87b76a20159c64cf42c26ad588e90d136bb06f 1617 Packages
- 2bc517ebac5fb348a283b1890c3a402005df987ba13987a64a6d5eb86715b3b6 744 Packages.gz
+ e9410b4ba9684e94f761e309f638e869746f1c70d5434d9c3987df6d55c5d036 744 Packages.gz
  493ec797c0f31e3cdc9b14f774b9c8de60afe459eb16a91c38b8dc19078d36cf 889 Packages.bz2
