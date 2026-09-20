@@ -33,20 +33,24 @@
    ```
    例如用户名 `myname`、仓库 `repo` → `https://myname.github.io/repo/`
 
-> 推送后 GitHub Actions 会自动跑 `build_repo.py` 生成索引；第一次会是空源（0 个包），正常。
+> 索引（`Packages` / `Release` 等）需要在**本地**用 `python3 build_repo.py` 生成后一起提交。
+> 仓库自带的 GitHub Actions 只做**校验**（检查索引与 deb 是否同步），**不会**替你提交——这是刻意的，
+> 避免机器人提交和你的推送互相打架。第一次会是空源（0 个包），正常。
 
 ---
 
 ## 三、怎么放入插件（重点）
 
-两种方法，任选其一。无论哪种，**放进 `debs/` 后索引都会自动重建**，手机刷新源即可看到。
+⚠️ **文件名必须是纯英文/数字**（如 `squidgesture_2.7.6-1_iphoneos-arm64e.deb`）。
+中文名（如 `鱿鱼手势破解版xxx.deb`）会被写进索引的 `Filename:` 字段，Sileo/Cydia 拼下载 URL 时会出错，
+表现为**装不上 / 下载失败**。放进去前先改成英文名。
 
-### 方法 A：用 GitHub 网页（最简单，不用装任何东西）
+### 方法 A：用 GitHub 网页（简单，但需本地生成一次索引）
 1. 打开仓库里的 `debs/` 文件夹。
-2. 点 **Add file → Upload files**，把你的 `.deb` 拖进去。
-3. 点 **Commit changes** 提交。
-4. 仓库的 **Actions** 标签页会跑一次 "Build Repo Index"，跑完后索引更新。
-5. 手机端刷新源 → 看到新包 → 安装。
+2. 点 **Add file → Upload files**，把你的 `.deb`（英文名！）拖进去 → **Commit changes**。
+3. 回本地或云端跑一次 `python3 build_repo.py` 生成索引，再提交 `Packages`/`Release`；
+   或者直接看仓库 **Actions** 里 "Validate Repo Index" 的提示（它会告诉你索引不同步）。
+4. 手机端刷新源 → 看到新包 → 安装。
 
 ### 方法 B：本地 git + 脚本（适合批量/频繁更新）
 ```sh
@@ -61,7 +65,10 @@ git add -A
 git commit -m "add 你的插件"
 git push
 ```
-推送后 Actions 会再跑一次（幂等，无变化就不提交），双重保险。
+推送后 Actions 会再校验一次（只提示不同步，不会自动改文件）。
+
+> 小贴士：GitHub Pages 有 CDN 缓存，改完索引后手机若还看到旧列表，等 1~2 分钟或换网络重试。
+> 验证时可在 URL 后加 `?cb=<随机数>` 跳过缓存。
 
 ---
 
