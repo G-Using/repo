@@ -196,7 +196,10 @@ def main():
             for extra in parts[1:]:
                 lines.append(" " + extra)
         out_blocks.append("\n".join(lines))
-    packages = "\n".join(out_blocks)
+    # 注意：APT/Cydia/Sileo 的 Packages 格式要求
+    # 每个包之间用「空行」分隔。若只用一个换行，
+    # 多个包会被解析成同一条记录，Sileo 里只会显示出一个包。
+    packages = "\n\n".join(out_blocks)
     if packages and not packages.endswith("\n"):
         packages += "\n"
 

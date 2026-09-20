@@ -15,6 +15,7 @@ Size: 2306804
 MD5sum: 837cfeea16a870753907e5d28c40342f
 SHA1: 76ca44d3d207ae97d1e09154951d657886a495b8
 SHA256: 196952356175289e0cee776d80c486bc7f88c6f32fd876c0813926031db01ce0
+
 Package: cn.octoforce.squidgesturepro
 Name: SquidGesturePro
 Depends: mobilesubstrate, preferenceloader, firmware (>= 15.0)
