@@ -5,17 +5,17 @@ Version: 1.0
 Codename: ios
 Architectures: iphoneos-arm iphoneos-arm64 iphoneos-arm64e
 Components: main
-Date: Sun, 20 Sep 2026 02:53:30 GMT
+Date: Sun, 20 Sep 2026 02:57:37 GMT
 Description: 仅用于自己插件备份,勿扰
 MD5Sum:
- 50b69bd7c0e687f04a261f5abb6402d5 813 Packages
- 830ebdef1e405417f6aff616dc552853 549 Packages.gz
- dcb03279d9937841c4e5aed312bfc4b6 613 Packages.bz2
+ 9af883d2daef298bf444c1c3091489ed 1589 Packages
+ 6469d6450c4e5636e5721e905e0d8801 569 Packages.gz
+ ea5fd198718dcd2371b075d93abc187e 749 Packages.bz2
 SHA1:
- 4a48b950dc8f893df1d44fc951e8c513bd7d89e3 813 Packages
- e7fc40d35a6b05d449d5ba8285223c202a11c5c8 549 Packages.gz
- 415d81bf06e62a6199c25d1e43fb14ba7409fa30 613 Packages.bz2
+ fb8808f52f8a21b7d2762b25ea04795ba460d19a 1589 Packages
+ a7b735164d649b0172f5a75bc86d171b69ead4eb 569 Packages.gz
+ 450c18d91185a36ba8b876aed47c283e922ba50e 749 Packages.bz2
 SHA256:
- 1f8386f3cb98e795c48e55393002e20bbeb1242b15a2b76b08417244adadb139 813 Packages
- 65c571bc571060de929eb17607d1602a738badcf637a9bbe9389ede87563d583 549 Packages.gz
- 9a61dee628a0b2d85924e946e5283e00b0a7c672f3f2c8821a779c534ab3bde9 613 Packages.bz2
+ b14eb5bf515ff8f7dedd3a434ee37113560e591e4823143ef4dbb04f5e8eca1b 1589 Packages
+ 475980b9c666792a0aa6766cc5f199e5caf4324b657cd49e6eeb19cb616743b0 569 Packages.gz
+ 5cd3283207926f4696ddafdad2ff33065a5be3a3fcd1fa05a5a4282cc6b3f84c 749 Packages.bz2

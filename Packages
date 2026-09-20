@@ -10,6 +10,23 @@ SileoDepiction: https://lclrc.github.io/repo/depictions/native/cn.octoforce.squi
 Architecture: iphoneos-arm64e
 Version: 2.7.6-1
 Installed-Size: 6762
+Filename: debs/squidgesture_2.7.6-1_iphoneos-arm64e.deb
+Size: 1795530
+MD5sum: 7c6302df4be1663f6f4381156dc17e50
+SHA1: 65f142334cc8b089221e21b1a559de13239594e2
+SHA256: 35c4b0b2cef9bdc2f6ceec0a3c6feb61a2ff9f7dc94da34150fc68a38213f0d7
+Package: cn.octoforce.squidgesturepro
+Name: SquidGesturePro
+Depends: mobilesubstrate, preferenceloader, firmware (>= 15.0)
+Conflicts: com.lclrc.squidgesture, com.lclrc.squidgesturepro
+Description: Local device-bound license recovery for SquidGesturePro 2.7.6-1. No activation server required. Device validation pending.
+Maintainer: 刀哥
+Author: 刀哥
+Section: Tweaks
+SileoDepiction: https://lclrc.github.io/repo/depictions/native/cn.octoforce.squidgesturepro/depiction.json
+Architecture: iphoneos-arm64e
+Version: 2.7.6-1
+Installed-Size: 6762
 Filename: debs/鱿鱼手势破解版cn.octoforce.squidgesturepro_2.7.6-1_iphoneos-arm64e.deb
 Size: 1795530
 MD5sum: 7c6302df4be1663f6f4381156dc17e50
