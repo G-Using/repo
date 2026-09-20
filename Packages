@@ -1,20 +1,3 @@
-Package: cn.octoforce.squidextender
-Name: SquidExtender (RootHide Offline Recovery Test)
-Description: Local device-bound license recovery for SquidExtender 3.7.4. No activation server required. Device validation pending.
-Maintainer: SquidForce, Backup
-Author: SquidForce, Backup
-Section: Tweaks
-Depends: mobilesubstrate, preferenceloader, com.opa334.libsandy, firmware (>= 15.0)
-Conflicts: com.squidforce.squidextender
-SileoDepiction: https://lclrc.github.io/repo/depictions/native/cn.octoforce.squidextender/depiction.json
-Architecture: iphoneos-arm64e
-Version: 3.7.4+offline.1
-Installed-Size: 10254
-Filename: debs/SquidExtender_3.7.4+offline.1_iphoneos-arm64e.deb
-Size: 2306804
-MD5sum: 837cfeea16a870753907e5d28c40342f
-SHA1: 76ca44d3d207ae97d1e09154951d657886a495b8
-SHA256: 196952356175289e0cee776d80c486bc7f88c6f32fd876c0813926031db01ce0
 Package: cn.octoforce.squidgesturepro
 Name: SquidGesturePro
 Depends: mobilesubstrate, preferenceloader, firmware (>= 15.0)
