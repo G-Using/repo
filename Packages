@@ -16,6 +16,26 @@ MD5sum: 837cfeea16a870753907e5d28c40342f
 SHA1: 76ca44d3d207ae97d1e09154951d657886a495b8
 SHA256: 196952356175289e0cee776d80c486bc7f88c6f32fd876c0813926031db01ce0
 
+Package: com.bvn.copyvault.rl
+Name: CopyVault VH
+Description: CopyVault is a modern, powerful and easy-to-use pasteboard jailbreak tweak, works on both iphone and ipad!
+ * CopyVault 是一款现代、强大且易用的剪贴板越狱插件，同时支持 iPhone 和 iPad！
+Maintainer: SquidForce, Backup
+Author: SquidForce, Backup
+Section: Tweaks
+Depends: mobilesubstrate, preferenceloader, com.opa334.altlist, com.bvn.squidforcecrack.rl
+Conflicts: com.squidforce.copyvault
+Architecture: iphoneos-arm64e
+Version: 1.9.0k
+Installed-Size: 6220
+icon: https://huayuarc.github.io/icon/CopyVault@2x.png
+Pre-Depends: rootless-compat(>= 0.9)
+Filename: debs/com.bvn.copyvault.rl_1.9.0k_iphoneos-arm64e.deb
+Size: 1641180
+MD5sum: 4a72a65e22785656b3b327a550055ce3
+SHA1: 848870da0ce21bb749b6d83915be1e2a944ccbb5
+SHA256: 18ea7a930ed18ba42d74bf0b52b1ff0af7d96b22fca73deee870556fb97799eb
+
 Package: cn.octoforce.squidgesturepro
 Name: SquidGesturePro
 Depends: mobilesubstrate, preferenceloader, firmware (>= 15.0)
