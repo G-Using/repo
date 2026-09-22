@@ -19,7 +19,7 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install deps (zstandard: 解析 control.tar.zst)
+      - name: Install deps (zstandard for control.tar.zst)
         run: pip install zstandard
 
       - name: Generate index (auto rename non-ASCII deb + rebuild)
