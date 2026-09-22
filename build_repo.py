@@ -170,7 +170,11 @@ def main():
         md5 = hashlib.md5(blob).hexdigest()
         sha1 = hashlib.sha1(blob).hexdigest()
         sha256 = hashlib.sha256(blob).hexdigest()
-        ctrl = read_control(deb)
+        try:
+            ctrl = read_control(deb)
+        except Exception as e:
+            print("  [跳过] 无法解析 control:", fn, "->", e)
+            continue
         fields, order = parse_stanza(ctrl)
         fields["Filename"] = rel
         fields["Size"] = str(size)
@@ -185,6 +189,11 @@ def main():
             continue
         stanzas.append((fields, order))
         print("  [OK]", fn, "->", fields.get("Name", fields.get("Package")), fields.get("Version"))
+
+    # 保护：所有 deb 都解析失败时不要写空索引（会把整个源清空），直接失败以保留旧索引
+    if debs and not stanzas:
+        print("!! 所有 deb 都解析失败，保留旧索引，不写入")
+        raise SystemExit(1)
 
     out_blocks = []
     for fields, order in stanzas:
