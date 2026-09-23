@@ -7,7 +7,10 @@
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
 #import <AVKit/AVKit.h>
-#import <Photos/Photos.h>
+// 注意：不要把 <Photos/Photos.h> 放到这个公共头文件里。
+// .xm 是按 Objective-C++ 编译的，而 Xcode 15 的 clang 默认仍是 gnu++98，
+// Photos 框架要求 C++11，在 .mm 里 include 会直接报 "Photos requires C++11 or later"。
+// 所以 Photos 只在需要的 .m（纯 ObjC 编译）里 import，见 TGSAStore.m。
 #import <objc/runtime.h>
 #import <dlfcn.h>
 #import <mach-o/dyld.h>
@@ -31,8 +34,8 @@ NSString *TGSADocDir(void);
 #pragma mark - Runtime 工具
 
 /// 只 hook 已经存在、且返回值安全（void / BOOL / char）的实例方法
-BOOL TGSASwizzleInstance(Class cls, SEL sel, IMP replacement, IMP * _Nullable outOriginal);
-BOOL TGSASwizzleClass(Class cls, SEL sel, IMP replacement, IMP * _Nullable outOriginal);
+BOOL TGSASwizzleInstance(Class cls, SEL sel, IMP replacement, IMP _Nullable * _Nullable outOriginal);
+BOOL TGSASwizzleClass(Class cls, SEL sel, IMP replacement, IMP _Nullable * _Nullable outOriginal);
 
 /// 取方法返回值类型编码。新版 SDK 的 method_getReturnType 是三参数且返回 void，
 /// 旧版是一参数返回 const char *，这里统一封装，避免版本差异。

@@ -115,7 +115,7 @@ BOOL TGSAReturnTypeIsSafe(Method m) {
     return strcmp(rt, "v") == 0 || strcmp(rt, "B") == 0 || strcmp(rt, "c") == 0 || strcmp(rt, "b") == 0;
 }
 
-BOOL TGSASwizzleInstance(Class cls, SEL sel, IMP replacement, IMP * _Nullable outOriginal) {
+BOOL TGSASwizzleInstance(Class cls, SEL sel, IMP replacement, IMP _Nullable * _Nullable outOriginal) {
     if (!cls || !sel || !replacement) return NO;
     Method m = class_getInstanceMethod(cls, sel);
     if (!m) return NO;                       // 只 hook 真实存在的方法，不凭空注入
@@ -127,7 +127,7 @@ BOOL TGSASwizzleInstance(Class cls, SEL sel, IMP replacement, IMP * _Nullable ou
     return YES;
 }
 
-BOOL TGSASwizzleClass(Class cls, SEL sel, IMP replacement, IMP * _Nullable outOriginal) {
+BOOL TGSASwizzleClass(Class cls, SEL sel, IMP replacement, IMP _Nullable * _Nullable outOriginal) {
     if (!cls || !sel || !replacement) return NO;
     Class meta = object_getClass((id)cls);
     Method m = class_getClassMethod(meta, sel);

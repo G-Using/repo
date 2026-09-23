@@ -1,6 +1,8 @@
 //  TGSaveAnywhere — 源收集 / 下载 / 存相册 / 导出到文件
+//  Photos 必须在这个纯 ObjC 的 .m 里引入，不能放进公共头文件（见 TGSAHeaders.h 注释）
 
 #import "TGSAHeaders.h"
+#import <Photos/Photos.h>
 
 #pragma mark - 临时文件
 
