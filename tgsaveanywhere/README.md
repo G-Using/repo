@@ -96,6 +96,7 @@ make clean all TROLLSTORE=1
 | `ScanWindowSeconds` | Number | 900 | 缓存扫描时间窗口（秒），只认这段时间内被修改过的文件 |
 | `DiscoveryMode` | Bool | false | 符号探测模式，见第六节 |
 | `ForceTrueHooks` | Array | [] | 额外强制返回 YES 的 hook，格式 `"类名::selector"` |
+| `AutoHideSeconds` | Number | 0 | 按钮自动隐藏秒数。**0 = 常驻不消失**；抓到明确 AV 源时默认 25 秒后消失 |
 
 ---
 
@@ -115,6 +116,24 @@ make clean all TROLLSTORE=1
 - `本 dylib 加载自：...` —— 确认是 TweakInject 注入还是巨魔注入
 - `[存在]/[缺失]` 列表 —— 判断越狱环境
 - `缓存扫描（窗口 900s）命中 n 个` —— 扫描到几个候选文件
+- `按钮被点击（currentURL=…）` —— 点按钮没反应时先看有没有这行
+- `菜单已弹出（承载 VC：…）` / `菜单已在兜底窗口弹出` —— 确认菜单到底弹没弹出来
+- `回到前台，按钮已恢复显示` —— 从桌面切回 Telegram 时按钮会重新挂上
+
+---
+
+## 五之二、悬浮窗为什么不会挡住界面
+
+0.2.2 之前用的是**全屏** UIWindow，结果整个 Telegram 都点不动 —— 空白区域的触摸
+全被这一层吃掉了。现在的实现是：
+
+- 悬浮窗尺寸只有 **62×62**（按钮 56），**只占按钮这一小块地**；
+- 窗口重写 `hitTest:withEvent:`，**只有按钮本身能接收触摸**，其余一律返回 `nil` 穿透给 App；
+- 窗口层级设为 `UIWindowLevelStatusBar + 10`，**低于 `UIWindowLevelAlert`**，不会盖住自己的菜单弹窗；
+- 另有一道保护：万一系统把 keyWindow 判给了悬浮窗，0.3 秒后会自动把焦点还给 Telegram 主窗口。
+
+菜单弹出走两级通道：先找 Telegram 顶层 VC 正常 present；取不到（keyWindow 有时是
+rootViewController 为 nil 的辅助窗口）时，用一个临时全屏窗口弹，菜单关闭后自动回收并还焦点。
 
 ---
 
