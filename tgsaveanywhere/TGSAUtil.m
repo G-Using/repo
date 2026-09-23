@@ -62,6 +62,10 @@ void TGSALog(NSString *fmt, ...) {
 
 #pragma mark - 配置
 
+/// 前向声明（定义在"顶层 VC"一节）
+static NSArray<UIWindow *> *TGSAAllWindows(void);
+static UIWindow *TGSAKeyWindow(void);
+
 static NSDictionary *TGSAConfig(void) {
     static NSDictionary *cfg = nil;
     static dispatch_once_t once;
