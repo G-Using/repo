@@ -140,6 +140,12 @@ __attribute__((constructor))
 static void TGSAMediaCaptureInit(void) {
     // 这里只做 runtime 替换，不触碰 UIKit / 不依赖 App 生命周期，dyld 阶段执行是安全的
     @autoreleasepool {
+        // Telegram 绝大多数视频是自家 ffmpeg 软解，可能压根没加载 AVFoundation。
+        // 这里显式加载一次，保证下面的 hook 能装到真实的类上（加载失败也不影响主流程）。
+        void *av = dlopen("/System/Library/Frameworks/AVFoundation.framework/AVFoundation", RTLD_NOW);
+        void *ak = dlopen("/System/Library/Frameworks/AVKit.framework/AVKit", RTLD_NOW);
+        TGSALog(@"AVFoundation=%@ AVKit=%@", av ? @"已加载" : @"加载失败", ak ? @"已加载" : @"加载失败");
+
         int ok = 0, total = 0;
 
 #define TGSASWIZZLE_CLASS(cls, sel, imp, store)                              \
