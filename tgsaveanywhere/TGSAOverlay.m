@@ -87,6 +87,14 @@ static void TGSAPresentOnFallbackWindow(UIAlertController *alert) {
 static void TGSAPresentAlert(UIAlertController *alert) {
     if (!alert) return;
 
+    // 上一个菜单还在收起动画中：稍等再弹，否则 iOS 会拒绝对同一 VC 连续 present
+    UIViewController *busy = TGSATopViewController();
+    if (busy && busy.presentedViewController && busy.presentedViewController.isBeingDismissed) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.6 * NSEC_PER_SEC)),
+                       dispatch_get_main_queue(), ^{ TGSAPresentAlert(alert); });
+        return;
+    }
+
     UIViewController *presenter = TGSATopViewController();
     if (presenter && presenter.view.window) {
         @try {
@@ -103,6 +111,10 @@ static void TGSAPresentAlert(UIAlertController *alert) {
 }
 
 @implementation TGSAPickerProxy
+- (instancetype)init {
+    if ((self = [super init])) { _completion = ^(BOOL ok, NSString *detail) {}; }
+    return self;
+}
 + (instancetype)shared {
     static TGSAPickerProxy *s = nil;
     static dispatch_once_t once;
@@ -111,9 +123,15 @@ static void TGSAPresentAlert(UIAlertController *alert) {
 }
 - (void)documentPicker:(UIDocumentPickerViewController *)controller didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls {
     TGSALog(@"已导出到：%@", urls.firstObject);
+    void (^c)(BOOL, NSString *) = self.completion;
+    self.completion = nil;
+    if (c) c(YES, urls.firstObject.path);
 }
 - (void)documentPickerWasCancelled:(UIDocumentPickerViewController *)controller {
     TGSALog(@"用户取消导出");
+    void (^c)(BOOL, NSString *) = self.completion;
+    self.completion = nil;
+    if (c) c(NO, @"已取消");
 }
 @end
 
@@ -455,6 +473,74 @@ static const CGFloat TGSAWindowSize = 62.0;   // 比按钮略大，留出描边�
     [self hide];
 }
 
+#pragma mark - 保存前检测 + 结果提示
+
+/// 复制缓存文件到临时目录（1GB+ 需要几秒）
+static NSString *_Nullable TGSACopyToTemp(NSString *src, NSString *ext) {
+    NSString *dst = TGSATempPathForExtension(ext);
+    [[NSFileManager defaultManager] removeItemAtPath:dst error:nil];
+    NSError *e = nil;
+    [[NSFileManager defaultManager] copyItemAtPath:src toPath:dst error:&e];
+    if (e) {
+        TGSALog(@"复制缓存失败：%@", e.localizedDescription);
+        return nil;
+    }
+    return dst;
+}
+
+/// 保存/导出的公共流程：先在后台检测文件是否还在变大（TG 流式缓存边播边写），
+/// 在变就先警告"只能播已缓冲的一小段"；复制后保存，结果无论成败都弹窗。
+- (void)tgsa_storeFile:(NSString *)src toAlbum:(BOOL)toAlbum {
+    NSString *ext = TGSAExtensionForVideoFile(src) ?: @"mp4";
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        BOOL growing = TGSAFileStillGrowing(src);
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            void (^doStore)(void) = ^{
+                dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+                    NSString *dst = TGSACopyToTemp(src, ext);
+                    if (!dst) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            TGSAPresentAlert([weakSelf tgsa_resultAlert:NO message:@"复制文件失败，可能没有读权限或空间不足"]);
+                        });
+                        return;
+                    }
+                    void (^result)(BOOL, NSString *) = ^(BOOL ok, NSString *detail) {
+                        NSString *msg = ok
+                            ? @"已保存。可以在相册 / 文件 App 里查看。"
+                            : [NSString stringWithFormat:@"保存失败：%@。可改用「存储到文件」试试。", detail ?: @"未知原因"];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            TGSAPresentAlert([weakSelf tgsa_resultAlert:ok message:msg]);
+                        });
+                    };
+                    if (toAlbum) TGSASaveVideoAtPathToAlbumWithCompletion(dst, result);
+                    else TGSAExportFileAtPathWithCompletion(dst, result);
+                });
+            };
+
+            if (!growing) { doStore(); return; }
+
+            UIAlertController *warn = [UIAlertController alertControllerWithTitle:@"视频仍在缓冲中"
+                    message:@"这个文件的体积还在变化（Telegram 正在边播边下载）。现在保存到相册，很可能只能播放已缓冲的一小段就卡住。\n\n建议：先回到 Telegram 让视频完整加载（进度条全部走完），再来保存。"
+                    preferredStyle:UIAlertControllerStyleAlert];
+            [warn addAction:[UIAlertAction actionWithTitle:@"仍要保存（可能卡顿）" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *x) {
+                doStore();
+            }]];
+            [warn addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
+            TGSAPresentAlert(warn);
+        });
+    });
+}
+
+- (UIAlertController *)tgsa_resultAlert:(BOOL)ok message:(NSString *)message {
+    UIAlertController *a = [UIAlertController alertControllerWithTitle:ok ? @"完成" : @"出错了"
+                                                              message:message
+                                                       preferredStyle:UIAlertControllerStyleAlert];
+    [a addAction:[UIAlertAction actionWithTitle:@"好" style:UIAlertActionStyleDefault handler:nil]];
+    return a;
+}
+
 #pragma mark - 菜单
 
 - (void)tgsa_tapped {
@@ -490,33 +576,52 @@ static const CGFloat TGSAWindowSize = 62.0;   // 比按钮略大，留出描边�
                                                   style:UIAlertActionStyleDefault
                                                 handler:^(UIAlertAction *a) {
             if (!exists) return;
-            NSString *dst = TGSATempPathForExtension(src.pathExtension.length ? src.pathExtension : @"mp4");
-            NSError *e = nil;
-            [[NSFileManager defaultManager] copyItemAtPath:src toPath:dst error:&e];
-            if (e) { TGSALog(@"复制缓存失败：%@", e.localizedDescription); return; }
-            TGSASaveVideoAtPathToAlbum(dst);
+            [weakSelf tgsa_storeFile:src toAlbum:YES];
         }]];
         [sheet addAction:[UIAlertAction actionWithTitle:@"存储到文件…"
                                                   style:UIAlertActionStyleDefault
                                                 handler:^(UIAlertAction *a) {
             if (!exists) { TGSAExportFileAtPath(src); return; }
-            NSString *dst = TGSATempPathForExtension(src.pathExtension.length ? src.pathExtension : @"mp4");
-            [[NSFileManager defaultManager] copyItemAtPath:src toPath:dst error:nil];
-            TGSAExportFileAtPath(dst);
+            [weakSelf tgsa_storeFile:src toAlbum:NO];
         }]];
     } else {
         [sheet addAction:[UIAlertAction actionWithTitle:@"下载到相册"
                                                   style:UIAlertActionStyleDefault
                                                 handler:^(UIAlertAction *a) {
             TGSAFetchRemoteURL(url, TGSATopViewController(), ^(NSString *path, NSError *err) {
-                if (path) TGSASaveVideoAtPathToAlbum(path);
+                if (!path) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        TGSAPresentAlert([weakSelf tgsa_resultAlert:NO
+                                                            message:[NSString stringWithFormat:@"下载失败：%@", err.localizedDescription ?: @"未知错误"]]);
+                    });
+                    return;
+                }
+                TGSASaveVideoAtPathToAlbumWithCompletion(path, ^(BOOL ok, NSString *detail) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        TGSAPresentAlert([weakSelf tgsa_resultAlert:ok
+                                                            message:ok ? @"已保存到相册。" : [NSString stringWithFormat:@"保存失败：%@", detail ?: @"未知原因"]]);
+                    });
+                });
             });
         }]];
         [sheet addAction:[UIAlertAction actionWithTitle:@"下载到文件…"
                                                   style:UIAlertActionStyleDefault
                                                 handler:^(UIAlertAction *a) {
             TGSAFetchRemoteURL(url, TGSATopViewController(), ^(NSString *path, NSError *err) {
-                if (path) TGSAExportFileAtPath(path);
+                if (!path) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        TGSAPresentAlert([weakSelf tgsa_resultAlert:NO
+                                                            message:[NSString stringWithFormat:@"下载失败：%@", err.localizedDescription ?: @"未知错误"]]);
+                    });
+                    return;
+                }
+                TGSAExportFileAtPathWithCompletion(path, ^(BOOL ok, NSString *detail) {
+                    if (!ok) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            TGSAPresentAlert([weakSelf tgsa_resultAlert:NO message:detail ?: @"已取消"]);
+                        });
+                    }
+                });
             });
         }]];
     }
@@ -572,15 +677,23 @@ static const CGFloat TGSAWindowSize = 62.0;   // 比按钮略大，留出描边�
                                                                   message:@"请先在 Telegram 里完整播放一次目标视频，再点这个按钮。\n如果仍找不到，可试试全盘扫描。"
                                                            preferredStyle:UIAlertControllerStyleAlert];
         [a addAction:[UIAlertAction actionWithTitle:@"全盘扫描（较慢）" style:UIAlertActionStyleDefault handler:^(UIAlertAction *x) {
-            [weakSelf tgsa_menuForCachedFiles:YES];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.6 * NSEC_PER_SEC)),
+                           dispatch_get_main_queue(), ^{
+                [weakSelf tgsa_menuForCachedFiles:YES];
+            });
         }]];
         [a addAction:[UIAlertAction actionWithTitle:@"关闭" style:UIAlertActionStyleCancel handler:nil]];
         TGSAPresentAlert(a);
         return;
     }
 
+    NSString *chat = TGSAActiveChatTitle();
+    NSString *listMsg = chat.length
+        ? [NSString stringWithFormat:@"当前聊天：%@。按最近修改时间排序，第一个通常就是刚播放的", chat]
+        : @"按最近修改时间排序，第一个通常就是刚播放的";
+
     UIAlertController *list = [UIAlertController alertControllerWithTitle:@"选择要保存的视频"
-                                                                message:@"按最近修改时间排序，第一个通常就是刚播放的"
+                                                                message:listMsg
                                                          preferredStyle:UIAlertControllerStyleActionSheet];
 
     NSFileManager *fm = [NSFileManager defaultManager];
@@ -599,7 +712,10 @@ static const CGFloat TGSAWindowSize = 62.0;   // 比按钮略大，留出描边�
 
     if (!fullScan) {
         [list addAction:[UIAlertAction actionWithTitle:@"没找到？全盘扫描（较慢）" style:UIAlertActionStyleDefault handler:^(UIAlertAction *x) {
-            [weakSelf tgsa_menuForCachedFiles:YES];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.6 * NSEC_PER_SEC)),
+                           dispatch_get_main_queue(), ^{
+                [weakSelf tgsa_menuForCachedFiles:YES];
+            });
         }]];
     }
     [list addAction:[UIAlertAction actionWithTitle:@"隐藏按钮" style:UIAlertActionStyleDefault handler:^(UIAlertAction *x) {
@@ -615,25 +731,27 @@ static const CGFloat TGSAWindowSize = 62.0;   // 比按钮略大，留出描边�
 }
 
 - (void)tgsa_menuForFile:(NSString *)src {
-    NSString *ext = TGSAExtensionForVideoFile(src) ?: @"mp4";
+    __weak typeof(self) weakSelf = self;
+    NSString *chat = TGSAActiveChatTitle();
+    NSString *msg = src.lastPathComponent;
+    if (chat.length) msg = [NSString stringWithFormat:@"%@ · %@", chat, msg];
 
     UIAlertController *sheet = [UIAlertController alertControllerWithTitle:@"保存媒体"
-                                                                  message:src.lastPathComponent
+                                                                  message:msg
                                                            preferredStyle:UIAlertControllerStyleActionSheet];
 
     [sheet addAction:[UIAlertAction actionWithTitle:@"保存到相册" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
-        NSString *dst = TGSATempPathForExtension(ext);
-        [[NSFileManager defaultManager] removeItemAtPath:dst error:nil];
-        NSError *e = nil;
-        [[NSFileManager defaultManager] copyItemAtPath:src toPath:dst error:&e];
-        if (e) { TGSALog(@"复制失败：%@", e.localizedDescription); return; }
-        TGSASaveVideoAtPathToAlbum(dst);
+        [weakSelf tgsa_storeFile:src toAlbum:YES];
     }]];
     [sheet addAction:[UIAlertAction actionWithTitle:@"存储到文件…" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
-        NSString *dst = TGSATempPathForExtension(ext);
-        [[NSFileManager defaultManager] removeItemAtPath:dst error:nil];
-        [[NSFileManager defaultManager] copyItemAtPath:src toPath:dst error:nil];
-        TGSAExportFileAtPath(dst);
+        [weakSelf tgsa_storeFile:src toAlbum:NO];
+    }]];
+    [sheet addAction:[UIAlertAction actionWithTitle:@"返回重新选择视频" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
+        // 当前 sheet 正在收起，稍等再弹列表
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.6 * NSEC_PER_SEC)),
+                       dispatch_get_main_queue(), ^{
+            [weakSelf tgsa_menuForCachedFiles:NO];
+        });
     }]];
     [sheet addAction:[UIAlertAction actionWithTitle:@"复制路径" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
         UIPasteboard.generalPasteboard.string = src;

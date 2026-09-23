@@ -142,8 +142,19 @@ void TGSAFetchRemoteURL(NSURL *url, UIViewController *presenter, void (^completi
 #pragma mark - 存到相册
 
 void TGSASaveVideoAtPathToAlbum(NSString *path) {
+    TGSASaveVideoAtPathToAlbumWithCompletion(path, nil);
+}
+
+void TGSASaveVideoAtPathToAlbumWithCompletion(NSString *path, void (^completion)(BOOL ok, NSString *detail)) {
+    void (^done)(BOOL, NSString *) = ^(BOOL ok, NSString *detail) {
+        TGSALog(@"存相册%@ %@", ok ? @"成功" : @"失败", detail ?: @"");
+        if (completion) {
+            dispatch_async(dispatch_get_main_queue(), ^{ completion(ok, detail); });
+        }
+    };
+
     if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
-        TGSALog(@"文件不存在：%@", path);
+        done(NO, @"文件不存在");
         return;
     }
 
@@ -151,19 +162,17 @@ void TGSASaveVideoAtPathToAlbum(NSString *path) {
     NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
     if (!info[@"NSPhotoLibraryAddUsageDescription"] && !info[@"NSPhotoLibraryUsageDescription"]) {
         TGSALog(@"Info.plist 缺少相册权限描述，降级为「存储到文件」");
-        TGSAExportFileAtPath(path);
+        TGSAExportFileAtPathWithCompletion(path, completion);
         return;
     }
 
+    // 统一走 PHAsset：无论什么路径都有明确的 success/error 回调
     void (^doSave)(void) = ^{
-        if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(path)) {
-            UISaveVideoAtPathToSavedPhotosAlbum(path, nil, NULL, NULL);
-            return;
-        }
         [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
             [PHAssetChangeRequest creationRequestForAssetFromVideoAtFileURL:[NSURL fileURLWithPath:path]];
         } completionHandler:^(BOOL success, NSError *error) {
-            TGSALog(@"存相册 %@ %@", success ? @"成功" : @"失败", error.localizedDescription ?: @"");
+            if (success) done(YES, nil);
+            else done(NO, error.localizedDescription ?: @"未知错误");
         }];
     };
 
@@ -174,7 +183,7 @@ void TGSASaveVideoAtPathToAlbum(NSString *path) {
                     if (status == PHAuthorizationStatusAuthorized || status == PHAuthorizationStatusLimited) {
                         doSave();
                     } else {
-                        TGSALog(@"相册权限未授权：%ld", (long)status);
+                        done(NO, @"相册权限未授权");
                     }
                 });
             }];
@@ -187,6 +196,7 @@ void TGSASaveVideoAtPathToAlbum(NSString *path) {
 #pragma clang diagnostic pop
         dispatch_async(dispatch_get_main_queue(), ^{
             if (status == PHAuthorizationStatusAuthorized) doSave();
+            else done(NO, @"相册权限未授权");
         });
     }];
 }
@@ -194,17 +204,27 @@ void TGSASaveVideoAtPathToAlbum(NSString *path) {
 #pragma mark - 导出到「文件」App
 
 void TGSAExportFileAtPath(NSString *path) {
+    TGSAExportFileAtPathWithCompletion(path, nil);
+}
+
+void TGSAExportFileAtPathWithCompletion(NSString *path, void (^completion)(BOOL ok, NSString *detail)) {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
             TGSALog(@"导出失败，文件不存在：%@", path);
+            if (completion) completion(NO, @"文件不存在");
             return;
         }
         UIDocumentPickerViewController *picker =
             [[UIDocumentPickerViewController alloc] initWithURL:[NSURL fileURLWithPath:path]
                                                         inMode:UIDocumentPickerModeExportToService];
+        [TGSAPickerProxy shared].completion = completion;
         picker.delegate = [TGSAPickerProxy shared];
         UIViewController *top = TGSATopViewController();
-        if (!top) { TGSALog(@"找不到用于展示的 ViewController"); return; }
+        if (!top) {
+            TGSALog(@"找不到用于展示的 ViewController");
+            if (completion) completion(NO, @"找不到可展示的界面");
+            return;
+        }
         [top presentViewController:picker animated:YES completion:nil];
     });
 }

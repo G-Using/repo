@@ -34,6 +34,11 @@ BOOL TGSAAlwaysShowButton(void); // 悬浮按钮常驻（不依赖是否抓到 A
 /// 缓存扫描的时间窗口（秒），默认 900（15 分钟内被修改过的文件）
 NSTimeInterval TGSAScanWindow(void);
 
+/// 当前聊天/频道的标题（尽力而为：navigationItem.title、titleView 里的 UILabel、导航栏兜底）
+NSString *_Nullable TGSAActiveChatTitle(void);
+/// Telegram 流式缓存是边播边写的：返回 YES 说明文件体积还在变化，复制出来只能播已缓冲部分
+BOOL TGSAFileStillGrowing(NSString *path);
+
 #pragma mark - 日志
 
 void TGSALog(NSString *fmt, ...);
@@ -76,7 +81,11 @@ NSString *_Nullable TGSAExtensionForVideoFile(NSString *path);
 NSString *TGSATempPathForExtension(NSString *_Nullable ext);
 void TGSAFetchRemoteURL(NSURL *url, UIViewController *_Nullable presenter, void (^completion)(NSString *_Nullable filePath, NSError *_Nullable error));
 void TGSASaveVideoAtPathToAlbum(NSString *path);
+/// 同上，但保存结束（成功或失败）一定回调，用于弹窗提示
+void TGSASaveVideoAtPathToAlbumWithCompletion(NSString *path, void (^_Nullable completion)(BOOL ok, NSString *_Nullable detail));
 void TGSAExportFileAtPath(NSString *path);
+/// 同上，但用户选择目标（或取消）后回调
+void TGSAExportFileAtPathWithCompletion(NSString *path, void (^_Nullable completion)(BOOL ok, NSString *_Nullable detail));
 
 #ifdef __cplusplus
 }
@@ -94,6 +103,7 @@ void TGSAExportFileAtPath(NSString *path);
 @end
 
 @interface TGSAPickerProxy : NSObject <UIDocumentPickerDelegate>
+@property (nonatomic, copy, nullable) void (^completion)(BOOL ok, NSString *_Nullable detail);
 + (instancetype)shared;
 @end
 

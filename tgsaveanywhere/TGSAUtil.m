@@ -111,6 +111,72 @@ NSTimeInterval TGSAScanWindow(void) {
     return t;
 }
 
+#pragma mark - 当前聊天标题 / 文件稳定性
+
+BOOL TGSAFileStillGrowing(NSString *path) {
+    if (!path.length) return NO;
+    NSFileManager *fm = [NSFileManager defaultManager];
+    unsigned long long sizes[3] = {0, 0, 0};
+    for (int i = 0; i < 3; i++) {
+        if (i > 0) [NSThread sleepForTimeInterval:0.7];   // 后台线程调用，sleep 无妨
+        NSDictionary *attr = [fm attributesOfItemAtPath:path error:nil];
+        sizes[i] = [attr[NSFileSize] unsignedLongLongValue];
+        if (i > 0 && sizes[i] != sizes[i - 1]) return YES;
+    }
+    return NO;
+}
+
+/// 递归找一个"像标题"的 UILabel（短文本、非空）
+static NSString *TGSAFirstLabelLikeTitle(UIView *v, int depth) {
+    if (!v || depth > 6) return nil;
+    if ([v isKindOfClass:UILabel.class]) {
+        UILabel *l = (UILabel *)v;
+        NSString *t = [l.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        if (t.length > 0 && t.length <= 64 && ![t containsString:@"\n"]) return t;
+    }
+    for (UIView *s in v.subviews) {
+        NSString *t = TGSAFirstLabelLikeTitle(s, depth + 1);
+        if (t.length) return t;
+    }
+    return nil;
+}
+
+NSString *TGSAActiveChatTitle(void) {
+    @try {
+        UIViewController *top = TGSATopViewController();
+
+        // 1) 顶层 VC 链上的 navigationItem.title（含 presented / parent 两个方向）
+        NSMutableArray<UIViewController *> *chain = [NSMutableArray array];
+        UIViewController *vc = top;
+        for (int i = 0; vc && i < 12; i++) { if (![chain containsObject:vc]) [chain addObject:vc]; vc = vc.parentViewController; }
+        vc = top;
+        for (int i = 0; vc.presentedViewController && i < 12; i++) {
+            vc = vc.presentedViewController;
+            if (![chain containsObject:vc]) [chain addObject:vc];
+        }
+        for (UIViewController *c in chain) {
+            if (c.navigationItem.title.length) return c.navigationItem.title;
+        }
+        // 2) Telegram 的聊天标题是自绘 titleView，里面有 UILabel
+        for (UIViewController *c in chain) {
+            UIView *tv = c.navigationItem.titleView;
+            if (tv) {
+                NSString *t = TGSAFirstLabelLikeTitle(tv, 0);
+                if (t.length) return t;
+            }
+        }
+        // 3) 兜底：窗口里找 UIKit 导航栏
+        NSArray<UIWindow *> *wins = TGSAAllWindows();
+        for (UIWindow *w in wins) {
+            NSString *t = TGSAFirstLabelLikeTitle(w, 0);
+            if (t.length) return t;
+        }
+    } @catch (NSException *e) {
+        TGSALog(@"取聊天标题失败：%@", e.reason);
+    }
+    return nil;
+}
+
 #pragma mark - Runtime 工具
 
 void TGSACopyReturnType(Method m, char *dst, size_t dstLen) {
