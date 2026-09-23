@@ -17,6 +17,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+// 这些 C 函数定义在 .m（ObjC）里，但会被 .xm 预处理成的 .mm（ObjC++）调用。
+// 不加 extern "C" 的话 C++ 会做名字改编（mangling），链接期报 symbol(s) not found。
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #pragma mark - 配置
 
 /// 读取配置项，缺省值由 defaultValue 提供
@@ -56,6 +62,10 @@ NSString *TGSATempPathForExtension(NSString *_Nullable ext);
 void TGSAFetchRemoteURL(NSURL *url, UIViewController *_Nullable presenter, void (^completion)(NSString *_Nullable filePath, NSError *_Nullable error));
 void TGSASaveVideoAtPathToAlbum(NSString *path);
 void TGSAExportFileAtPath(NSString *path);
+
+#ifdef __cplusplus
+}
+#endif
 
 #pragma mark - 悬浮层
 
