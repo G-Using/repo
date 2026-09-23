@@ -1,6 +1,6 @@
 Package: com.gusing.tgsaveanywhere
 Name: TGSaveAnywhere
-Version: 0.2.3
+Version: 0.2.4
 Architecture: iphoneos-arm
 Description: Telegram 视频保存到相册或文件，支持禁止保存内容的频道
 Maintainer: G-Using

@@ -39,6 +39,12 @@ NSString *_Nullable TGSAActiveChatTitle(void);
 /// Telegram 流式缓存是边播边写的：返回 YES 说明文件体积还在变化，复制出来只能播已缓冲部分
 BOOL TGSAFileStillGrowing(NSString *path);
 
+/// 解析 mp4 顶层 box：返回 YES 表示 box 链恰好铺满整个文件（结构完整，moov 在）；
+/// outDuration 带回 mvhd 里的元数据时长（秒），读不到为 -1。只对 ftyp 开头的文件有意义。
+BOOL TGSAMp4Inspect(NSString *path, NSTimeInterval *_Nullable outDuration);
+/// 把秒格式化成 mm:ss / h:mm:ss
+NSString *TGSADurationString(NSTimeInterval seconds);
+
 #pragma mark - 日志
 
 void TGSALog(NSString *fmt, ...);

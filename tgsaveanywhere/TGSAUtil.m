@@ -130,6 +130,92 @@ BOOL TGSAFileStillGrowing(NSString *path) {
     return NO;
 }
 
+#pragma mark - MP4 结构 / 时长检测
+
+static uint32_t TGSABE32(const unsigned char *b) {
+    return ((uint32_t)b[0] << 24) | ((uint32_t)b[1] << 16) | ((uint32_t)b[2] << 8) | (uint32_t)b[3];
+}
+
+BOOL TGSAMp4Inspect(NSString *path, NSTimeInterval *_Nullable outDuration) {
+    if (outDuration) *outDuration = -1;
+    if (!path.length) return NO;
+
+    // 只处理 ftyp 开头的文件（mkv/avi 等不适用）
+    NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:path];
+    if (!fh) return NO;
+    @try {
+        NSData *head = [fh readDataOfLength:12];
+        if (head.length < 12) return NO;
+        const unsigned char *h = head.bytes;
+        if (!(h[4] == 'f' && h[5] == 't' && h[6] == 'y' && h[7] == 'p')) return NO;
+
+        NSDictionary *attr = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil];
+        unsigned long long fsize = [attr[NSFileSize] unsignedLongLongValue];
+
+        unsigned long long off = 0;
+        while (off + 8 <= fsize) {
+            [fh seekToFileOffset:off];
+            NSData *hdr = [fh readDataOfLength:16];
+            const unsigned char *b = hdr.bytes;
+            if (hdr.length < 8) return NO;
+            uint64_t boxSize = TGSABE32(b);
+            uint32_t boxType = TGSABE32(b + 4);
+            unsigned long long headerLen = 8;
+            if (boxSize == 1) {                 // 64 位 largesize
+                if (hdr.length < 16) return NO;
+                boxSize = 0;
+                for (int i = 8; i < 16; i++) boxSize = (boxSize << 8) | b[i];
+                headerLen = 16;
+            } else if (boxSize == 0) {          // 0 = 延伸到文件尾
+                boxSize = fsize - off;
+            }
+            if (boxSize < headerLen || off + boxSize > fsize) return NO;   // box 越界 → 结构不完整
+
+            // 在 moov 里找 mvhd 读元数据时长
+            if (boxType == 0x6D6F6F76 /* moov */ && outDuration && *outDuration < 0) {
+                unsigned long long bodyLen = boxSize - headerLen;
+                if (bodyLen > 4 * 1024 * 1024) bodyLen = 4 * 1024 * 1024;
+                [fh seekToFileOffset:off + headerLen];
+                NSData *body = [fh readDataOfLength:(NSUInteger)bodyLen];
+                const unsigned char *p = body.bytes;
+                for (NSUInteger i = 0; body.length >= 12 && i + 12 <= body.length; i++) {
+                    if (p[i] == 'm' && p[i+1] == 'v' && p[i+2] == 'h' && p[i+3] == 'd') {
+                        const unsigned char *m = p + i;      // mvhd box 起始
+                        uint8_t ver = m[8];
+                        if (ver == 0) {
+                            uint32_t ts = TGSABE32(m + 20);
+                            uint32_t du = TGSABE32(m + 24);
+                            if (ts && du && du != 0xFFFFFFFF) *outDuration = (NSTimeInterval)du / ts;
+                        } else {                              // version 1：64 位时间
+                            uint32_t ts = TGSABE32(m + 28);
+                            uint64_t du = 0;
+                            for (int k = 32; k < 40; k++) du = (du << 8) | m[k];
+                            if (ts && du && du != 0xFFFFFFFFFFFFFFFFULL) *outDuration = (NSTimeInterval)du / ts;
+                        }
+                        break;
+                    }
+                }
+            }
+            off += boxSize;
+        }
+        return (off == fsize);   // box 链恰好铺满整个文件才算完整
+    } @catch (NSException *e) {
+        TGSALog(@"mp4 检测异常：%@", e.reason);
+        return NO;
+    } @finally {
+        [fh closeFile];
+    }
+}
+
+NSString *TGSADurationString(NSTimeInterval seconds) {
+    if (seconds < 0) return @"未知";
+    NSInteger s = (NSInteger)llround(seconds);
+    NSInteger h = s / 3600, m = (s % 3600) / 60;
+    s %= 60;
+    if (h > 0) return [NSString stringWithFormat:@"%ld:%02ld:%02ld", (long)h, (long)m, (long)s];
+    return [NSString stringWithFormat:@"%02ld:%02ld", (long)m, (long)s];
+}
+
 /// 递归找一个"像标题"的 UILabel（短文本、非空）
 static NSString *TGSAFirstLabelLikeTitle(UIView *v, int depth) {
     if (!v || depth > 6) return nil;

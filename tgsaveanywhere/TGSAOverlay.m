@@ -488,13 +488,25 @@ static NSString *_Nullable TGSACopyToTemp(NSString *src, NSString *ext) {
     return dst;
 }
 
-/// 保存/导出的公共流程：先在后台检测文件是否还在变大（TG 流式缓存边播边写），
-/// 在变就先警告"只能播已缓冲的一小段"；复制后保存，结果无论成败都弹窗。
+/// 保存/导出的公共流程，后台做三层检测：
+///   1) 文件是否还在变大（TG 流式缓存边播边写）；
+///   2) mp4 结构是否完整（box 链铺满文件、moov 在）—— 不完整时相册会拒绝、文件 App 也播不了；
+///   3) mvhd 元数据时长是否正常（异常 = 索引坏了，系统播放器只认出几十秒）。
+/// 检出问题先警告，用户确认后再保存；结果无论成败都弹窗。
 - (void)tgsa_storeFile:(NSString *)src toAlbum:(BOOL)toAlbum {
     NSString *ext = TGSAExtensionForVideoFile(src) ?: @"mp4";
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         BOOL growing = TGSAFileStillGrowing(src);
+
+        BOOL isMp4 = [ext isEqualToString:@"mp4"] || [ext isEqualToString:@"m4v"] || [ext isEqualToString:@"mov"];
+        NSTimeInterval metaDur = -1;
+        BOOL mp4Complete = YES;
+        if (isMp4) {
+            mp4Complete = TGSAMp4Inspect(src, &metaDur);
+            TGSALog(@"mp4 检测：%@，元数据时长 %@（%@）",
+                    mp4Complete ? @"结构完整" : @"索引不完整", TGSADurationString(metaDur), src.lastPathComponent);
+        }
 
         dispatch_async(dispatch_get_main_queue(), ^{
             void (^doStore)(void) = ^{
@@ -509,7 +521,7 @@ static NSString *_Nullable TGSACopyToTemp(NSString *src, NSString *ext) {
                     void (^result)(BOOL, NSString *) = ^(BOOL ok, NSString *detail) {
                         NSString *msg = ok
                             ? @"已保存。可以在相册 / 文件 App 里查看。"
-                            : [NSString stringWithFormat:@"保存失败：%@。可改用「存储到文件」试试。", detail ?: @"未知原因"];
+                            : [NSString stringWithFormat:@"保存失败：%@。\n\n若提示与视频索引有关，通常是文件还没在 Telegram 里下载完整——先在 TG 里把进度条从头到尾过一遍再保存，或改用「存储到文件」。", detail ?: @"未知原因"];
                         dispatch_async(dispatch_get_main_queue(), ^{
                             TGSAPresentAlert([weakSelf tgsa_resultAlert:ok message:msg]);
                         });
@@ -519,16 +531,47 @@ static NSString *_Nullable TGSACopyToTemp(NSString *src, NSString *ext) {
                 });
             };
 
-            if (!growing) { doStore(); return; }
+            // ① 结构不完整：相册必失败，直接劝改存文件 / 等下载完
+            if (!mp4Complete) {
+                UIAlertController *warn = [UIAlertController alertControllerWithTitle:@"视频还没下载完整"
+                        message:@"这个文件的 mp4 索引不完整（Telegram 还没把它下载完）。\n\n· 存到相册会失败，存出来的文件在系统播放器里也放不了；\n· 用 Infuse / VLC 这类 ffmpeg 播放器或许能强制播放。\n\n建议：回 Telegram 把这个视频的进度条从头到尾拖一遍，等它完整下载后再来保存。"
+                        preferredStyle:UIAlertControllerStyleAlert];
+                [warn addAction:[UIAlertAction actionWithTitle:@"仍要存储到文件（不完整）" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *x) {
+                    doStore();
+                }]];
+                [warn addAction:[UIAlertAction actionWithTitle:@"取消，我先去下载完整" style:UIAlertActionStyleCancel handler:nil]];
+                TGSAPresentAlert(warn);
+                return;
+            }
 
-            UIAlertController *warn = [UIAlertController alertControllerWithTitle:@"视频仍在缓冲中"
-                    message:@"这个文件的体积还在变化（Telegram 正在边播边下载）。现在保存到相册，很可能只能播放已缓冲的一小段就卡住。\n\n建议：先回到 Telegram 让视频完整加载（进度条全部走完），再来保存。"
-                    preferredStyle:UIAlertControllerStyleAlert];
-            [warn addAction:[UIAlertAction actionWithTitle:@"仍要保存（可能卡顿）" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *x) {
-                doStore();
-            }]];
-            [warn addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
-            TGSAPresentAlert(warn);
+            // ② 还在缓冲中
+            if (growing) {
+                UIAlertController *warn = [UIAlertController alertControllerWithTitle:@"视频仍在缓冲中"
+                        message:@"这个文件的体积还在变化（Telegram 正在边播边下载）。现在保存到相册，很可能只能播放已缓冲的一小段就卡住。\n\n建议：先回到 Telegram 让视频完整加载（进度条全部走完），再来保存。"
+                        preferredStyle:UIAlertControllerStyleAlert];
+                [warn addAction:[UIAlertAction actionWithTitle:@"仍要保存（可能卡顿）" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *x) {
+                    doStore();
+                }]];
+                [warn addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
+                TGSAPresentAlert(warn);
+                return;
+            }
+
+            // ③ 结构完整但时长元数据可疑（比如 300MB 的文件只认出 19 秒）
+            unsigned long long fsize = [[[NSFileManager defaultManager] attributesOfItemAtPath:src error:nil][NSFileSize] unsignedLongLongValue];
+            if (metaDur >= 0 && metaDur < 30 && fsize > 30ULL * 1024 * 1024) {
+                UIAlertController *warn = [UIAlertController alertControllerWithTitle:@"视频时长元数据异常"
+                        message:[NSString stringWithFormat:@"文件有 %.0f MB，但索引里写的时长只有 %@。这类文件用 Infuse / VLC 能正常播放（它们会重新扫描），但系统播放器和相册可能只播开头或拒绝播放。\n\n仍要保存吗？", fsize / 1024.0 / 1024.0, TGSADurationString(metaDur)]
+                        preferredStyle:UIAlertControllerStyleAlert];
+                [warn addAction:[UIAlertAction actionWithTitle:@"仍要保存" style:UIAlertActionStyleDefault handler:^(UIAlertAction *x) {
+                    doStore();
+                }]];
+                [warn addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
+                TGSAPresentAlert(warn);
+                return;
+            }
+
+            doStore();
         });
     });
 }
@@ -704,7 +747,15 @@ static NSString *_Nullable TGSACopyToTemp(NSString *src, NSString *ext) {
         NSDictionary *attr = [fm attributesOfItemAtPath:path error:nil];
         double mb = [attr[NSFileSize] unsignedLongLongValue] / 1024.0 / 1024.0;
         NSDate *mt = attr[NSFileModificationDate];
-        NSString *title = [NSString stringWithFormat:@"%.1f MB  ·  %@", mb, mt ? [df stringFromDate:mt] : @"?"];
+        NSString *dur = @"";
+        NSString *ext = TGSAExtensionForVideoFile(path) ?: @"";
+        if ([ext isEqualToString:@"mp4"] || [ext isEqualToString:@"m4v"] || [ext isEqualToString:@"mov"]) {
+            NSTimeInterval d = -1;
+            TGSAMp4Inspect(path, &d);   // 只读几个字节，快
+            dur = [NSString stringWithFormat:@"%@  ·  ", TGSADurationString(d)];
+        }
+        NSString *title = [NSString stringWithFormat:@"%@%.1f MB  ·  %@",
+                           dur, mb, mt ? [df stringFromDate:mt] : @"?"];
         [list addAction:[UIAlertAction actionWithTitle:title style:UIAlertActionStyleDefault handler:^(UIAlertAction *x) {
             [weakSelf tgsa_menuForFile:path];
         }]];
@@ -733,7 +784,23 @@ static NSString *_Nullable TGSACopyToTemp(NSString *src, NSString *ext) {
 - (void)tgsa_menuForFile:(NSString *)src {
     __weak typeof(self) weakSelf = self;
     NSString *chat = TGSAActiveChatTitle();
+    NSString *ext = TGSAExtensionForVideoFile(src) ?: @"mp4";
+
+    // 结构 / 时长检测（只做几次小读取，开销可忽略）
+    NSString *durInfo = @"";
+    BOOL isMp4 = [ext isEqualToString:@"mp4"] || [ext isEqualToString:@"m4v"] || [ext isEqualToString:@"mov"];
+    if (isMp4) {
+        NSTimeInterval metaDur = -1;
+        BOOL ok = TGSAMp4Inspect(src, &metaDur);
+        unsigned long long fsize = [[[NSFileManager defaultManager] attributesOfItemAtPath:src error:nil][NSFileSize] unsignedLongLongValue];
+        durInfo = [NSString stringWithFormat:@"%@ · %.1f MB · 索引%@",
+                   TGSADurationString(metaDur), fsize / 1024.0 / 1024.0,
+                   ok ? @"完整" : @"不完整（未下载完）"];
+        TGSALog(@"菜单检测 %@：%@", src.lastPathComponent, durInfo);
+    }
+
     NSString *msg = src.lastPathComponent;
+    if (durInfo.length) msg = [NSString stringWithFormat:@"%@\n%@", durInfo, msg];
     if (chat.length) msg = [NSString stringWithFormat:@"%@ · %@", chat, msg];
 
     UIAlertController *sheet = [UIAlertController alertControllerWithTitle:@"保存媒体"
