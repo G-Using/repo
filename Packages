@@ -76,21 +76,6 @@ Maintainer: G-Using
 Author: G-Using
 Section: Tweaks
 Architecture: iphoneos-arm
-Version: 0.2.0
-Installed-Size: 276
-Filename: debs/com.gusing.tgsaveanywhere.rootful_0.2.0_iphoneos-arm.deb
-Size: 35350
-MD5sum: aa4b6590cc020a06e07e683ed0c60044
-SHA1: 591ac8b95a9ddc411298dba89310ac5b5ad5eb3e
-SHA256: 6f46611fe162e4d15ce9197adf9d1239f5664886471335a21d741d866fd79812
-
-Package: com.gusing.tgsaveanywhere.rootful
-Name: TGSaveAnywhere (rootful)
-Description: Telegram 视频保存到相册或文件，支持禁止保存内容的频道
-Maintainer: G-Using
-Author: G-Using
-Section: Tweaks
-Architecture: iphoneos-arm
 Version: 0.2.1
 Installed-Size: 276
 Filename: debs/com.gusing.tgsaveanywhere.rootful_0.2.1_iphoneos-arm.deb
@@ -98,21 +83,6 @@ Size: 35794
 MD5sum: c052c4f690304ade2f999541e1460b13
 SHA1: a65f83e9cf419f49d818556d78030b005cc8ebd0
 SHA256: f9b412157bf321140efd6a94b694d6ff47a3661b3a332a67fd689363df862ecd
-
-Package: com.gusing.tgsaveanywhere
-Name: TGSaveAnywhere (rootless, iOS15+)
-Description: Telegram 视频保存到相册或文件，支持禁止保存内容的频道
-Maintainer: G-Using
-Author: G-Using
-Section: Tweaks
-Architecture: iphoneos-arm64
-Version: 0.2.0
-Installed-Size: 276
-Filename: debs/com.gusing.tgsaveanywhere_0.2.0_iphoneos-arm64.deb
-Size: 35572
-MD5sum: 4722d8adf33521410877e438a99257b8
-SHA1: ec367db7fdf4590698038a76ff623d67837f4bd7
-SHA256: 55fd95ebd5f71460b71c91840ea932fe322f70eeb1827a362383343dba0cecb8
 
 Package: com.gusing.tgsaveanywhere
 Name: TGSaveAnywhere (rootless, iOS15+)
