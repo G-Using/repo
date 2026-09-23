@@ -24,7 +24,7 @@ NSString *TGSAExtensionForVideoFile(NSString *path) {
     FILE *f = fopen(path.fileSystemRepresentation, "rb");
     if (!f) return nil;
 
-    unsigned char b[64];
+    unsigned char b[512];
     size_t n = fread(b, 1, sizeof(b), f);
     fclose(f);
     if (n < 12) return nil;
@@ -121,11 +121,15 @@ NSArray<NSString *> *TGSAScanRecentVideos(NSTimeInterval maxAge, NSUInteger limi
 
         NSDirectoryEnumerator *enu = [fm enumeratorAtPath:root];
         if (!enu) continue;
-        enu.level = 6;                      // 限制深度，够覆盖 postbox/media/xx/yy
+        const NSUInteger kMaxDepth = 6;         // 限制深度，够覆盖 postbox/media/xx/yy
 
         for (NSString *rel in enu) {
             if (visited++ > kMaxVisited) break;
             if (rel.length == 0) continue;
+
+            // NSDirectoryEnumerator.level 是只读的，这里自己数路径分隔符控制深度
+            NSUInteger depth = [[rel componentsSeparatedByString:@"/"] count];
+            if (depth > kMaxDepth) { [enu skipDescendants]; continue; }
 
             BOOL isDir = NO;
             NSString *full = [root stringByAppendingPathComponent:rel];

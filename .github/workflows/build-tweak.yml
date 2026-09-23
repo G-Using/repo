@@ -40,7 +40,7 @@ jobs:
           export THEOS="$HOME/theos"
           export PATH="$THEOS/bin:$PATH"
           cd tgsaveanywhere
-          make clean TROLLSTORE=1 FINALPACKAGE=1
+          make clean all TROLLSTORE=1 FINALPACKAGE=1
           mkdir -p out
           find . -type f -name "TGSaveAnywhere.dylib" -exec cp {} out/ \; || true
           ls -lh out/
