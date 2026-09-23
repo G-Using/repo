@@ -13,7 +13,7 @@ TGSaveAnywhere_FILES = \
 	TGSARestriction.xm \
 	TGSAMain.xm
 
-TGSaveAnywhere_CFLAGS = -fobjc-arc -Wall -Wno-deprecated-declarations
+TGSaveAnywhere_CFLAGS = -fobjc-arc -Wall -Wno-deprecated-declarations -Wno-error
 TGSaveAnywhere_FRAMEWORKS = UIKit Foundation AVFoundation AVKit Photos
 
 include $(THEOS_MAKE_PATH)/tweak.mk

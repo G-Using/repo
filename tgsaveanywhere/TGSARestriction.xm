@@ -49,7 +49,8 @@ static void TGSADumpCandidates(void) {
                 NSString *selName = [[NSString stringWithUTF8String:sn] lowercaseString];
                 for (NSString *k in selKeys) {
                     if ([selName containsString:k]) {
-                        const char *rt = method_getReturnType(m) ?: "?";
+                        char rt[64] = {0};
+                        TGSACopyReturnType(m, rt, sizeof(rt));
                         [out appendFormat:@"%@\t-[%@ %@]\tret=%s\n", name, name, selName, rt];
                         break;
                     }

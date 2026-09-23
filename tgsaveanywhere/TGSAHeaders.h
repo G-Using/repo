@@ -31,8 +31,14 @@ NSString *TGSADocDir(void);
 #pragma mark - Runtime 工具
 
 /// 只 hook 已经存在、且返回值安全（void / BOOL / char）的实例方法
-BOOL TGSASwizzleInstance(Class cls, SEL sel, IMP replacement, IMP _Nullable *_Nullable outOriginal);
-BOOL TGSASwizzleClass(Class cls, SEL sel, IMP replacement, IMP _Nullable *_Nullable outOriginal);
+BOOL TGSASwizzleInstance(Class cls, SEL sel, IMP replacement, IMP * _Nullable outOriginal);
+BOOL TGSASwizzleClass(Class cls, SEL sel, IMP replacement, IMP * _Nullable outOriginal);
+
+/// 取方法返回值类型编码。新版 SDK 的 method_getReturnType 是三参数且返回 void，
+/// 旧版是一参数返回 const char *，这里统一封装，避免版本差异。
+void TGSACopyReturnType(Method _Nullable m, char *dst, size_t dstLen);
+/// 返回值是否为可安全强塞 YES 的类型（void / BOOL / char / bool）
+BOOL TGSAReturnTypeIsSafe(Method _Nullable m);
 
 UIViewController *_Nullable TGSATopViewController(void);
 

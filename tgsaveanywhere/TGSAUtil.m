@@ -100,14 +100,22 @@ BOOL TGSADiscoveryMode(void) { return [TGSASetting(@"DiscoveryMode", @NO) boolVa
 
 #pragma mark - Runtime 工具
 
+void TGSACopyReturnType(Method m, char *dst, size_t dstLen) {
+    if (!dst || dstLen == 0) return;
+    dst[0] = '\0';
+    if (!m) return;
+    // iOS 17+ SDK: void method_getReturnType(Method m, char *dst, size_t dst_len)
+    method_getReturnType(m, dst, dstLen);
+}
+
 /// 只接受返回值安全的方法：void / BOOL / char / bool
-static BOOL TGSAReturnTypeIsSafe(Method m) {
-    const char *rt = method_getReturnType(m);
-    if (!rt) return NO;
+BOOL TGSAReturnTypeIsSafe(Method m) {
+    char rt[64] = {0};
+    TGSACopyReturnType(m, rt, sizeof(rt));
     return strcmp(rt, "v") == 0 || strcmp(rt, "B") == 0 || strcmp(rt, "c") == 0 || strcmp(rt, "b") == 0;
 }
 
-BOOL TGSASwizzleInstance(Class cls, SEL sel, IMP replacement, IMP *_Nullable *_Nullable outOriginal) {
+BOOL TGSASwizzleInstance(Class cls, SEL sel, IMP replacement, IMP * _Nullable outOriginal) {
     if (!cls || !sel || !replacement) return NO;
     Method m = class_getInstanceMethod(cls, sel);
     if (!m) return NO;                       // 只 hook 真实存在的方法，不凭空注入
@@ -119,7 +127,7 @@ BOOL TGSASwizzleInstance(Class cls, SEL sel, IMP replacement, IMP *_Nullable *_N
     return YES;
 }
 
-BOOL TGSASwizzleClass(Class cls, SEL sel, IMP replacement, IMP *_Nullable *_Nullable outOriginal) {
+BOOL TGSASwizzleClass(Class cls, SEL sel, IMP replacement, IMP * _Nullable outOriginal) {
     if (!cls || !sel || !replacement) return NO;
     Class meta = object_getClass((id)cls);
     Method m = class_getClassMethod(meta, sel);
