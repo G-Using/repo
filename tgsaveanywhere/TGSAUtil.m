@@ -182,28 +182,70 @@ BOOL TGSASwizzleClassRaw(Class cls, SEL sel, IMP replacement, IMP _Nullable * _N
 
 #pragma mark - 顶层 VC
 
-UIViewController *TGSATopViewController(void) {
-    UIWindow *keyWindow = nil;
+/// 收集当前所有可用窗口（iOS 13+ 走 scene，旧版回退到 UIApplication.windows）
+static NSArray<UIWindow *> *TGSAAllWindows(void) {
+    NSMutableArray<UIWindow *> *all = [NSMutableArray array];
     if (@available(iOS 13.0, *)) {
         for (UIScene *scene in UIApplication.sharedApplication.connectedScenes) {
-            if (scene.activationState != UISceneActivationStateForegroundActive) continue;
             if (![scene isKindOfClass:UIWindowScene.class]) continue;
             for (UIWindow *w in ((UIWindowScene *)scene).windows) {
-                if (w.isKeyWindow) keyWindow = w;
+                if (w) [all addObject:w];
             }
         }
     }
-    if (!keyWindow) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        for (UIWindow *w in UIApplication.sharedApplication.windows) {
-            if (w.isKeyWindow) keyWindow = w;
-        }
+    for (UIWindow *w in UIApplication.sharedApplication.windows) {
+        if (w && ![all containsObject:w]) [all addObject:w];
+    }
 #pragma clang diagnostic pop
+    return all;
+}
+
+/// keyWindow（可能被我们自己或其他辅助窗口占着，所以单独取一次）
+static UIWindow *TGSAKeyWindow(void) {
+    for (UIWindow *w in TGSAAllWindows()) {
+        if (w.isKeyWindow) return w;
     }
-    UIViewController *vc = keyWindow.rootViewController;
-    while (vc.presentedViewController && !vc.presentedViewController.isBeingDismissed) {
-        vc = vc.presentedViewController;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    return UIApplication.sharedApplication.keyWindow;
+#pragma clang diagnostic pop
+}
+
+UIViewController *TGSATopViewController(void) {
+    // 不要只认 keyWindow：Telegram 有多个窗口，keyWindow 有时是辅助窗口，
+    // rootViewController 为 nil —— 那样取出来就是 nil，菜单会静默弹不出来。
+    NSArray<UIWindow *> *windows = TGSAAllWindows();
+    NSArray *sorted = [windows sortedArrayUsingComparator:^NSComparisonResult(UIWindow *a, UIWindow *b) {
+        if (a.windowLevel > b.windowLevel) return NSOrderedAscending;
+        if (a.windowLevel < b.windowLevel) return NSOrderedDescending;
+        return NSOrderedSame;
+    }];
+
+    NSMutableArray<UIViewController *> *candidates = [NSMutableArray array];
+
+    // 优先 keyWindow
+    UIWindow *key = TGSAKeyWindow();
+    if (key && key.rootViewController && !key.hidden) {
+        [candidates addObject:key.rootViewController];
     }
-    return vc;
+    // 其次所有可见、有 rootVC 的窗口（跳过我们自己的小浮窗：它没有 rootVC，自然被过滤）
+    for (UIWindow *w in sorted) {
+        if (w.hidden || w.alpha < 0.01) continue;
+        if (CGRectGetWidth(w.bounds) < 100 || CGRectGetHeight(w.bounds) < 100) continue;  // 排除小浮窗
+        if (w.rootViewController && ![candidates containsObject:w.rootViewController]) {
+            [candidates addObject:w.rootViewController];
+        }
+    }
+
+    for (UIViewController *root in candidates) {
+        UIViewController *vc = root;
+        NSInteger guard = 0;
+        while (vc.presentedViewController && !vc.presentedViewController.isBeingDismissed && guard++ < 16) {
+            vc = vc.presentedViewController;
+        }
+        if (vc.view.window || vc == root) return vc;
+    }
+    return candidates.firstObject;
 }

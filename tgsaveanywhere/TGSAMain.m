@@ -85,7 +85,7 @@ static void TGSAInit(void) {
         TGSALog(@"=========================================");
 
         // 等 App 起来之后再写路径诊断 + 显示常驻按钮，避免 UIKit 还没 ready
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)),
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)),
                        dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
             TGSADumpEnvironment();
 

@@ -2,6 +2,106 @@
 
 #import "TGSAHeaders.h"
 
+#pragma mark - 菜单弹出的兜底通道
+//
+//  Telegram 的窗口层级很复杂，keyWindow 有时是辅助窗口（rootViewController 为 nil），
+//  直接 present 会静默失败 —— 表现就是"点了按钮但什么都没弹出来"。
+//  这里做两级：先正常 present，失败/取不到承载 VC 就用一个临时全屏窗口弹，
+//  菜单关闭后自动把焦点还给 Telegram，避免抢走 key 导致界面点不动。
+
+static UIWindow *gTGSAFallbackWindow = nil;
+static UIWindow *gTGSAFallbackPrevKey = nil;
+
+static UIWindow *TGSAFindKeyWindow(void) {
+    UIWindow *key = nil;
+    if (@available(iOS 13.0, *)) {
+        for (UIScene *scene in UIApplication.sharedApplication.connectedScenes) {
+            if (![scene isKindOfClass:UIWindowScene.class]) continue;
+            for (UIWindow *w in ((UIWindowScene *)scene).windows) {
+                if (w.isKeyWindow) key = w;
+            }
+        }
+    }
+    if (!key) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        for (UIWindow *w in UIApplication.sharedApplication.windows) {
+            if (w.isKeyWindow) key = w;
+        }
+        if (!key) key = UIApplication.sharedApplication.keyWindow;
+#pragma clang diagnostic pop
+    }
+    return key;
+}
+
+static void TGSAReleaseFallbackWindow(void) {
+    if (gTGSAFallbackWindow) {
+        gTGSAFallbackWindow.hidden = YES;
+        gTGSAFallbackWindow = nil;
+    }
+    if (gTGSAFallbackPrevKey) {
+        [gTGSAFallbackPrevKey makeKeyAndVisible];   // 焦点还给 Telegram
+        gTGSAFallbackPrevKey = nil;
+        TGSALog(@"菜单已关闭，焦点已交还 Telegram");
+    }
+}
+
+static void TGSAPresentOnFallbackWindow(UIAlertController *alert) {
+    UIWindow *prevKey = TGSAFindKeyWindow();
+
+    UIWindow *tmp = nil;
+    if (@available(iOS 13.0, *) && prevKey.windowScene) {
+        tmp = [[UIWindow alloc] initWithWindowScene:prevKey.windowScene];
+    } else {
+        tmp = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
+    }
+    tmp.frame = prevKey ? prevKey.bounds : UIScreen.mainScreen.bounds;
+    tmp.windowLevel = UIWindowLevelAlert + 10.0;
+    tmp.backgroundColor = [UIColor clearColor];
+    tmp.opaque = NO;
+
+    UIViewController *host = [[UIViewController alloc] init];
+    host.view.backgroundColor = [UIColor clearColor];
+    host.view.opaque = NO;
+    tmp.rootViewController = host;
+
+    gTGSAFallbackWindow = tmp;
+    gTGSAFallbackPrevKey = prevKey;
+
+    [tmp makeKeyAndVisible];
+    [host presentViewController:alert animated:YES completion:nil];
+    TGSALog(@"菜单已在兜底窗口弹出");
+
+    // 菜单被关闭后回收窗口 + 还焦点（alert dismiss 后 view.window 会变 nil）
+    __block NSInteger ticks = 0;
+    [NSTimer scheduledTimerWithTimeInterval:0.4 repeats:YES block:^(NSTimer *t) {
+        ticks++;
+        BOOL dismissed = (alert.view.window == nil) || (alert.presentingViewController == nil);
+        if (!dismissed && ticks < 1500) return;
+        [t invalidate];
+        TGSAReleaseFallbackWindow();
+    }];
+}
+
+/// 统一入口：所有菜单都走这里
+static void TGSAPresentAlert(UIAlertController *alert) {
+    if (!alert) return;
+
+    UIViewController *presenter = TGSATopViewController();
+    if (presenter && presenter.view.window) {
+        @try {
+            [presenter presentViewController:alert animated:YES completion:nil];
+            TGSALog(@"菜单已弹出（承载 VC：%@）", NSStringFromClass(presenter.class));
+            return;
+        } @catch (NSException *e) {
+            TGSALog(@"常规弹出失败：%@ —— 改用兜底窗口", e.reason);
+        }
+    } else {
+        TGSALog(@"未取到可承载菜单的 VC（top=%@）—— 改用兜底窗口", presenter);
+    }
+    TGSAPresentOnFallbackWindow(alert);
+}
+
 @implementation TGSAPickerProxy
 + (instancetype)shared {
     static TGSAPickerProxy *s = nil;
@@ -27,14 +127,39 @@
 @implementation TGSADragButton
 @end
 
+#pragma mark - 穿透式悬浮窗口
+//
+//  关键：悬浮窗必须"只占按钮那么大一塊地"，并且按钮以外的触摸要原样还给 App。
+//  之前用全屏 UIWindow 导致整个 Telegram 界面点不动 —— 空白区域的触摸全被这层吃掉了。
+
+@interface TGSAFloatWindow : UIWindow
+/// 只有这个视图（及其子视图）能接收触摸；其余一律返回 nil 穿透到下层 App
+@property (nonatomic, weak) UIView *tgsa_touchTarget;
+@end
+
+@implementation TGSAFloatWindow
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    UIView *hit = [super hitTest:point withEvent:event];
+    if (!hit) return nil;
+    UIView *target = self.tgsa_touchTarget;
+    if (target && (hit == target || [hit isDescendantOfView:target])) return hit;
+    return nil;   // 命中空白 / 背景 → 穿透，交给下面的 App 处理
+}
+
+@end
+
 #pragma mark - 悬浮层
+
+static const CGFloat TGSAButtonSize = 56.0;
+static const CGFloat TGSAWindowSize = 62.0;   // 比按钮略大，留出描边和阴影
 
 @interface TGSAOverlay ()
 @property (nonatomic, strong) TGSADragButton *button;
 @property (nonatomic, strong) NSTimer *hideTimer;
-/// 独立悬浮窗口：按钮不能加在 TG 自己的 window 上，
-/// 否则聊天界面的手势/转场层会拦走触摸事件 —— 按钮看得见却点不动。
-@property (nonatomic, strong) UIWindow *overlayWindow;
+@property (nonatomic, strong) TGSAFloatWindow *overlayWindow;
+@property (nonatomic, assign) BOOL observersInstalled;
+@property (nonatomic, assign) BOOL userMoved;      // 用户是否手动拖过（拖过就不再自动归位）
 - (void)tgsa_menuForURL:(NSURL *)url;
 - (void)tgsa_menuForCachedFiles:(BOOL)fullScan;
 - (void)tgsa_presentFileList:(NSArray<NSString *> *)files fullScan:(BOOL)fullScan;
@@ -52,19 +177,69 @@
 
 - (instancetype)init {
     if ((self = [super init])) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(tgsa_didEnterBackground:)
-                                                     name:UIApplicationDidEnterBackgroundNotification
-                                                   object:nil];
+        // 生命周期监听放在第一次 show 时才注册（constructor 阶段 UIKit 未必 ready）
     }
     return self;
+}
+
+#pragma mark - 生命周期：解决"回桌面再进箭头没了"
+
+- (void)tgsa_installObservers {
+    if (self.observersInstalled) return;
+    self.observersInstalled = YES;
+
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    // 回到前台 / 重新激活 → 把按钮重新挂出来
+    [nc addObserver:self selector:@selector(tgsa_willEnterForeground:)
+               name:UIApplicationWillEnterForegroundNotification object:nil];
+    [nc addObserver:self selector:@selector(tgsa_didBecomeActive:)
+               name:UIApplicationDidBecomeActiveNotification object:nil];
+    [nc addObserver:self selector:@selector(tgsa_didEnterBackground:)
+               name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [nc addObserver:self selector:@selector(tgsa_orientationChanged:)
+               name:UIDeviceOrientationDidChangeNotification object:nil];
+    if (!UIDevice.currentDevice.isGeneratingDeviceOrientationNotifications) {
+        [UIDevice.currentDevice beginGeneratingDeviceOrientationNotifications];
+    }
+    TGSALog(@"生命周期监听已注册（前台恢复会自动重新显示按钮）");
 }
 
 - (void)tgsa_didEnterBackground:(NSNotification *)n {
     [self hide];
 }
 
-- (UIWindow *)tgsa_window {
+- (void)tgsa_willEnterForeground:(NSNotification *)n {
+    [self tgsa_restoreAfterDelay:0.6];
+}
+
+- (void)tgsa_didBecomeActive:(NSNotification *)n {
+    [self tgsa_restoreAfterDelay:0.35];
+}
+
+- (void)tgsa_restoreAfterDelay:(NSTimeInterval)delay {
+    if (!TGSAEnabled() || !TGSAShowOverlay()) return;
+    __weak typeof(self) weakSelf = self;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)),
+                   dispatch_get_main_queue(), ^{
+        __strong typeof(weakSelf) self = weakSelf;
+        if (!self) return;
+        if (!TGSAEnabled() || !TGSAShowOverlay()) return;
+        // 保留已捕获到的源；没有就显示常驻按钮（点击后扫本地缓存）
+        [self showWithURL:self.currentURL];
+        TGSALog(@"回到前台，按钮已恢复显示（源=%@）", self.currentURL ?: @"nil，走缓存扫描");
+    });
+}
+
+- (void)tgsa_orientationChanged:(NSNotification *)n {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (!self.overlayWindow || self.overlayWindow.hidden) return;
+        [self tgsa_clampIntoScreen];
+    });
+}
+
+#pragma mark - 窗口
+
+- (UIWindow *)tgsa_keyWindow {
     UIWindow *keyWindow = nil;
     if (@available(iOS 13.0, *)) {
         for (UIScene *scene in UIApplication.sharedApplication.connectedScenes) {
@@ -86,39 +261,57 @@
     return keyWindow;
 }
 
+/// 悬浮窗只有按钮那么大，绝不做成全屏 —— 否则会吃掉整个 App 的触摸
+- (TGSAFloatWindow *)tgsa_overlayWindow {
+    if (self.overlayWindow) return self.overlayWindow;
+
+    UIWindow *key = [self tgsa_keyWindow];
+    CGRect screen = key ? key.bounds : UIScreen.mainScreen.bounds;
+
+    TGSAFloatWindow *w = nil;
+    if (@available(iOS 13.0, *) && key.windowScene) {
+        w = [[TGSAFloatWindow alloc] initWithWindowScene:key.windowScene];
+    } else {
+        w = [[TGSAFloatWindow alloc] initWithFrame:screen];
+    }
+    w.backgroundColor = [UIColor clearColor];
+    w.opaque = NO;
+    // 高于状态栏即可；不要压过 UIWindowLevelAlert，否则自己的菜单弹窗会被盖住
+    w.windowLevel = UIWindowLevelStatusBar + 10.0;
+
+    CGFloat x = CGRectGetMaxX(screen) - TGSAWindowSize - 8;
+    CGFloat y = CGRectGetMidY(screen) - TGSAWindowSize / 2.0;
+    w.frame = CGRectMake(x, y, TGSAWindowSize, TGSAWindowSize);
+
+    self.overlayWindow = w;
+    TGSALog(@"悬浮窗已创建（%.0fx%.0f，level=%.0f）", TGSAWindowSize, TGSAWindowSize, w.windowLevel);
+    return w;
+}
+
 - (void)showForURL:(NSURL *)url {
     [self showWithURL:url];
 }
 
-- (UIWindow *)tgsa_overlayWindow {
-    UIWindow *key = [self tgsa_window];
-    if (!key.windowScene && !key) return nil;
-
-    if (!self.overlayWindow) {
-        UIWindow *w = nil;
-        if (@available(iOS 13.0, *) && key.windowScene) {
-            w = [[UIWindow alloc] initWithWindowScene:key.windowScene];
-        } else {
-            w = [[UIWindow alloc] initWithFrame:key.bounds];
-        }
-        w.windowLevel = 100000;              // 压过 TG 的一切界面
-        w.backgroundColor = [UIColor clearColor];
-        self.overlayWindow = w;
-    }
-    return self.overlayWindow;
-}
-
 - (void)showWithURL:(NSURL *)url {
-    self.currentURL = url;
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{ [self showWithURL:url]; });
+        return;
+    }
+    if (url) self.currentURL = url;
+    if (!TGSAEnabled() || !TGSAShowOverlay()) return;
 
-    UIWindow *window = [self tgsa_overlayWindow];
+    [self tgsa_installObservers];
+
+    TGSAFloatWindow *window = [self tgsa_overlayWindow];
     if (!window) return;
 
     if (!self.button) {
         TGSADragButton *btn = [TGSADragButton buttonWithType:UIButtonTypeCustom];
-        btn.frame = CGRectMake(0, 0, 56, 56);
+        btn.frame = CGRectMake((TGSAWindowSize - TGSAButtonSize) / 2.0,
+                               (TGSAWindowSize - TGSAButtonSize) / 2.0,
+                               TGSAButtonSize, TGSAButtonSize);
         btn.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.62];
-        btn.layer.cornerRadius = 28;
+        btn.layer.cornerRadius = TGSAButtonSize / 2.0;
         btn.layer.borderWidth = 1.0;
         btn.layer.borderColor = [UIColor colorWithWhite:1.0 alpha:0.35].CGColor;
         btn.titleLabel.font = [UIFont systemFontOfSize:24 weight:UIFontWeightRegular];
@@ -139,57 +332,126 @@
 
     if (self.button.superview != window) {
         [self.button removeFromSuperview];
-        CGFloat x = CGRectGetMaxX(window.bounds) - 56 - 12;
-        CGFloat y = CGRectGetMidY(window.bounds) - 28;
-        self.button.frame = CGRectMake(x, y, 56, 56);
-        // 旋转/布局变化后仍大致停在右侧中部
-        self.button.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin
-                                     | UIViewAutoresizingFlexibleRightMargin
-                                     | UIViewAutoresizingFlexibleTopMargin
-                                     | UIViewAutoresizingFlexibleBottomMargin;
         [window addSubview:self.button];
     }
-    window.hidden = NO;
+    window.tgsa_touchTarget = self.button;
+    if (window.hidden) {
+        if (!self.userMoved) {
+            UIWindow *key = [self tgsa_keyWindow];
+            CGRect screen = key ? key.bounds : UIScreen.mainScreen.bounds;
+            window.frame = CGRectMake(CGRectGetMaxX(screen) - TGSAWindowSize - 8,
+                                      CGRectGetMidY(screen) - TGSAWindowSize / 2.0,
+                                      TGSAWindowSize, TGSAWindowSize);
+        }
+        window.hidden = NO;
+    }
+    [self tgsa_clampIntoScreen];
 
+    [self tgsa_scheduleHideForURL:url];
+
+    [UIView animateWithDuration:0.18 animations:^{ self.button.alpha = 1.0; }];
+
+    [self tgsa_ensureAppKeepsFocus];
+}
+
+/// 兜底保护：万一系统把 keyWindow 判给了我们的小浮窗，Telegram 会整体失去焦点
+/// （表现就是"整个页面点不动"）。这里检测到就立刻把焦点还给 App 主窗口。
+- (void)tgsa_ensureAppKeepsFocus {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)),
+                   dispatch_get_main_queue(), ^{
+        UIWindow *key = TGSAFindKeyWindow();
+        if (key != self.overlayWindow) return;
+
+        UIWindow *main = nil;
+        if (@available(iOS 13.0, *)) {
+            for (UIScene *scene in UIApplication.sharedApplication.connectedScenes) {
+                if (![scene isKindOfClass:UIWindowScene.class]) continue;
+                for (UIWindow *w in ((UIWindowScene *)scene).windows) {
+                    if (w == self.overlayWindow || w.hidden || !w.rootViewController) continue;
+                    main = w;
+                }
+            }
+        }
+        if (!main) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            for (UIWindow *w in UIApplication.sharedApplication.windows) {
+                if (w == self.overlayWindow || w.hidden || !w.rootViewController) continue;
+                main = w;
+            }
+#pragma clang diagnostic pop
+        }
+        if (main) {
+            [main makeKeyAndVisible];
+            TGSALog(@"检测到焦点被浮窗抢走，已还给 App 主窗口");
+        }
+    });
+}
+
+/// 自动隐藏：默认常驻不消失；只有抓到明确 AV 源时才用 25 秒倒计时。
+/// 想统一改成 N 秒后消失，在 config.plist 里设 AutoHideSeconds 即可（0 = 常驻）。
+- (void)tgsa_scheduleHideForURL:(NSURL *)url {
     [self.hideTimer invalidate];
-    // 抓到明确源时 25 秒自动消失；常驻按钮（无源）给 120 秒，避免刚打开就没了
-    self.hideTimer = [NSTimer scheduledTimerWithTimeInterval:(url ? 25.0 : 120.0)
+    self.hideTimer = nil;
+
+    NSTimeInterval configured = [TGSASetting(@"AutoHideSeconds", @0) doubleValue];
+    NSTimeInterval seconds = configured > 0 ? configured : (url ? 25.0 : 0);
+    if (seconds <= 0) return;
+
+    self.hideTimer = [NSTimer scheduledTimerWithTimeInterval:seconds
                                                       target:self
                                                     selector:@selector(hide)
                                                     userInfo:nil
                                                      repeats:NO];
+}
 
-    [UIView animateWithDuration:0.18 animations:^{ self.button.alpha = 1.0; }];
+- (void)tgsa_clampIntoScreen {
+    TGSAFloatWindow *window = self.overlayWindow;
+    if (!window) return;
+    UIWindow *key = [self tgsa_keyWindow];
+    CGRect b = key ? key.bounds : UIScreen.mainScreen.bounds;
+    CGFloat w = CGRectGetWidth(window.frame), h = CGRectGetHeight(window.frame);
+    CGFloat x = MIN(MAX(CGRectGetMinX(window.frame), 4), CGRectGetWidth(b) - w - 4);
+    CGFloat y = MIN(MAX(CGRectGetMinY(window.frame), 4), CGRectGetHeight(b) - h - 4);
+    window.frame = CGRectMake(x, y, w, h);
 }
 
 - (void)hide {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.hideTimer invalidate];
         self.hideTimer = nil;
+        TGSAFloatWindow *window = self.overlayWindow;
         [UIView animateWithDuration:0.18 animations:^{ self.button.alpha = 0.0; } completion:^(BOOL f) {
-            [self.button removeFromSuperview];
-            self.overlayWindow.hidden = YES;   // 整个悬浮窗一起收起，避免空 window 拦触摸
+            window.hidden = YES;      // 整窗收起，确保屏幕上不留任何可拦截触摸的层
+            self.button.alpha = 1.0;  // 复位，下次显示时动画正常
         }];
     });
 }
 
+#pragma mark - 手势（拖动作用在整个小窗口上，而不是按钮内部坐标）
+
 - (void)tgsa_panned:(UIPanGestureRecognizer *)pan {
-    UIWindow *window = self.overlayWindow ?: [self tgsa_window];
-    if (!window || !self.button) return;
-    CGPoint p = [pan translationInView:window];
+    TGSAFloatWindow *window = self.overlayWindow;
+    if (!window) return;
+    CGPoint p = [pan translationInView:window.superview ?: window];
     if (pan.state == UIGestureRecognizerStateBegan) {
         self.button.dragStart = p;
-        self.button.originStart = self.button.center;
+        self.button.originStart = window.center;
     } else if (pan.state == UIGestureRecognizerStateChanged) {
-        CGFloat cx = self.button.originStart.x + (p.x - self.button.dragStart.x);
-        CGFloat cy = self.button.originStart.y + (p.y - self.button.dragStart.y);
-        CGFloat min = 34, maxX = CGRectGetWidth(window.bounds) - 34, maxY = CGRectGetHeight(window.bounds) - 34;
-        self.button.center = CGPointMake(MIN(MAX(cx, min), maxX), MIN(MAX(cy, min), maxY));
+        CGPoint c = CGPointMake(self.button.originStart.x + (p.x - self.button.dragStart.x),
+                                self.button.originStart.y + (p.y - self.button.dragStart.y));
+        UIWindow *key = [self tgsa_keyWindow];
+        CGRect b = key ? key.bounds : UIScreen.mainScreen.bounds;
+        CGFloat half = TGSAWindowSize / 2.0;
+        window.center = CGPointMake(MIN(MAX(c.x, half + 2), CGRectGetWidth(b) - half - 2),
+                                    MIN(MAX(c.y, half + 2), CGRectGetHeight(b) - half - 2));
+        self.userMoved = YES;
     }
 }
 
 - (void)tgsa_longPressed:(UILongPressGestureRecognizer *)lp {
     if (lp.state != UIGestureRecognizerStateBegan) return;
+    TGSALog(@"长按隐藏按钮");
     [self hide];
 }
 
@@ -197,6 +459,13 @@
 
 - (void)tgsa_tapped {
     TGSALog(@"按钮被点击（currentURL=%@）", self.currentURL ?: @"nil，走缓存扫描");
+
+    // 点击反馈：先给个缩放动画，确认触摸确实到了按钮
+    [UIView animateWithDuration:0.08 animations:^{ self.button.transform = CGAffineTransformMakeScale(0.86, 0.86); }
+                     completion:^(BOOL f) {
+        [UIView animateWithDuration:0.12 animations:^{ self.button.transform = CGAffineTransformIdentity; }];
+    }];
+
     NSURL *url = self.currentURL;
     if (url) {
         [self tgsa_menuForURL:url];
@@ -207,9 +476,6 @@
 }
 
 - (void)tgsa_menuForURL:(NSURL *)url {
-    UIViewController *top = TGSATopViewController();
-    if (!top) return;
-
     UIAlertController *sheet = [UIAlertController alertControllerWithTitle:@"保存媒体"
                                                                   message:nil
                                                            preferredStyle:UIAlertControllerStyleActionSheet];
@@ -229,7 +495,6 @@
             [[NSFileManager defaultManager] copyItemAtPath:src toPath:dst error:&e];
             if (e) { TGSALog(@"复制缓存失败：%@", e.localizedDescription); return; }
             TGSASaveVideoAtPathToAlbum(dst);
-            [weakSelf hide];
         }]];
         [sheet addAction:[UIAlertAction actionWithTitle:@"存储到文件…"
                                                   style:UIAlertActionStyleDefault
@@ -238,7 +503,6 @@
             NSString *dst = TGSATempPathForExtension(src.pathExtension.length ? src.pathExtension : @"mp4");
             [[NSFileManager defaultManager] copyItemAtPath:src toPath:dst error:nil];
             TGSAExportFileAtPath(dst);
-            [weakSelf hide];
         }]];
     } else {
         [sheet addAction:[UIAlertAction actionWithTitle:@"下载到相册"
@@ -246,7 +510,6 @@
                                                 handler:^(UIAlertAction *a) {
             TGSAFetchRemoteURL(url, TGSATopViewController(), ^(NSString *path, NSError *err) {
                 if (path) TGSASaveVideoAtPathToAlbum(path);
-                [weakSelf hide];
             });
         }]];
         [sheet addAction:[UIAlertAction actionWithTitle:@"下载到文件…"
@@ -254,7 +517,6 @@
                                                 handler:^(UIAlertAction *a) {
             TGSAFetchRemoteURL(url, TGSATopViewController(), ^(NSString *path, NSError *err) {
                 if (path) TGSAExportFileAtPath(path);
-                [weakSelf hide];
             });
         }]];
     }
@@ -265,27 +527,27 @@
         UIPasteboard.generalPasteboard.string = url.absoluteString;
         TGSALog(@"已复制直链");
     }]];
-    [sheet addAction:[UIAlertAction actionWithTitle:@"关闭" style:UIAlertActionStyleCancel handler:^(UIAlertAction *a) {
+    [sheet addAction:[UIAlertAction actionWithTitle:@"隐藏按钮" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
         [weakSelf hide];
     }]];
+    [sheet addAction:[UIAlertAction actionWithTitle:@"关闭" style:UIAlertActionStyleCancel handler:nil]];
 
-    // iPad 需要 popover 锚点
-    sheet.popoverPresentationController.sourceView = self.button;
-    sheet.popoverPresentationController.sourceRect = self.button.bounds;
+    // iPad 需要 popover 锚点（iPhone 上无效，sourceView 不在窗口里就跳过）
+    if (self.button && self.button.window) {
+        sheet.popoverPresentationController.sourceView = self.button;
+        sheet.popoverPresentationController.sourceRect = self.button.bounds;
+    }
 
-    [top presentViewController:sheet animated:YES completion:nil];
+    TGSAPresentAlert(sheet);
 }
 
 #pragma mark - 本地缓存文件菜单
 
 - (void)tgsa_menuForCachedFiles:(BOOL)fullScan {
-    UIViewController *top = TGSATopViewController();
-    if (!top) return;
-
     UIAlertController *wait = [UIAlertController alertControllerWithTitle:@"正在扫描缓存…"
                                                                  message:nil
                                                           preferredStyle:UIAlertControllerStyleAlert];
-    [top presentViewController:wait animated:YES completion:nil];
+    TGSAPresentAlert(wait);
 
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
@@ -303,9 +565,6 @@
 }
 
 - (void)tgsa_presentFileList:(NSArray<NSString *> *)files fullScan:(BOOL)fullScan {
-    UIViewController *top = TGSATopViewController();
-    if (!top) return;
-
     __weak typeof(self) weakSelf = self;
 
     if (files.count == 0) {
@@ -316,7 +575,7 @@
             [weakSelf tgsa_menuForCachedFiles:YES];
         }]];
         [a addAction:[UIAlertAction actionWithTitle:@"关闭" style:UIAlertActionStyleCancel handler:nil]];
-        [top presentViewController:a animated:YES completion:nil];
+        TGSAPresentAlert(a);
         return;
     }
 
@@ -343,17 +602,19 @@
             [weakSelf tgsa_menuForCachedFiles:YES];
         }]];
     }
+    [list addAction:[UIAlertAction actionWithTitle:@"隐藏按钮" style:UIAlertActionStyleDefault handler:^(UIAlertAction *x) {
+        [weakSelf hide];
+    }]];
     [list addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
 
-    list.popoverPresentationController.sourceView = self.button;
-    list.popoverPresentationController.sourceRect = self.button.bounds;
-    [top presentViewController:list animated:YES completion:nil];
+    if (self.button && self.button.window) {
+        list.popoverPresentationController.sourceView = self.button;
+        list.popoverPresentationController.sourceRect = self.button.bounds;
+    }
+    TGSAPresentAlert(list);
 }
 
 - (void)tgsa_menuForFile:(NSString *)src {
-    UIViewController *top = TGSATopViewController();
-    if (!top) return;
-
     NSString *ext = TGSAExtensionForVideoFile(src) ?: @"mp4";
 
     UIAlertController *sheet = [UIAlertController alertControllerWithTitle:@"保存媒体"
@@ -379,9 +640,11 @@
     }]];
     [sheet addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
 
-    sheet.popoverPresentationController.sourceView = self.button;
-    sheet.popoverPresentationController.sourceRect = self.button.bounds;
-    [top presentViewController:sheet animated:YES completion:nil];
+    if (self.button && self.button.window) {
+        sheet.popoverPresentationController.sourceView = self.button;
+        sheet.popoverPresentationController.sourceRect = self.button.bounds;
+    }
+    TGSAPresentAlert(sheet);
 }
 
 @end
