@@ -41,16 +41,28 @@ jobs:
           export PATH="$THEOS/bin:$PATH"
           cd tgsaveanywhere
           make clean all TROLLSTORE=1 FINALPACKAGE=1
+          # 注意：必须精确复制 obj 根下的最终产物。
+          # 不能用 find —— dSYM 包里也有一个同名的 DWARF 文件（filetype=MH_DSYM），
+          # 复制错了 ldid 会报 "Unsupported Mach-O type"（踩过）。
           mkdir -p out
-          find . -type f -name "TGSaveAnywhere.dylib" -exec cp {} out/ \; || true
+          cp ".theos/obj/TGSaveAnywhere.dylib" out/TGSaveAnywhere.dylib
+          ldid -S out/TGSaveAnywhere.dylib
           ls -lh out/
-          file out/TGSaveAnywhere.dylib || true
+          file out/TGSaveAnywhere.dylib
+          shasum -a 256 out/TGSaveAnywhere.dylib | tee out/sha256.txt
+          # file 输出必须是 dynamically linked shared library，不能是 dSYM companion
+          if file out/TGSaveAnywhere.dylib | grep -qi "dSYM"; then
+            echo "::error::产物是 dSYM companion 而不是 dylib！"; exit 1
+          fi
+          cd out && zip -q TGSaveAnywhere-dylib.zip TGSaveAnywhere.dylib sha256.txt && cd ..
 
       - name: Upload dylib artifact
         uses: actions/upload-artifact@v4
         with:
           name: TGSaveAnywhere-dylib
-          path: tgsaveanywhere/out/TGSaveAnywhere.dylib
+          path: |
+            tgsaveanywhere/out/TGSaveAnywhere-dylib.zip
+            tgsaveanywhere/out/TGSaveAnywhere.dylib
           if-no-files-found: warn
 
   build:

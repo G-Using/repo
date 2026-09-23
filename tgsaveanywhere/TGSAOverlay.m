@@ -32,6 +32,9 @@
 @interface TGSAOverlay ()
 @property (nonatomic, strong) TGSADragButton *button;
 @property (nonatomic, strong) NSTimer *hideTimer;
+/// 独立悬浮窗口：按钮不能加在 TG 自己的 window 上，
+/// 否则聊天界面的手势/转场层会拦走触摸事件 —— 按钮看得见却点不动。
+@property (nonatomic, strong) UIWindow *overlayWindow;
 - (void)tgsa_menuForURL:(NSURL *)url;
 - (void)tgsa_menuForCachedFiles:(BOOL)fullScan;
 - (void)tgsa_presentFileList:(NSArray<NSString *> *)files fullScan:(BOOL)fullScan;
@@ -87,10 +90,28 @@
     [self showWithURL:url];
 }
 
+- (UIWindow *)tgsa_overlayWindow {
+    UIWindow *key = [self tgsa_window];
+    if (!key.windowScene && !key) return nil;
+
+    if (!self.overlayWindow) {
+        UIWindow *w = nil;
+        if (@available(iOS 13.0, *) && key.windowScene) {
+            w = [[UIWindow alloc] initWithWindowScene:key.windowScene];
+        } else {
+            w = [[UIWindow alloc] initWithFrame:key.bounds];
+        }
+        w.windowLevel = 100000;              // 压过 TG 的一切界面
+        w.backgroundColor = [UIColor clearColor];
+        self.overlayWindow = w;
+    }
+    return self.overlayWindow;
+}
+
 - (void)showWithURL:(NSURL *)url {
     self.currentURL = url;
 
-    UIWindow *window = [self tgsa_window];
+    UIWindow *window = [self tgsa_overlayWindow];
     if (!window) return;
 
     if (!self.button) {
@@ -121,8 +142,14 @@
         CGFloat x = CGRectGetMaxX(window.bounds) - 56 - 12;
         CGFloat y = CGRectGetMidY(window.bounds) - 28;
         self.button.frame = CGRectMake(x, y, 56, 56);
+        // 旋转/布局变化后仍大致停在右侧中部
+        self.button.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin
+                                     | UIViewAutoresizingFlexibleRightMargin
+                                     | UIViewAutoresizingFlexibleTopMargin
+                                     | UIViewAutoresizingFlexibleBottomMargin;
         [window addSubview:self.button];
     }
+    window.hidden = NO;
 
     [self.hideTimer invalidate];
     // 抓到明确源时 25 秒自动消失；常驻按钮（无源）给 120 秒，避免刚打开就没了
@@ -141,12 +168,13 @@
         self.hideTimer = nil;
         [UIView animateWithDuration:0.18 animations:^{ self.button.alpha = 0.0; } completion:^(BOOL f) {
             [self.button removeFromSuperview];
+            self.overlayWindow.hidden = YES;   // 整个悬浮窗一起收起，避免空 window 拦触摸
         }];
     });
 }
 
 - (void)tgsa_panned:(UIPanGestureRecognizer *)pan {
-    UIWindow *window = [self tgsa_window];
+    UIWindow *window = self.overlayWindow ?: [self tgsa_window];
     if (!window || !self.button) return;
     CGPoint p = [pan translationInView:window];
     if (pan.state == UIGestureRecognizerStateBegan) {
@@ -168,6 +196,7 @@
 #pragma mark - 菜单
 
 - (void)tgsa_tapped {
+    TGSALog(@"按钮被点击（currentURL=%@）", self.currentURL ?: @"nil，走缓存扫描");
     NSURL *url = self.currentURL;
     if (url) {
         [self tgsa_menuForURL:url];
