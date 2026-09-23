@@ -16,6 +16,43 @@ permissions:
   contents: write
 
 jobs:
+  build-dylib:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: |
+          sudo xcode-select -s /Applications/Xcode.app || true
+          xcrun --sdk iphoneos --show-sdk-path || true
+
+      - name: Install build deps
+        run: brew install ldid dpkg xz 2>/dev/null || true
+
+      - name: Install Theos
+        run: |
+          if [ ! -d "$HOME/theos" ]; then
+            git clone --recursive --depth 1 https://github.com/theos/theos.git "$HOME/theos"
+          fi
+
+      - name: Build standalone dylib (TrollFools / 巨魔注入器)
+        run: |
+          export THEOS="$HOME/theos"
+          export PATH="$THEOS/bin:$PATH"
+          cd tgsaveanywhere
+          make clean TROLLSTORE=1 FINALPACKAGE=1
+          mkdir -p out
+          find . -type f -name "TGSaveAnywhere.dylib" -exec cp {} out/ \; || true
+          ls -lh out/
+          file out/TGSaveAnywhere.dylib || true
+
+      - name: Upload dylib artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TGSaveAnywhere-dylib
+          path: tgsaveanywhere/out/TGSaveAnywhere.dylib
+          if-no-files-found: warn
+
   build:
     runs-on: macos-14
     strategy:

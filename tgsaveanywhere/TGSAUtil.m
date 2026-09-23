@@ -80,7 +80,12 @@ static NSDictionary *TGSAConfig(void) {
         }
         if (!cfg) {
             // 首次运行写一份模板到 App 的 Documents（Filza 可直接编辑）
-            cfg = @{ @"Enabled": @YES, @"ShowOverlay": @YES, @"DiscoveryMode": @NO, @"ForceTrueHooks": @[] };
+            cfg = @{ @"Enabled": @YES,
+                     @"ShowOverlay": @YES,
+                     @"AlwaysShowButton": @YES,
+                     @"DiscoveryMode": @NO,
+                     @"ScanWindowSeconds": @900,
+                     @"ForceTrueHooks": @[] };
             NSString *tpl = [TGSADocDir() stringByAppendingPathComponent:@"config.plist"];
             [cfg writeToFile:tpl atomically:YES];
             TGSALog(@"未找到配置，已生成模板：%@", tpl);
@@ -96,7 +101,15 @@ id TGSASetting(NSString *key, id defaultValue) {
 
 BOOL TGSAEnabled(void)       { return [TGSASetting(@"Enabled", @YES) boolValue]; }
 BOOL TGSAShowOverlay(void)   { return [TGSASetting(@"ShowOverlay", @YES) boolValue]; }
+BOOL TGSAAlwaysShowButton(void) { return [TGSASetting(@"AlwaysShowButton", @YES) boolValue]; }
 BOOL TGSADiscoveryMode(void) { return [TGSASetting(@"DiscoveryMode", @NO) boolValue]; }
+NSTimeInterval TGSAScanWindow(void) {
+    id v = TGSASetting(@"ScanWindowSeconds", @900);
+    NSTimeInterval t = [v respondsToSelector:@selector(doubleValue)] ? [v doubleValue] : 900.0;
+    if (t < 30) t = 30;
+    if (t > 86400) t = 86400;
+    return t;
+}
 
 #pragma mark - Runtime 工具
 
@@ -134,6 +147,32 @@ BOOL TGSASwizzleClass(Class cls, SEL sel, IMP replacement, IMP _Nullable * _Null
     if (!m) m = class_getInstanceMethod(meta, sel);
     if (!m) return NO;
     if (!TGSAReturnTypeIsSafe(m)) return NO;
+    IMP orig = method_getImplementation(m);
+    IMP prev = class_replaceMethod(meta, sel, replacement, method_getTypeEncoding(m));
+    if (!orig) orig = prev;
+    if (outOriginal) *outOriginal = orig;
+    return YES;
+}
+
+#pragma mark - Raw swizzle（不做返回值类型检查，调用方自己保证签名正确）
+
+BOOL TGSASwizzleInstanceRaw(Class cls, SEL sel, IMP replacement, IMP _Nullable * _Nullable outOriginal) {
+    if (!cls || !sel || !replacement) return NO;
+    Method m = class_getInstanceMethod(cls, sel);
+    if (!m) return NO;
+    IMP orig = method_getImplementation(m);
+    IMP prev = class_replaceMethod(cls, sel, replacement, method_getTypeEncoding(m));
+    if (!orig) orig = prev;
+    if (outOriginal) *outOriginal = orig;
+    return YES;
+}
+
+BOOL TGSASwizzleClassRaw(Class cls, SEL sel, IMP replacement, IMP _Nullable * _Nullable outOriginal) {
+    if (!cls || !sel || !replacement) return NO;
+    Class meta = object_getClass((id)cls);
+    Method m = class_getClassMethod(meta, sel);
+    if (!m) m = class_getInstanceMethod(meta, sel);
+    if (!m) return NO;
     IMP orig = method_getImplementation(m);
     IMP prev = class_replaceMethod(meta, sel, replacement, method_getTypeEncoding(m));
     if (!orig) orig = prev;

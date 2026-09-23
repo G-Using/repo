@@ -32,6 +32,10 @@
 @interface TGSAOverlay ()
 @property (nonatomic, strong) TGSADragButton *button;
 @property (nonatomic, strong) NSTimer *hideTimer;
+- (void)tgsa_menuForURL:(NSURL *)url;
+- (void)tgsa_menuForCachedFiles:(BOOL)fullScan;
+- (void)tgsa_presentFileList:(NSArray<NSString *> *)files fullScan:(BOOL)fullScan;
+- (void)tgsa_menuForFile:(NSString *)src;
 @end
 
 @implementation TGSAOverlay
@@ -80,6 +84,10 @@
 }
 
 - (void)showForURL:(NSURL *)url {
+    [self showWithURL:url];
+}
+
+- (void)showWithURL:(NSURL *)url {
     self.currentURL = url;
 
     UIWindow *window = [self tgsa_window];
@@ -117,7 +125,8 @@
     }
 
     [self.hideTimer invalidate];
-    self.hideTimer = [NSTimer scheduledTimerWithTimeInterval:25.0
+    // 抓到明确源时 25 秒自动消失；常驻按钮（无源）给 120 秒，避免刚打开就没了
+    self.hideTimer = [NSTimer scheduledTimerWithTimeInterval:(url ? 25.0 : 120.0)
                                                       target:self
                                                     selector:@selector(hide)
                                                     userInfo:nil
@@ -160,8 +169,15 @@
 
 - (void)tgsa_tapped {
     NSURL *url = self.currentURL;
-    if (!url) { [self hide]; return; }
+    if (url) {
+        [self tgsa_menuForURL:url];
+    } else {
+        // 没抓到 AV 源（Telegram 自己软解时就是这样）→ 直接扫本地缓存
+        [self tgsa_menuForCachedFiles:NO];
+    }
+}
 
+- (void)tgsa_menuForURL:(NSURL *)url {
     UIViewController *top = TGSATopViewController();
     if (!top) return;
 
@@ -228,6 +244,114 @@
     sheet.popoverPresentationController.sourceView = self.button;
     sheet.popoverPresentationController.sourceRect = self.button.bounds;
 
+    [top presentViewController:sheet animated:YES completion:nil];
+}
+
+#pragma mark - 本地缓存文件菜单
+
+- (void)tgsa_menuForCachedFiles:(BOOL)fullScan {
+    UIViewController *top = TGSATopViewController();
+    if (!top) return;
+
+    UIAlertController *wait = [UIAlertController alertControllerWithTitle:@"正在扫描缓存…"
+                                                                 message:nil
+                                                          preferredStyle:UIAlertControllerStyleAlert];
+    [top presentViewController:wait animated:YES completion:nil];
+
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        NSTimeInterval win = fullScan ? 86400.0 : TGSAScanWindow();
+        NSArray<NSString *> *files = TGSAScanRecentVideos(win, 12);
+        TGSALog(@"缓存扫描（窗口 %.0fs）命中 %lu 个", win, (unsigned long)files.count);
+        for (NSString *f in files) TGSALog(@"  候选：%@", f);
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [wait dismissViewControllerAnimated:YES completion:^{
+                [weakSelf tgsa_presentFileList:files fullScan:fullScan];
+            }];
+        });
+    });
+}
+
+- (void)tgsa_presentFileList:(NSArray<NSString *> *)files fullScan:(BOOL)fullScan {
+    UIViewController *top = TGSATopViewController();
+    if (!top) return;
+
+    __weak typeof(self) weakSelf = self;
+
+    if (files.count == 0) {
+        UIAlertController *a = [UIAlertController alertControllerWithTitle:@"没找到视频缓存"
+                                                                  message:@"请先在 Telegram 里完整播放一次目标视频，再点这个按钮。\n如果仍找不到，可试试全盘扫描。"
+                                                           preferredStyle:UIAlertControllerStyleAlert];
+        [a addAction:[UIAlertAction actionWithTitle:@"全盘扫描（较慢）" style:UIAlertActionStyleDefault handler:^(UIAlertAction *x) {
+            [weakSelf tgsa_menuForCachedFiles:YES];
+        }]];
+        [a addAction:[UIAlertAction actionWithTitle:@"关闭" style:UIAlertActionStyleCancel handler:nil]];
+        [top presentViewController:a animated:YES completion:nil];
+        return;
+    }
+
+    UIAlertController *list = [UIAlertController alertControllerWithTitle:@"选择要保存的视频"
+                                                                message:@"按最近修改时间排序，第一个通常就是刚播放的"
+                                                         preferredStyle:UIAlertControllerStyleActionSheet];
+
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    df.dateFormat = @"HH:mm:ss";
+
+    for (NSString *path in files) {
+        NSDictionary *attr = [fm attributesOfItemAtPath:path error:nil];
+        double mb = [attr[NSFileSize] unsignedLongLongValue] / 1024.0 / 1024.0;
+        NSDate *mt = attr[NSFileModificationDate];
+        NSString *title = [NSString stringWithFormat:@"%.1f MB  ·  %@", mb, mt ? [df stringFromDate:mt] : @"?"];
+        [list addAction:[UIAlertAction actionWithTitle:title style:UIAlertActionStyleDefault handler:^(UIAlertAction *x) {
+            [weakSelf tgsa_menuForFile:path];
+        }]];
+    }
+
+    if (!fullScan) {
+        [list addAction:[UIAlertAction actionWithTitle:@"没找到？全盘扫描（较慢）" style:UIAlertActionStyleDefault handler:^(UIAlertAction *x) {
+            [weakSelf tgsa_menuForCachedFiles:YES];
+        }]];
+    }
+    [list addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
+
+    list.popoverPresentationController.sourceView = self.button;
+    list.popoverPresentationController.sourceRect = self.button.bounds;
+    [top presentViewController:list animated:YES completion:nil];
+}
+
+- (void)tgsa_menuForFile:(NSString *)src {
+    UIViewController *top = TGSATopViewController();
+    if (!top) return;
+
+    NSString *ext = TGSAExtensionForVideoFile(src) ?: @"mp4";
+
+    UIAlertController *sheet = [UIAlertController alertControllerWithTitle:@"保存媒体"
+                                                                  message:src.lastPathComponent
+                                                           preferredStyle:UIAlertControllerStyleActionSheet];
+
+    [sheet addAction:[UIAlertAction actionWithTitle:@"保存到相册" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
+        NSString *dst = TGSATempPathForExtension(ext);
+        [[NSFileManager defaultManager] removeItemAtPath:dst error:nil];
+        NSError *e = nil;
+        [[NSFileManager defaultManager] copyItemAtPath:src toPath:dst error:&e];
+        if (e) { TGSALog(@"复制失败：%@", e.localizedDescription); return; }
+        TGSASaveVideoAtPathToAlbum(dst);
+    }]];
+    [sheet addAction:[UIAlertAction actionWithTitle:@"存储到文件…" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
+        NSString *dst = TGSATempPathForExtension(ext);
+        [[NSFileManager defaultManager] removeItemAtPath:dst error:nil];
+        [[NSFileManager defaultManager] copyItemAtPath:src toPath:dst error:nil];
+        TGSAExportFileAtPath(dst);
+    }]];
+    [sheet addAction:[UIAlertAction actionWithTitle:@"复制路径" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
+        UIPasteboard.generalPasteboard.string = src;
+    }]];
+    [sheet addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
+
+    sheet.popoverPresentationController.sourceView = self.button;
+    sheet.popoverPresentationController.sourceRect = self.button.bounds;
     [top presentViewController:sheet animated:YES completion:nil];
 }
 
