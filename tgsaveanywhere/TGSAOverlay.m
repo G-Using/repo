@@ -180,7 +180,7 @@ static const CGFloat TGSAWindowSize = 62.0;   // 比按钮略大，留出描边�
 @property (nonatomic, assign) BOOL userMoved;      // 用户是否手动拖过（拖过就不再自动归位）
 - (void)tgsa_menuForURL:(NSURL *)url;
 - (void)tgsa_menuForCachedFiles:(BOOL)fullScan;
-- (void)tgsa_presentFileList:(NSArray<NSString *> *)files fullScan:(BOOL)fullScan;
+- (void)tgsa_presentFileList:(NSArray<NSString *> *)files fullScan:(BOOL)fullScan filteredCount:(NSUInteger)filteredCount;
 - (void)tgsa_menuForFile:(NSString *)src;
 @end
 
@@ -700,19 +700,78 @@ static NSString *_Nullable TGSACopyToTemp(NSString *src, NSString *ext) {
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         NSTimeInterval win = fullScan ? 86400.0 : TGSAScanWindow();
-        NSArray<NSString *> *files = TGSAScanRecentVideos(win, 12);
-        TGSALog(@"缓存扫描（窗口 %.0fs）命中 %lu 个", win, (unsigned long)files.count);
-        for (NSString *f in files) TGSALog(@"  候选：%@", f);
+        NSArray<NSString *> *raw = TGSAScanRecentVideos(win, 300);
+        TGSALog(@"缓存扫描（窗口 %.0fs）原始命中 %lu 个", win, (unsigned long)raw.count);
+
+        // 过滤：只保留「已缓存完整」的视频
+        //   mp4 要求 box 结构完整 + mvhd 时长 >= 1s（缩略图/分片通不过）；
+        //   其他格式（mkv 等）只要求体积达到下限。下限可用 config 的 MinVideoMB 调整。
+        BOOL onlyComplete = [TGSASetting(@"OnlyCompleteVideos", @YES) boolValue];
+        double minMB = [TGSASetting(@"MinVideoMB", @1.0) doubleValue];
+        unsigned long long minSize = (unsigned long long)(minMB * 1024.0 * 1024.0);
+
+        NSFileManager *fm = [NSFileManager defaultManager];
+        NSMutableArray<NSString *> *complete = [NSMutableArray array];
+        for (NSString *p in raw) {
+            unsigned long long sz = [[fm attributesOfItemAtPath:p error:nil][NSFileSize] unsignedLongLongValue];
+            if (sz < minSize) continue;
+            NSString *ext = TGSAExtensionForVideoFile(p) ?: @"";
+            BOOL ok = YES;
+            if ([ext isEqualToString:@"mp4"] || [ext isEqualToString:@"m4v"] || [ext isEqualToString:@"mov"]) {
+                NSTimeInterval dur = -1;
+                ok = TGSAMp4Inspect(p, &dur);
+                if (dur >= 0 && dur < 1.0) ok = NO;
+            }
+            if (ok) [complete addObject:p];
+        }
+
+        // 学习式归属：这次新出现的缓存文件记到当前聊天名下
+        NSString *chat = TGSAActiveChatTitle();
+        if (chat.length) TGSARecordChatForFiles(raw, chat);
+
+        TGSALog(@"过滤后完整视频 %lu / %lu（下限 %.1f MB）",
+                (unsigned long)complete.count, (unsigned long)raw.count, minMB);
+
+        NSUInteger filtered = raw.count - complete.count;
+        BOOL showRaw = (!onlyComplete) || (complete.count == 0);
 
         dispatch_async(dispatch_get_main_queue(), ^{
             [wait dismissViewControllerAnimated:YES completion:^{
-                [weakSelf tgsa_presentFileList:files fullScan:fullScan];
+                if (complete.count > 0 && !showRaw) {
+                    [weakSelf tgsa_presentFileList:complete fullScan:fullScan filteredCount:filtered];
+                    return;
+                }
+                if (complete.count > 0 && showRaw && !onlyComplete) {
+                    [weakSelf tgsa_presentFileList:raw fullScan:fullScan filteredCount:0];
+                    return;
+                }
+                // 一个完整的都没有
+                UIAlertController *a = [UIAlertController alertControllerWithTitle:@"没有已缓存完整的视频"
+                        message:[NSString stringWithFormat:@"扫描到 %lu 个缓存文件，但都不是完整的视频（多是缩略图和没下载完的分片）。\n\n请先在 Telegram 里把目标视频的进度条从头到尾走完（等它完整缓存），再来点 ↓ 按钮。", (unsigned long)raw.count]
+                        preferredStyle:UIAlertControllerStyleAlert];
+                if (raw.count > 0) {
+                    [a addAction:[UIAlertAction actionWithTitle:@"查看全部候选（含不完整）" style:UIAlertActionStyleDefault handler:^(UIAlertAction *x) {
+                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.6 * NSEC_PER_SEC)),
+                                       dispatch_get_main_queue(), ^{
+                            [weakSelf tgsa_presentFileList:raw fullScan:fullScan filteredCount:0];
+                        });
+                    }]];
+                }
+                [a addAction:[UIAlertAction actionWithTitle:fullScan ? @"关闭" : @"全盘扫描（较慢）" style:UIAlertActionStyleDefault handler:^(UIAlertAction *x) {
+                    if (fullScan) return;
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.6 * NSEC_PER_SEC)),
+                                   dispatch_get_main_queue(), ^{
+                        [weakSelf tgsa_menuForCachedFiles:YES];
+                    });
+                }]];
+                [a addAction:[UIAlertAction actionWithTitle:@"关闭" style:UIAlertActionStyleCancel handler:nil]];
+                TGSAPresentAlert(a);
             }];
         });
     });
 }
 
-- (void)tgsa_presentFileList:(NSArray<NSString *> *)files fullScan:(BOOL)fullScan {
+- (void)tgsa_presentFileList:(NSArray<NSString *> *)files fullScan:(BOOL)fullScan filteredCount:(NSUInteger)filteredCount {
     __weak typeof(self) weakSelf = self;
 
     if (files.count == 0) {
@@ -732,10 +791,14 @@ static NSString *_Nullable TGSACopyToTemp(NSString *src, NSString *ext) {
 
     NSString *chat = TGSAActiveChatTitle();
     NSString *listMsg = chat.length
-        ? [NSString stringWithFormat:@"当前聊天：%@。按最近修改时间排序，第一个通常就是刚播放的", chat]
-        : @"按最近修改时间排序，第一个通常就是刚播放的";
+        ? [NSString stringWithFormat:@"当前聊天：%@", chat]
+        : nil;
+    if (filteredCount > 0) {
+        NSString *note = [NSString stringWithFormat:@"（已过滤 %lu 个不完整分片）", (unsigned long)filteredCount];
+        listMsg = listMsg.length ? [listMsg stringByAppendingFormat:@" %@", note] : note;
+    }
 
-    UIAlertController *list = [UIAlertController alertControllerWithTitle:@"选择要保存的视频"
+    UIAlertController *list = [UIAlertController alertControllerWithTitle:@"选择要保存的视频（仅完整的）"
                                                                 message:listMsg
                                                          preferredStyle:UIAlertControllerStyleActionSheet];
 
@@ -756,6 +819,9 @@ static NSString *_Nullable TGSACopyToTemp(NSString *src, NSString *ext) {
         }
         NSString *title = [NSString stringWithFormat:@"%@%.1f MB  ·  %@",
                            dur, mb, mt ? [df stringFromDate:mt] : @"?"];
+        // 聊天归属（学习式映射记录下来的）
+        NSString *fchat = TGSAChatForFile(path);
+        if (fchat.length) title = [NSString stringWithFormat:@"[%@] %@", fchat, title];
         [list addAction:[UIAlertAction actionWithTitle:title style:UIAlertActionStyleDefault handler:^(UIAlertAction *x) {
             [weakSelf tgsa_menuForFile:path];
         }]];
@@ -783,7 +849,8 @@ static NSString *_Nullable TGSACopyToTemp(NSString *src, NSString *ext) {
 
 - (void)tgsa_menuForFile:(NSString *)src {
     __weak typeof(self) weakSelf = self;
-    NSString *chat = TGSAActiveChatTitle();
+    // 优先用学习式映射里记录的归属聊天；没有就用当前聊天（标注"推测"）
+    NSString *chat = TGSAChatForFile(src) ?: TGSAActiveChatTitle();
     NSString *ext = TGSAExtensionForVideoFile(src) ?: @"mp4";
 
     // 结构 / 时长检测（只做几次小读取，开销可忽略）
@@ -801,7 +868,7 @@ static NSString *_Nullable TGSACopyToTemp(NSString *src, NSString *ext) {
 
     NSString *msg = src.lastPathComponent;
     if (durInfo.length) msg = [NSString stringWithFormat:@"%@\n%@", durInfo, msg];
-    if (chat.length) msg = [NSString stringWithFormat:@"%@ · %@", chat, msg];
+    if (chat.length) msg = [NSString stringWithFormat:@"%@\n%@", msg, chat];
 
     UIAlertController *sheet = [UIAlertController alertControllerWithTitle:@"保存媒体"
                                                                   message:msg

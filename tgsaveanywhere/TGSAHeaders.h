@@ -45,6 +45,10 @@ BOOL TGSAMp4Inspect(NSString *path, NSTimeInterval *_Nullable outDuration);
 /// 把秒格式化成 mm:ss / h:mm:ss
 NSString *TGSADurationString(NSTimeInterval seconds);
 
+/// 缓存文件 → 聊天归属（学习式：每次打开列表时，把新出现的缓存文件记到当前聊天名下）
+NSString *_Nullable TGSAChatForFile(NSString *path);
+void TGSARecordChatForFiles(NSArray<NSString *> *paths, NSString *_Nullable chat);
+
 #pragma mark - 日志
 
 void TGSALog(NSString *fmt, ...);

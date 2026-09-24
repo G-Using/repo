@@ -216,13 +216,54 @@ NSString *TGSADurationString(NSTimeInterval seconds) {
     return [NSString stringWithFormat:@"%02ld:%02ld", (long)m, (long)s];
 }
 
+#pragma mark - 缓存文件 → 聊天归属（学习式映射）
+
+// Telegram 的缓存文件名是随机 id，无法直接反查属于哪个聊天。
+// 做法：每次用户打开文件列表时，把"这次新出现的缓存文件"记录到当前聊天名下
+// （用户通常刚在某个聊天里看完视频就点保存）。记录持久化到 filemap.plist。
+
+static NSString *TGSAMapPath(void) {
+    return [TGSADocDir() stringByAppendingPathComponent:@"filemap.plist"];
+}
+
+NSString *TGSAChatForFile(NSString *path) {
+    if (!path.length) return nil;
+    NSDictionary *m = [NSDictionary dictionaryWithContentsOfFile:TGSAMapPath()];
+    NSString *chat = m[path][@"chat"];
+    return chat.length ? chat : nil;
+}
+
+void TGSARecordChatForFiles(NSArray<NSString *> *paths, NSString *chat) {
+    if (!paths.count || !chat.length) return;
+    NSMutableDictionary *m = [[NSMutableDictionary dictionaryWithContentsOfFile:TGSAMapPath()] mutableCopy]
+        ?: [NSMutableDictionary dictionary];
+    BOOL changed = NO;
+    for (NSString *p in paths) {
+        if (p.length && !m[p]) {
+            m[p] = @{ @"chat": chat, @"t": [NSDate date] };
+            changed = YES;
+        }
+    }
+    if (!changed) return;
+    // 超过 400 条就按时间淘汰最旧的，防止无限膨胀
+    if (m.count > 400) {
+        NSArray *keys = [m keysSortedByValueUsingComparator:^NSComparisonResult(NSDictionary *a, NSDictionary *b) {
+            return [a[@"t"] compare:b[@"t"]];
+        }];
+        for (NSUInteger i = 0; i < m.count - 400 && i < keys.count; i++) [m removeObjectForKey:keys[i]];
+    }
+    [m writeToFile:TGSAMapPath() atomically:YES];
+    TGSALog(@"已记录 %lu 个缓存文件的聊天归属（%@）", (unsigned long)paths.count, chat);
+}
+
 /// 递归找一个"像标题"的 UILabel（短文本、非空）
 static NSString *TGSAFirstLabelLikeTitle(UIView *v, int depth) {
     if (!v || depth > 6) return nil;
     if ([v isKindOfClass:UILabel.class]) {
         UILabel *l = (UILabel *)v;
         NSString *t = [l.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        if (t.length > 0 && t.length <= 64 && ![t containsString:@"\n"]) return t;
+        // 排除我们自己悬浮按钮上的 "↓" 等符号
+        if (t.length > 0 && t.length <= 64 && ![t containsString:@"\n"] && ![t isEqualToString:@"↓"]) return t;
     }
     for (UIView *s in v.subviews) {
         NSString *t = TGSAFirstLabelLikeTitle(s, depth + 1);
@@ -255,9 +296,11 @@ NSString *TGSAActiveChatTitle(void) {
                 if (t.length) return t;
             }
         }
-        // 3) 兜底：窗口里找 UIKit 导航栏
+        // 3) 兜底：窗口里找 UIKit 导航栏（跳过我们的小浮窗和没有 rootVC 的辅助窗口）
         NSArray<UIWindow *> *wins = TGSAAllWindows();
         for (UIWindow *w in wins) {
+            if (!w.rootViewController) continue;                                   // 我们的浮窗没有 rootVC
+            if (CGRectGetWidth(w.bounds) < 100 || CGRectGetHeight(w.bounds) < 100) continue;
             NSString *t = TGSAFirstLabelLikeTitle(w, 0);
             if (t.length) return t;
         }
