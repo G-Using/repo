@@ -108,8 +108,8 @@ SHA1: 848870da0ce21bb749b6d83915be1e2a944ccbb5
 SHA256: 18ea7a930ed18ba42d74bf0b52b1ff0af7d96b22fca73deee870556fb97799eb
 
 Package: com.gusing.tgsaveanywhere.rootful
-Name: TGSaveAnywhere (rootful)
-Description: Telegram 视频保存到相册或文件，支持禁止保存内容的频道
+Name: telegram视频下载 (rootful)
+Description: 支持telegram视频保存到文件或者相册，支持禁止保存的频道，仅测试12.9.3版本，仅在ios16.5测试有效，无效请删除！
 Maintainer: G-Using
 Author: G-Using
 Section: Tweaks
@@ -117,14 +117,14 @@ Architecture: iphoneos-arm
 Version: 0.2.6
 Installed-Size: 360
 Filename: debs/com.gusing.tgsaveanywhere.rootful_0.2.6_iphoneos-arm.deb
-Size: 56570
-MD5sum: fb5fead66e1ca9fba2a3b4cb744cee53
-SHA1: 248adde31cfb2f1be15933f30bad321bc5e7cd74
-SHA256: 5b6974c12d70860c981f03e3ba5282f1d796ae3da2aa2cfc46e7f2db91660027
+Size: 56636
+MD5sum: e188dbcf160e5f29f4c7dc96a121a5df
+SHA1: 786f03005347feb3b569d0b322cd240943c52887
+SHA256: 58d98cd393ad07220b5e84ae2f294a3801b4f6a8601ebb26ff56ce965afdc3d6
 
 Package: com.gusing.tgsaveanywhere
-Name: TGSaveAnywhere (rootless, iOS15+)
-Description: Telegram 视频保存到相册或文件，支持禁止保存内容的频道
+Name: telegram视频下载 (rootless, iOS15+)
+Description: 支持telegram视频保存到文件或者相册，支持禁止保存的频道，仅测试12.9.3版本，仅在ios16.5测试有效，无效请删除！
 Maintainer: G-Using
 Author: G-Using
 Section: Tweaks
@@ -132,10 +132,10 @@ Architecture: iphoneos-arm64
 Version: 0.2.6
 Installed-Size: 360
 Filename: debs/com.gusing.tgsaveanywhere_0.2.6_iphoneos-arm64.deb
-Size: 56444
-MD5sum: 2b17bd8b99cea2b18e0b235e89611e31
-SHA1: 2631743565cce6220109b8066895e0ff37313a32
-SHA256: b257ed1323c9a19462a4eb6b27c589240745940d5ae37cc0e352981b8a9abe0e
+Size: 56510
+MD5sum: 55a9f999d835d778517979b6569b96ff
+SHA1: 191cde3159d5a2a230a57247e31d9106df228b25
+SHA256: 7e54558d3eb7bc5dcd025f0f9588f5d2c99681b27e4c0dd623c848ef7bb0da14
 
 Package: cn.octoforce.squidgesturepro
 Name: SquidGesturePro (无根转换版)
