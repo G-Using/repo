@@ -7,16 +7,16 @@ Architectures: iphoneos-arm iphoneos-arm64 iphoneos-arm64e
 Components: main
 Icon: https://g-using.github.io/repo/icon.png
 Description: A`guang 自用的 tweak / 插件源
-Date: Thu, 24 Sep 2026 12:04:40 GMT
+Date: Thu, 24 Sep 2026 12:05:11 GMT
 MD5Sum:
- 5188d3d1269e8150f48073e7bf352115 5685 Packages
- 53cd3bb859ce4da804d1c2b94a0b7788 2120 Packages.gz
- 8e406632f38dc47638ab9f8343dc62ba 2333 Packages.bz2
+ 1061bd908cdc6509e6f01ba7a0c28bca 4642 Packages
+ 1754c2f3d35b55d9a263ae4becef25fe 1893 Packages.gz
+ b079311e4400a254db744acea6be55ad 2096 Packages.bz2
 SHA1:
- 16117c665e0f156483573c01c1ab002d2d675609 5685 Packages
- e4b43fb48ce103f28233c92da6243b0ba5059a4b 2120 Packages.gz
- cfc854817df158930249766259ff457d1521468c 2333 Packages.bz2
+ 5514bc4d2d17a0c5391b63350443e097538d987e 4642 Packages
+ 60c3f616782e1abb8ad401bdde7ccc1fd09fe213 1893 Packages.gz
+ 2bb468237aba277dba3ba556c30c078cd11ae389 2096 Packages.bz2
 SHA256:
- 45af82600510e9e191aae66eb4bf9d6a4803399b5415ab7a6d86ab0f5399a915 5685 Packages
- f5a8ebfe6d6f9b600f5285071e89e77c8f2e8ab837357153955a5d276ec7c1ed 2120 Packages.gz
- 8d4560e413750b36a2a81ff2615ffd139b42e178d114e6eecc9f45c80bfb1ca0 2333 Packages.bz2
+ 5d107136bc775c8e0038e32ba11ca1e212bbbc0fefd8a00c07810fd2ea8650a8 4642 Packages
+ 3c00465f3bb8a58b5ce9a4ae9261607e92c963d28c38150936cae36be928ac9b 1893 Packages.gz
+ e5b5a70316d9e70c5c42057fc09f9dc7c45588ac0bf6d1b039ca2eba5e5f1ec0 2096 Packages.bz2
