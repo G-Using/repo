@@ -1,4 +1,22 @@
 Package: cn.octoforce.squidextender
+Name: SquidExtender (RootHide Offline Recovery Test) (无根转换版)
+Description: Local device-bound license recovery for SquidExtender 3.7.4. No activation server required. Device validation pending.
+Maintainer: SquidForce, Backup
+Author: SquidForce, Backup
+Section: Tweaks
+Depends: mobilesubstrate, preferenceloader, com.opa334.libsandy, firmware (>= 15.0)
+Conflicts: com.squidforce.squidextender
+SileoDepiction: https://lclrc.github.io/repo/depictions/native/cn.octoforce.squidextender/depiction.json
+Architecture: iphoneos-arm64
+Version: 3.7.4+offline.1
+Installed-Size: 10254
+Filename: debs/SquidExtender_3.7.4+offline.1_iphoneos-arm64.deb
+Size: 2305432
+MD5sum: 93dee35edd8dc037a1163871614e34bc
+SHA1: 35b576f9999624ae990d5fa751137664f636b8fc
+SHA256: e4706281803d0031df31201674e943095e16e1e8a65e4990c4c3ee30e2412308
+
+Package: cn.octoforce.squidextender
 Name: SquidExtender (RootHide Offline Recovery Test)
 Description: Local device-bound license recovery for SquidExtender 3.7.4. No activation server required. Device validation pending.
 Maintainer: SquidForce, Backup
@@ -50,6 +68,26 @@ SHA1: 0036b0f68922138498230c48df959572383a651a
 SHA256: 7ebdbc67e7d398d824996928358c051d29eb5085e61865b96d23b52dde23fab4
 
 Package: com.bvn.copyvault.rl
+Name: CopyVault VH (无根转换版)
+Description: CopyVault is a modern, powerful and easy-to-use pasteboard jailbreak tweak, works on both iphone and ipad!
+ * CopyVault 是一款现代、强大且易用的剪贴板越狱插件，同时支持 iPhone 和 iPad！
+Maintainer: SquidForce, Backup
+Author: SquidForce, Backup
+Section: Tweaks
+Depends: mobilesubstrate, preferenceloader, com.opa334.altlist, com.bvn.squidforcecrack.rl
+Conflicts: com.squidforce.copyvault
+Architecture: iphoneos-arm64
+Version: 1.9.0k
+Installed-Size: 6220
+icon: https://huayuarc.github.io/icon/CopyVault@2x.png
+Pre-Depends: rootless-compat(>= 0.9)
+Filename: debs/com.bvn.copyvault.rl_1.9.0k_iphoneos-arm64.deb
+Size: 1641900
+MD5sum: f701ddeb2bbfb7c7b82e898d9e563143
+SHA1: 9556faf888c9d3340bdf0440ca135ba854c5cd43
+SHA256: f9a2ab005c9fc1dd1bdbcfd93084154e2b6da3d26c2b81c8de113c141ebbdc4c
+
+Package: com.bvn.copyvault.rl
 Name: CopyVault VH
 Description: CopyVault is a modern, powerful and easy-to-use pasteboard jailbreak tweak, works on both iphone and ipad!
  * CopyVault 是一款现代、强大且易用的剪贴板越狱插件，同时支持 iPhone 和 iPad！
@@ -98,6 +136,24 @@ Size: 56444
 MD5sum: 2b17bd8b99cea2b18e0b235e89611e31
 SHA1: 2631743565cce6220109b8066895e0ff37313a32
 SHA256: b257ed1323c9a19462a4eb6b27c589240745940d5ae37cc0e352981b8a9abe0e
+
+Package: cn.octoforce.squidgesturepro
+Name: SquidGesturePro (无根转换版)
+Depends: mobilesubstrate, preferenceloader, firmware (>= 15.0)
+Conflicts: com.lclrc.squidgesture, com.lclrc.squidgesturepro
+Description: Local device-bound license recovery for SquidGesturePro 2.7.6-1. No activation server required. Device validation pending.
+Maintainer: 刀哥
+Author: 刀哥
+Section: Tweaks
+SileoDepiction: https://lclrc.github.io/repo/depictions/native/cn.octoforce.squidgesturepro/depiction.json
+Architecture: iphoneos-arm64
+Version: 2.7.6-1
+Installed-Size: 6762
+Filename: debs/squidgesture_2.7.6-1_iphoneos-arm64.deb
+Size: 1796476
+MD5sum: 5419fe0984a52a755a1937d30211dc94
+SHA1: a93d22290368adea158d82e215081abe34514a35
+SHA256: c5d92c67f9ea6e63e34336e5895f5d057424bb249c006ea6ade7178cc9f9a645
 
 Package: cn.octoforce.squidgesturepro
 Name: SquidGesturePro
