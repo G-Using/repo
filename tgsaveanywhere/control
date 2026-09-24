@@ -1,8 +1,8 @@
 Package: com.gusing.tgsaveanywhere
-Name: TGSaveAnywhere
+Name: telegram视频下载
 Version: 0.2.6
 Architecture: iphoneos-arm
-Description: Telegram 视频保存到相册或文件，支持禁止保存内容的频道
+Description: 支持telegram视频保存到文件或者相册，支持禁止保存的频道，仅测试12.9.3版本，仅在ios16.5测试有效，无效请删除！
 Maintainer: G-Using
 Author: G-Using
 Section: Tweaks
