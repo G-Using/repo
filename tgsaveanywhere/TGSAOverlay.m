@@ -279,12 +279,28 @@ static const CGFloat TGSAWindowSize = 62.0;   // 比按钮略大，留出描边�
     return keyWindow;
 }
 
+/// 悬浮窗 frame 的坐标基准是「屏幕」，绝不能用 keyWindow 的 bounds：
+/// Telegram 有很多辅助窗口（有的 bounds 只有几十个点甚至为 0），
+/// 一旦拿它们当屏幕做 clamp，按钮就会被瞬间拽到左上角。
+- (CGRect)tgsa_screenBounds {
+    UIWindow *w = self.overlayWindow ?: [self tgsa_keyWindow];
+    UIScreen *screen = nil;
+    if (@available(iOS 13.0, *)) {
+        screen = w.windowScene.screen;
+    }
+    if (!screen) screen = w.screen;
+    if (!screen) screen = UIScreen.mainScreen;
+    CGRect b = screen.bounds;
+    if (CGRectGetWidth(b) < 100 || CGRectGetHeight(b) < 100) b = UIScreen.mainScreen.bounds;
+    return b;
+}
+
 /// 悬浮窗只有按钮那么大，绝不做成全屏 —— 否则会吃掉整个 App 的触摸
 - (TGSAFloatWindow *)tgsa_overlayWindow {
     if (self.overlayWindow) return self.overlayWindow;
 
     UIWindow *key = [self tgsa_keyWindow];
-    CGRect screen = key ? key.bounds : UIScreen.mainScreen.bounds;
+    CGRect screen = [self tgsa_screenBounds];
 
     TGSAFloatWindow *w = nil;
     if (@available(iOS 13.0, *) && key.windowScene) {
@@ -355,8 +371,7 @@ static const CGFloat TGSAWindowSize = 62.0;   // 比按钮略大，留出描边�
     window.tgsa_touchTarget = self.button;
     if (window.hidden) {
         if (!self.userMoved) {
-            UIWindow *key = [self tgsa_keyWindow];
-            CGRect screen = key ? key.bounds : UIScreen.mainScreen.bounds;
+            CGRect screen = [self tgsa_screenBounds];
             window.frame = CGRectMake(CGRectGetMaxX(screen) - TGSAWindowSize - 8,
                                       CGRectGetMidY(screen) - TGSAWindowSize / 2.0,
                                       TGSAWindowSize, TGSAWindowSize);
@@ -426,8 +441,7 @@ static const CGFloat TGSAWindowSize = 62.0;   // 比按钮略大，留出描边�
 - (void)tgsa_clampIntoScreen {
     TGSAFloatWindow *window = self.overlayWindow;
     if (!window) return;
-    UIWindow *key = [self tgsa_keyWindow];
-    CGRect b = key ? key.bounds : UIScreen.mainScreen.bounds;
+    CGRect b = [self tgsa_screenBounds];
     CGFloat w = CGRectGetWidth(window.frame), h = CGRectGetHeight(window.frame);
     CGFloat x = MIN(MAX(CGRectGetMinX(window.frame), 4), CGRectGetWidth(b) - w - 4);
     CGFloat y = MIN(MAX(CGRectGetMinY(window.frame), 4), CGRectGetHeight(b) - h - 4);
@@ -458,8 +472,7 @@ static const CGFloat TGSAWindowSize = 62.0;   // 比按钮略大，留出描边�
     } else if (pan.state == UIGestureRecognizerStateChanged) {
         CGPoint c = CGPointMake(self.button.originStart.x + (p.x - self.button.dragStart.x),
                                 self.button.originStart.y + (p.y - self.button.dragStart.y));
-        UIWindow *key = [self tgsa_keyWindow];
-        CGRect b = key ? key.bounds : UIScreen.mainScreen.bounds;
+        CGRect b = [self tgsa_screenBounds];
         CGFloat half = TGSAWindowSize / 2.0;
         window.center = CGPointMake(MIN(MAX(c.x, half + 2), CGRectGetWidth(b) - half - 2),
                                     MIN(MAX(c.y, half + 2), CGRectGetHeight(b) - half - 2));
@@ -488,10 +501,11 @@ static NSString *_Nullable TGSACopyToTemp(NSString *src, NSString *ext) {
     return dst;
 }
 
-/// 保存/导出的公共流程，后台做三层检测：
+/// 保存/导出的公共流程，后台做四层检测：
 ///   1) 文件是否还在变大（TG 流式缓存边播边写）；
 ///   2) mp4 结构是否完整（box 链铺满文件、moov 在）—— 不完整时相册会拒绝、文件 App 也播不了；
-///   3) mvhd 元数据时长是否正常（异常 = 索引坏了，系统播放器只认出几十秒）。
+///   3) 实际已缓冲时长够不够 —— mvhd 写的是总时长（比如 57s），但文件里可能只有前 10s 的数据；
+///   4) 时长元数据是否正常（异常 = 索引坏了，系统播放器只认出几十秒）。
 /// 检出问题先警告，用户确认后再保存；结果无论成败都弹窗。
 - (void)tgsa_storeFile:(NSString *)src toAlbum:(BOOL)toAlbum {
     NSString *ext = TGSAExtensionForVideoFile(src) ?: @"mp4";
@@ -500,12 +514,13 @@ static NSString *_Nullable TGSACopyToTemp(NSString *src, NSString *ext) {
         BOOL growing = TGSAFileStillGrowing(src);
 
         BOOL isMp4 = [ext isEqualToString:@"mp4"] || [ext isEqualToString:@"m4v"] || [ext isEqualToString:@"mov"];
-        NSTimeInterval metaDur = -1;
+        NSTimeInterval metaDur = -1, bufferedDur = -1;
         BOOL mp4Complete = YES;
         if (isMp4) {
-            mp4Complete = TGSAMp4Inspect(src, &metaDur);
-            TGSALog(@"mp4 检测：%@，元数据时长 %@（%@）",
-                    mp4Complete ? @"结构完整" : @"索引不完整", TGSADurationString(metaDur), src.lastPathComponent);
+            mp4Complete = TGSAMp4InspectEx(src, &metaDur, &bufferedDur);
+            TGSALog(@"mp4 检测：%@，总时长 %@，已连续缓冲 %@（%@）",
+                    mp4Complete ? @"结构完整" : @"索引不完整",
+                    TGSADurationString(metaDur), TGSADurationString(bufferedDur), src.lastPathComponent);
         }
 
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -544,7 +559,21 @@ static NSString *_Nullable TGSACopyToTemp(NSString *src, NSString *ext) {
                 return;
             }
 
-            // ② 还在缓冲中
+            // ② 已缓冲时长不足：TG 边播边缓存，mvhd 写的总时长 ≠ 文件里真实有的数据。
+            //    只缓冲了一部分就保存，相册里的视频播到缓冲尽头就会卡住。
+            if (metaDur > 0 && bufferedDur >= 0 && bufferedDur < metaDur - 0.5) {
+                UIAlertController *warn = [UIAlertController alertControllerWithTitle:@"视频只缓冲了一部分"
+                        message:[NSString stringWithFormat:@"这个视频共 %@，目前 Telegram 里只连续缓冲了 %@。现在保存，出来的文件只能播放前 %@，后面会卡住。\n\n建议：回 Telegram 把这个视频的进度条从头到尾拖一遍（让它完整下载），再来保存。", TGSADurationString(metaDur), TGSADurationString(bufferedDur), TGSADurationString(bufferedDur)]
+                        preferredStyle:UIAlertControllerStyleAlert];
+                [warn addAction:[UIAlertAction actionWithTitle:@"仍要保存（只能播已缓冲部分）" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *x) {
+                    doStore();
+                }]];
+                [warn addAction:[UIAlertAction actionWithTitle:@"取消，我去下载完整" style:UIAlertActionStyleCancel handler:nil]];
+                TGSAPresentAlert(warn);
+                return;
+            }
+
+            // ③ 还在缓冲中
             if (growing) {
                 UIAlertController *warn = [UIAlertController alertControllerWithTitle:@"视频仍在缓冲中"
                         message:@"这个文件的体积还在变化（Telegram 正在边播边下载）。现在保存到相册，很可能只能播放已缓冲的一小段就卡住。\n\n建议：先回到 Telegram 让视频完整加载（进度条全部走完），再来保存。"
@@ -557,7 +586,7 @@ static NSString *_Nullable TGSACopyToTemp(NSString *src, NSString *ext) {
                 return;
             }
 
-            // ③ 结构完整但时长元数据可疑（比如 300MB 的文件只认出 19 秒）
+            // ④ 结构完整但时长元数据可疑（比如 300MB 的文件只认出 19 秒）
             unsigned long long fsize = [[[NSFileManager defaultManager] attributesOfItemAtPath:src error:nil][NSFileSize] unsignedLongLongValue];
             if (metaDur >= 0 && metaDur < 30 && fsize > 30ULL * 1024 * 1024) {
                 UIAlertController *warn = [UIAlertController alertControllerWithTitle:@"视频时长元数据异常"
@@ -704,7 +733,7 @@ static NSString *_Nullable TGSACopyToTemp(NSString *src, NSString *ext) {
         TGSALog(@"缓存扫描（窗口 %.0fs）原始命中 %lu 个", win, (unsigned long)raw.count);
 
         // 过滤：只保留「已缓存完整」的视频
-        //   mp4 要求 box 结构完整 + mvhd 时长 >= 1s（缩略图/分片通不过）；
+        //   mp4 要求 box 结构完整 + 总时长 >= 1s + 实际已缓冲 >= 95%（缩略图/分片/只缓冲一半的通不过）；
         //   其他格式（mkv 等）只要求体积达到下限。下限可用 config 的 MinVideoMB 调整。
         BOOL onlyComplete = [TGSASetting(@"OnlyCompleteVideos", @YES) boolValue];
         double minMB = [TGSASetting(@"MinVideoMB", @1.0) doubleValue];
@@ -718,9 +747,11 @@ static NSString *_Nullable TGSACopyToTemp(NSString *src, NSString *ext) {
             NSString *ext = TGSAExtensionForVideoFile(p) ?: @"";
             BOOL ok = YES;
             if ([ext isEqualToString:@"mp4"] || [ext isEqualToString:@"m4v"] || [ext isEqualToString:@"mov"]) {
-                NSTimeInterval dur = -1;
-                ok = TGSAMp4Inspect(p, &dur);
-                if (dur >= 0 && dur < 1.0) ok = NO;
+                NSTimeInterval total = -1, buffered = -1;
+                ok = TGSAMp4InspectEx(p, &total, &buffered);
+                if (total >= 0 && total < 1.0) ok = NO;
+                // mvhd 写 57s 但文件里只有 10s 数据的这种，不算完整
+                if (ok && buffered >= 0 && total > 0 && buffered < total * 0.95) ok = NO;
             }
             if (ok) [complete addObject:p];
         }
@@ -813,9 +844,16 @@ static NSString *_Nullable TGSACopyToTemp(NSString *src, NSString *ext) {
         NSString *dur = @"";
         NSString *ext = TGSAExtensionForVideoFile(path) ?: @"";
         if ([ext isEqualToString:@"mp4"] || [ext isEqualToString:@"m4v"] || [ext isEqualToString:@"mov"]) {
-            NSTimeInterval d = -1;
-            TGSAMp4Inspect(path, &d);   // 只读几个字节，快
-            dur = [NSString stringWithFormat:@"%@  ·  ", TGSADurationString(d)];
+            // 显示「已缓冲」时长：TG 是流式缓存，元数据总时长 ≠ 文件里真实有的数据
+            NSTimeInterval total = -1, buffered = -1;
+            TGSAMp4InspectEx(path, &total, &buffered);   // 只读采样表，快
+            NSTimeInterval show = (buffered >= 0) ? buffered : total;
+            if (buffered >= 0 && total > 0 && buffered < total - 0.5) {
+                dur = [NSString stringWithFormat:@"缓冲%@/%@  ·  ",
+                       TGSADurationString(buffered), TGSADurationString(total)];
+            } else {
+                dur = [NSString stringWithFormat:@"%@  ·  ", TGSADurationString(show)];
+            }
         }
         NSString *title = [NSString stringWithFormat:@"%@%.1f MB  ·  %@",
                            dur, mb, mt ? [df stringFromDate:mt] : @"?"];
@@ -857,11 +895,17 @@ static NSString *_Nullable TGSACopyToTemp(NSString *src, NSString *ext) {
     NSString *durInfo = @"";
     BOOL isMp4 = [ext isEqualToString:@"mp4"] || [ext isEqualToString:@"m4v"] || [ext isEqualToString:@"mov"];
     if (isMp4) {
-        NSTimeInterval metaDur = -1;
-        BOOL ok = TGSAMp4Inspect(src, &metaDur);
+        NSTimeInterval metaDur = -1, bufferedDur = -1;
+        BOOL ok = TGSAMp4InspectEx(src, &metaDur, &bufferedDur);
         unsigned long long fsize = [[[NSFileManager defaultManager] attributesOfItemAtPath:src error:nil][NSFileSize] unsignedLongLongValue];
+        NSString *durPart;
+        if (bufferedDur >= 0 && metaDur > 0 && bufferedDur < metaDur - 0.5) {
+            durPart = [NSString stringWithFormat:@"已缓冲 %@ / 共 %@", TGSADurationString(bufferedDur), TGSADurationString(metaDur)];
+        } else {
+            durPart = TGSADurationString(metaDur);
+        }
         durInfo = [NSString stringWithFormat:@"%@ · %.1f MB · 索引%@",
-                   TGSADurationString(metaDur), fsize / 1024.0 / 1024.0,
+                   durPart, fsize / 1024.0 / 1024.0,
                    ok ? @"完整" : @"不完整（未下载完）"];
         TGSALog(@"菜单检测 %@：%@", src.lastPathComponent, durInfo);
     }

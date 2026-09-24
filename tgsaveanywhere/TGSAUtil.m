@@ -130,14 +130,254 @@ BOOL TGSAFileStillGrowing(NSString *path) {
     return NO;
 }
 
-#pragma mark - MP4 结构 / 时长检测
+#pragma mark - MP4 结构 / 时长 / 已缓冲检测
 
 static uint32_t TGSABE32(const unsigned char *b) {
     return ((uint32_t)b[0] << 24) | ((uint32_t)b[1] << 16) | ((uint32_t)b[2] << 8) | (uint32_t)b[3];
 }
 
-BOOL TGSAMp4Inspect(NSString *path, NSTimeInterval *_Nullable outDuration) {
-    if (outDuration) *outDuration = -1;
+static uint64_t TGSABE64(const unsigned char *b) {
+    uint64_t v = 0;
+    for (int i = 0; i < 8; i++) v = (v << 8) | b[i];
+    return v;
+}
+
+#define TGSA_FCC(a, b, c, d) ((uint32_t)(((uint32_t)(a) << 24) | ((uint32_t)(b) << 16) | ((uint32_t)(c) << 8) | (uint32_t)(d)))
+
+/// 顶层 box 遍历游标
+typedef struct {
+    const unsigned char *p;
+    NSUInteger len;
+    NSUInteger off;
+} TGSABoxCursor;
+
+static BOOL TGSANextBox(TGSABoxCursor *c, uint32_t *outType, NSUInteger *outBodyOff, uint64_t *outBodyLen) {
+    if (!c->p || c->off + 8 > c->len) return NO;
+    const unsigned char *b = c->p + c->off;
+    uint64_t size = TGSABE32(b);
+    uint32_t type = TGSABE32(b + 4);
+    NSUInteger headerLen = 8;
+    if (size == 1) {                       // 64 位 largesize
+        if (c->off + 16 > c->len) return NO;
+        size = TGSABE64(b + 8);
+        headerLen = 16;
+    } else if (size == 0) {                // 延伸到数据末尾
+        size = c->len - c->off;
+    }
+    if (size < headerLen || c->off + size > c->len) return NO;
+    *outType = type;
+    *outBodyOff = c->off + headerLen;
+    *outBodyLen = size - headerLen;
+    c->off += (NSUInteger)size;
+    return YES;
+}
+
+/// 一条轨道的采样表（stbl 的 stts / stsz / stsc / stco 四件套）
+typedef struct {
+    uint32_t sampleCount;
+    uint64_t uniformSize;        // stsz 的 sample_size 字段；非 0 表示所有采样等大
+    uint64_t *sizes;             // 每采样大小（uniformSize == 0 时有效）
+    uint32_t *sttsCounts;        // stts entry：连续 N 个采样
+    uint32_t *sttsDeltas;        // stts entry：每个采样时长（timescale 单位）
+    uint32_t sttsEntries;
+    uint64_t *chunkOffsets;      // stco / co64
+    uint32_t chunkCount;
+    uint32_t *stscFirst;         // stsc：起始 chunk（1-based）
+    uint32_t *stscPerChunk;      // stsc：每个 chunk 含多少采样
+    uint32_t stscCount;
+    BOOL valid;
+} TGSASampleTable;
+
+static void TGSATableFree(TGSASampleTable *t) {
+    if (!t) return;
+    free(t->sizes);
+    free(t->chunkOffsets);
+    free(t->stscFirst);
+    free(t->stscPerChunk);
+    free(t->sttsCounts);
+    free(t->sttsDeltas);
+    memset(t, 0, sizeof(*t));
+}
+
+/// 解析 stbl 的四个关键子 box；缺一或字段非法则置 valid=NO
+static void TGSAParseStbl(NSData *stblBody, TGSASampleTable *t) {
+    memset(t, 0, sizeof(*t));
+    if (!stblBody.length) return;
+
+    NSData *stts = nil, *stsz = nil, *stsc = nil, *stco = nil;
+    BOOL isCo64 = NO;
+    TGSABoxCursor c = { stblBody.bytes, stblBody.length, 0 };
+    uint32_t type; NSUInteger bodyOff; uint64_t bodyLen;
+    while (TGSANextBox(&c, &type, &bodyOff, &bodyLen)) {
+        NSData *slice = [stblBody subdataWithRange:NSMakeRange(bodyOff, (NSUInteger)bodyLen)];
+        if (type == TGSA_FCC('s','t','t','s')) stts = slice;
+        else if (type == TGSA_FCC('s','t','s','z')) stsz = slice;
+        else if (type == TGSA_FCC('s','t','s','c')) stsc = slice;
+        else if (type == TGSA_FCC('s','t','c','o')) { stco = slice; isCo64 = NO; }
+        else if (type == TGSA_FCC('c','o','6','4')) { stco = slice; isCo64 = YES; }
+    }
+    if (!stts.length || !stsz.length || !stsc.length || !stco.length) return;
+
+    // stts：时长表
+    const unsigned char *p = stts.bytes;
+    if (stts.length < 8) return;
+    uint32_t entries = TGSABE32(p + 4);
+    if (entries == 0 || entries > 65536 || 8 + (NSUInteger)entries * 8 > stts.length) return;
+    t->sttsCounts = malloc(entries * sizeof(uint32_t));
+    t->sttsDeltas = malloc(entries * sizeof(uint32_t));
+    if (!t->sttsCounts || !t->sttsDeltas) { TGSATableFree(t); return; }
+    for (uint32_t i = 0; i < entries; i++) {
+        t->sttsCounts[i] = TGSABE32(p + 8 + i * 8);
+        t->sttsDeltas[i] = TGSABE32(p + 8 + i * 8 + 4);
+    }
+    t->sttsEntries = entries;
+
+    // stsz：采样大小表
+    p = stsz.bytes;
+    if (stsz.length < 12) { TGSATableFree(t); return; }
+    uint32_t uniform = TGSABE32(p + 4);
+    uint32_t count = TGSABE32(p + 8);
+    if (count == 0 || count > 8000000) { TGSATableFree(t); return; }   // 防御性上限
+    t->sampleCount = count;
+    t->uniformSize = uniform;
+    if (!uniform) {
+        if (stsz.length < 12 + (NSUInteger)count * 4) { TGSATableFree(t); return; }
+        t->sizes = malloc((size_t)count * sizeof(uint64_t));
+        if (!t->sizes) { TGSATableFree(t); return; }
+        for (uint32_t i = 0; i < count; i++) t->sizes[i] = TGSABE32(p + 12 + i * 4);
+    }
+
+    // stsc：采样 → chunk 映射
+    p = stsc.bytes;
+    if (stsc.length < 8) { TGSATableFree(t); return; }
+    uint32_t sc = TGSABE32(p + 4);
+    if (sc == 0 || sc > 100000 || 8 + (NSUInteger)sc * 12 > stsc.length) { TGSATableFree(t); return; }
+    t->stscFirst = malloc(sc * sizeof(uint32_t));
+    t->stscPerChunk = malloc(sc * sizeof(uint32_t));
+    if (!t->stscFirst || !t->stscPerChunk) { TGSATableFree(t); return; }
+    for (uint32_t i = 0; i < sc; i++) {
+        t->stscFirst[i] = TGSABE32(p + 8 + i * 12);
+        t->stscPerChunk[i] = TGSABE32(p + 8 + i * 12 + 4);
+    }
+    t->stscCount = sc;
+
+    // stco / co64：chunk 在文件里的绝对偏移
+    p = stco.bytes;
+    if (stco.length < 8) { TGSATableFree(t); return; }
+    uint32_t cc = TGSABE32(p + 4);
+    NSUInteger stride = isCo64 ? 8 : 4;
+    if (cc == 0 || cc > 2000000 || 8 + (NSUInteger)cc * stride > stco.length) { TGSATableFree(t); return; }
+    t->chunkOffsets = malloc((size_t)cc * sizeof(uint64_t));
+    if (!t->chunkOffsets) { TGSATableFree(t); return; }
+    for (uint32_t i = 0; i < cc; i++) {
+        t->chunkOffsets[i] = isCo64 ? TGSABE64(p + 8 + (NSUInteger)i * 8)
+                                    : TGSABE32(p + 8 + i * 4);
+    }
+    t->chunkCount = cc;
+
+    t->valid = YES;
+}
+
+/// 按采样表算「连续可播的已缓冲时长」：
+/// chunk 顺序推进采样，逐个核对采样数据的 [offset, offset+size) 是否都在文件大小内，
+/// 遇到第一个没下载完整的采样就停 —— 它就是系统播放器会卡住的位置。
+/// outTotal 带回该轨总时长（秒）。
+static double TGSATableBufferedSeconds(const TGSASampleTable *t, unsigned long long fsize,
+                                       double timescale, double *outTotal) {
+    if (outTotal) *outTotal = -1;
+    if (!t || !t->valid || timescale <= 0) return -1;
+
+    // 1) 总时长：stts 各 entry 的 count × delta 累加（不超过采样总数）
+    double totalUnits = 0;
+    uint32_t counted = 0;
+    for (uint32_t e = 0; e < t->sttsEntries && counted < t->sampleCount; e++) {
+        uint32_t n = t->sttsCounts[e];
+        if (n > t->sampleCount - counted) n = t->sampleCount - counted;
+        totalUnits += (double)n * t->sttsDeltas[e];
+        counted += n;
+    }
+    if (totalUnits <= 0) return -1;
+    if (outTotal) *outTotal = totalUnits / timescale;
+
+    // 2) 已缓冲：从头开始数连续完整的采样
+    double bufferedUnits = 0;
+    uint32_t sampleIdx = 0, stscIdx = 0, entry = 0, leftInEntry = 0, curDelta = 0;
+    for (uint32_t ch = 0; ch < t->chunkCount; ch++) {
+        while (stscIdx + 1 < t->stscCount && t->stscFirst[stscIdx + 1] <= ch + 1) stscIdx++;
+        if (stscIdx >= t->stscCount) break;
+        uint32_t per = t->stscPerChunk[stscIdx];
+        if (per == 0) continue;
+        uint64_t off = t->chunkOffsets[ch];
+        for (uint32_t s = 0; s < per && sampleIdx < t->sampleCount; s++) {
+            while (leftInEntry == 0) {
+                if (entry >= t->sttsEntries) { sampleIdx = t->sampleCount; break; }
+                leftInEntry = t->sttsCounts[entry];
+                curDelta = t->sttsDeltas[entry];
+                entry++;
+            }
+            if (sampleIdx >= t->sampleCount) break;
+            uint64_t sz = t->uniformSize ? t->uniformSize : t->sizes[sampleIdx];
+            if (off + sz > fsize) return bufferedUnits / timescale;   // ← 第一个缺数据的位置
+            bufferedUnits += curDelta;
+            off += sz;
+            sampleIdx++;
+            leftInEntry--;
+        }
+    }
+    return bufferedUnits / timescale;
+}
+
+/// 解析一条 trak：mdhd 拿 timescale，minf/stbl 拿采样表，算出该轨已缓冲时长。
+/// minBuffered / maxTotal 跨轨取最短（音频/视频哪条先缺数据，播放就在哪卡住）。
+static void TGSAParseTrak(NSData *trakBody, unsigned long long fsize, double defaultTimescale,
+                          double *minBuffered, double *maxTotal) {
+    if (!trakBody.length) return;
+    double timescale = defaultTimescale;
+    NSData *minfBody = nil;
+
+    TGSABoxCursor c = { trakBody.bytes, trakBody.length, 0 };
+    uint32_t type; NSUInteger bodyOff; uint64_t bodyLen;
+    while (TGSANextBox(&c, &type, &bodyOff, &bodyLen)) {
+        if (type != TGSA_FCC('m','d','i','a')) continue;
+        NSData *mdia = [trakBody subdataWithRange:NSMakeRange(bodyOff, (NSUInteger)bodyLen)];
+        TGSABoxCursor c2 = { mdia.bytes, mdia.length, 0 };
+        uint32_t t2; NSUInteger b2; uint64_t l2;
+        while (TGSANextBox(&c2, &t2, &b2, &l2)) {
+            NSData *s2 = [mdia subdataWithRange:NSMakeRange(b2, (NSUInteger)l2)];
+            if (t2 == TGSA_FCC('m','d','h','d')) {
+                const unsigned char *m = s2.bytes;
+                if (s2.length >= 16 && m[0] == 0) {
+                    uint32_t ts = TGSABE32(m + 12);        // v0：ver/flags(4)+creation(4)+mod(4)
+                    if (ts) timescale = ts;
+                } else if (s2.length >= 24 && m[0] == 1) {
+                    uint32_t ts = TGSABE32(m + 20);        // v1：creation/mod 各 8 字节
+                    if (ts) timescale = ts;
+                }
+            } else if (t2 == TGSA_FCC('m','i','n','f')) {
+                minfBody = s2;
+            }
+        }
+    }
+    if (!minfBody.length || timescale <= 0) return;
+
+    TGSABoxCursor c3 = { minfBody.bytes, minfBody.length, 0 };
+    while (TGSANextBox(&c3, &type, &bodyOff, &bodyLen)) {
+        if (type != TGSA_FCC('s','t','b','l')) continue;
+        NSData *stbl = [minfBody subdataWithRange:NSMakeRange(bodyOff, (NSUInteger)bodyLen)];
+        TGSASampleTable table;
+        TGSAParseStbl(stbl, &table);
+        double total = -1;
+        double buffered = TGSATableBufferedSeconds(&table, fsize, timescale, &total);
+        TGSATableFree(&table);
+        if (total > 0 && total > *maxTotal) *maxTotal = total;
+        if (buffered >= 0 && (*minBuffered < 0 || buffered < *minBuffered)) *minBuffered = buffered;
+    }
+}
+
+BOOL TGSAMp4InspectEx(NSString *path, NSTimeInterval *_Nullable outTotalDuration,
+                      NSTimeInterval *_Nullable outBufferedDuration) {
+    if (outTotalDuration) *outTotalDuration = -1;
+    if (outBufferedDuration) *outBufferedDuration = -1;
     if (!path.length) return NO;
 
     // 只处理 ftyp 开头的文件（mkv/avi 等不适用）
@@ -152,59 +392,72 @@ BOOL TGSAMp4Inspect(NSString *path, NSTimeInterval *_Nullable outDuration) {
         NSDictionary *attr = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil];
         unsigned long long fsize = [attr[NSFileSize] unsignedLongLongValue];
 
+        double mvhdTs = 0, mvhdTotal = -1;
+        double minBuffered = -1, maxTrackTotal = -1;
+        BOOL hasMoof = NO;   // fMP4（分片）不适用这套连续性推算
+
         unsigned long long off = 0;
+        BOOL overran = NO;
         while (off + 8 <= fsize) {
             [fh seekToFileOffset:off];
             NSData *hdr = [fh readDataOfLength:16];
             const unsigned char *b = hdr.bytes;
-            if (hdr.length < 8) return NO;
+            if (hdr.length < 8) { overran = YES; break; }
             uint64_t boxSize = TGSABE32(b);
             uint32_t boxType = TGSABE32(b + 4);
             unsigned long long headerLen = 8;
-            if (boxSize == 1) {                 // 64 位 largesize
-                if (hdr.length < 16) return NO;
-                boxSize = 0;
-                for (int i = 8; i < 16; i++) boxSize = (boxSize << 8) | b[i];
+            if (boxSize == 1) {
+                if (hdr.length < 16) { overran = YES; break; }
+                boxSize = TGSABE64(b + 8);
                 headerLen = 16;
-            } else if (boxSize == 0) {          // 0 = 延伸到文件尾
+            } else if (boxSize == 0) {
                 boxSize = fsize - off;
             }
-            if (boxSize < headerLen || off + boxSize > fsize) return NO;   // box 越界 → 结构不完整
+            if (boxSize < headerLen || off + boxSize > fsize) { overran = YES; break; }   // box 越界 → 结构不完整
 
-            // 在 moov 里找 mvhd 读元数据时长
-            if (boxType == 0x6D6F6F76 /* moov */ && outDuration && *outDuration < 0) {
-                unsigned long long bodyLen = boxSize - headerLen;
-                if (bodyLen > 4 * 1024 * 1024) bodyLen = 4 * 1024 * 1024;
-                [fh seekToFileOffset:off + headerLen];
-                NSData *body = [fh readDataOfLength:(NSUInteger)bodyLen];
-                const unsigned char *p = body.bytes;
-                for (NSUInteger i = 0; body.length >= 12 && i + 12 <= body.length; i++) {
-                    if (p[i] == 'm' && p[i+1] == 'v' && p[i+2] == 'h' && p[i+3] == 'd') {
-                        const unsigned char *m = p + i;      // mvhd box 起始
-                        uint8_t ver = m[8];
-                        if (ver == 0) {
+            if (boxType == TGSA_FCC('m','o','o','v') && boxSize - headerLen <= 64ULL * 1024 * 1024) {
+                [fh seekToFileOffset:off + (NSUInteger)headerLen];
+                NSData *moov = [fh readDataOfLength:(NSUInteger)(boxSize - headerLen)];
+                TGSABoxCursor c = { moov.bytes, moov.length, 0 };
+                uint32_t t; NSUInteger bo; uint64_t bl;
+                while (TGSANextBox(&c, &t, &bo, &bl)) {
+                    NSData *slice = [moov subdataWithRange:NSMakeRange(bo, (NSUInteger)bl)];
+                    if (t == TGSA_FCC('m','v','h','d')) {
+                        const unsigned char *m = slice.bytes;
+                        if (slice.length >= 20 && m[0] == 0) {
+                            uint32_t ts = TGSABE32(m + 12);
+                            uint32_t du = TGSABE32(m + 16);
+                            if (ts && du && du != 0xFFFFFFFF) mvhdTotal = (NSTimeInterval)du / ts;
+                            if (ts) mvhdTs = ts;
+                        } else if (slice.length >= 32 && m[0] == 1) {
                             uint32_t ts = TGSABE32(m + 20);
-                            uint32_t du = TGSABE32(m + 24);
-                            if (ts && du && du != 0xFFFFFFFF) *outDuration = (NSTimeInterval)du / ts;
-                        } else {                              // version 1：64 位时间
-                            uint32_t ts = TGSABE32(m + 28);
-                            uint64_t du = 0;
-                            for (int k = 32; k < 40; k++) du = (du << 8) | m[k];
-                            if (ts && du && du != 0xFFFFFFFFFFFFFFFFULL) *outDuration = (NSTimeInterval)du / ts;
+                            uint64_t du = TGSABE64(m + 24);
+                            if (ts && du && du != 0xFFFFFFFFFFFFFFFFULL) mvhdTotal = (NSTimeInterval)du / ts;
+                            if (ts) mvhdTs = ts;
                         }
-                        break;
+                    } else if (t == TGSA_FCC('t','r','a','k')) {
+                        TGSAParseTrak(slice, fsize, mvhdTs, &minBuffered, &maxTrackTotal);
                     }
                 }
+            } else if (boxType == TGSA_FCC('m','o','o','f')) {
+                hasMoof = YES;
             }
             off += boxSize;
         }
-        return (off == fsize);   // box 链恰好铺满整个文件才算完整
+
+        if (outTotalDuration) *outTotalDuration = (mvhdTotal > 0) ? mvhdTotal : maxTrackTotal;
+        if (outBufferedDuration) *outBufferedDuration = hasMoof ? -1 : minBuffered;
+        return (!overran && off == fsize);   // box 链恰好铺满整个文件才算结构完整
     } @catch (NSException *e) {
         TGSALog(@"mp4 检测异常：%@", e.reason);
         return NO;
     } @finally {
         [fh closeFile];
     }
+}
+
+BOOL TGSAMp4Inspect(NSString *path, NSTimeInterval *_Nullable outDuration) {
+    return TGSAMp4InspectEx(path, outDuration, NULL);
 }
 
 NSString *TGSADurationString(NSTimeInterval seconds) {

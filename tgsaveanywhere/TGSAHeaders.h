@@ -42,6 +42,9 @@ BOOL TGSAFileStillGrowing(NSString *path);
 /// 解析 mp4 顶层 box：返回 YES 表示 box 链恰好铺满整个文件（结构完整，moov 在）；
 /// outDuration 带回 mvhd 里的元数据时长（秒），读不到为 -1。只对 ftyp 开头的文件有意义。
 BOOL TGSAMp4Inspect(NSString *path, NSTimeInterval *_Nullable outDuration);
+/// 增强版：额外带回「实际已缓冲（连续可播）时长」——按采样表逐采样核对数据是否真的在文件里。
+/// outBufferedDuration 为 -1 表示无法推算（如 fMP4 / 表缺失）。outTotalDuration 是总时长。
+BOOL TGSAMp4InspectEx(NSString *path, NSTimeInterval *_Nullable outTotalDuration, NSTimeInterval *_Nullable outBufferedDuration);
 /// 把秒格式化成 mm:ss / h:mm:ss
 NSString *TGSADurationString(NSTimeInterval seconds);
 
