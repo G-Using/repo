@@ -21,6 +21,12 @@ REPO_COMPONENTS = "main"
 REPO_ARCHS = "iphoneos-arm iphoneos-arm64 iphoneos-arm64e"
 # 源在 Sileo 里显示的头像（留空字符串则不写 Icon 字段，Sileo 会回退到根目录的 icon.png）
 REPO_ICON = "https://g-using.github.io/repo/icon.png"
+# 源的根地址，用来拼每个包图标的绝对 URL（必须以 / 结尾）
+REPO_BASE_URL = "https://g-using.github.io/repo/"
+# 按包图标目录：把 <Package>.png 放进它，就会自动写进那条包的 Icon: 字段。
+# 例如 icons/com.huayuarc.snapper3.urlstamp.png -> 该包 stanza 里出现一行 Icon:
+# 留空字符串 "" 则不启用这个功能。
+REPO_ICONS_DIR = "icons"
 # =======================================================
 
 
@@ -187,6 +193,16 @@ def main():
         if "Package" not in fields or "Version" not in fields:
             print("  [跳过] 缺 Package/Version:", fn)
             continue
+        # 按包图标：icons/<Package>.png 存在就写进这条 stanza 的 Icon: 字段。
+        # Sileo / Zebra 会用它在包列表和详情页显示图标。
+        pkg_id = fields.get("Package", "").strip()
+        if REPO_ICONS_DIR and pkg_id:
+            icon_path = os.path.join(REPO_ROOT, REPO_ICONS_DIR, pkg_id + ".png")
+            if os.path.isfile(icon_path):
+                fields["Icon"] = REPO_BASE_URL + REPO_ICONS_DIR + "/" + pkg_id + ".png"
+                if "Icon" not in order:
+                    order.append("Icon")
+                print("      [图标]", pkg_id, "->", fields["Icon"])
         stanzas.append((fields, order))
         print("  [OK]", fn, "->", fields.get("Name", fields.get("Package")), fields.get("Version"))
 
