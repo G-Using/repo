@@ -160,6 +160,7 @@ Size: 75828
 MD5sum: 67723220c166776f45948b076c77bfff
 SHA1: 53c3ed5813cd03d23d22f5c77b6cba197acc6ef4
 SHA256: 8d459e15681d3b8de1810c86dd327c56552d4ba5d680e86c3113b60385b92814
+Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
 
 Package: com.huayuarc.snapper3.urlstamp
 Name: Snapper3 底栏URL
@@ -184,6 +185,7 @@ Size: 87474
 MD5sum: 23ec0463cafb672ed57c22b5ca047c85
 SHA1: 53abdcdff216313b845094d0df04fb9ca1c1618c
 SHA256: 2130b1ccae8efbe86766ee997fffb6878d7adf8c332b0ddc9000f816d40ffa90
+Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
 
 Package: cn.octoforce.squidgesturepro
 Name: SquidGesturePro (无根转换版)
