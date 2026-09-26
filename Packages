@@ -187,6 +187,97 @@ SHA1: 53abdcdff216313b845094d0df04fb9ca1c1618c
 SHA256: 2130b1ccae8efbe86766ee997fffb6878d7adf8c332b0ddc9000f816d40ffa90
 Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
 
+Package: com.opa334.altlist
+Name: AltList
+Depiction: https://moreinfo.thebigboss.org/moreinfo/depiction.php?file=altlistDp
+Depends: firmware (>=7.0)
+Description: A modern AppList alternative
+Maintainer: opa334
+Author: opa334
+Section: 越狱必装五个插件
+Tag: role::developer
+Architecture: iphoneos-arm64e
+Version: 1.0.11
+Installed-Size: 340
+Filename: debs/com.opa334.altlist_1.0.11_iphoneos-arm64e.deb
+Size: 27902
+MD5sum: f1cfdb97679bc2b30b2918220ee9351f
+SHA1: 9eef53971a1a30e13cfc2adf3a18b655dd2d9eb2
+SHA256: 7d145977d3fbcd5030564dc429e18f7456c29f92020c36f32e61d4a82418f737
+
+Package: com.opa334.ccsupport
+Name: CCSupport
+Depends: mobilesubstrate, firmware (>=11.0)
+Provides: com.ioscreatix.silo
+Replaces: com.ioscreatix.silo
+Conflicts: com.ioscreatix.silo
+Description: Support tweak for CC modules!
+Maintainer: opa334
+Author: opa334
+Section: 越狱必装五个插件
+Depiction: http://moreinfo.thebigboss.org/moreinfo/depiction.php?file=ccsupportDp
+Architecture: iphoneos-arm64e
+Version: 1.3.13-2-15+debug
+Installed-Size: 716
+Filename: debs/com.opa334.ccsupport_1.3.13-2-15+debug_iphoneos-arm64e.deb
+Size: 78138
+MD5sum: c08c9a3794e51d9d6ec64434f812b2ce
+SHA1: 5be2c804015f0c45ec4661e1e833165972b4b312
+SHA256: 51ff0060cb88235b1e098b8c5a550ed6280313ed29b42d5d4c809109b0e498bc
+
+Package: com.opa334.libsandy
+Name: libSandy
+Depiction: https://moreinfo.thebigboss.org/moreinfo/depiction.php?file=libsandyDp
+Description: Securely extend the sandbox of system processes and user applications
+Maintainer: opa334
+Author: opa334
+Section: 越狱必装五个插件
+Tag: role::developer
+Architecture: iphoneos-arm64e
+Version: 1.1.6-4
+Installed-Size: 468
+Filename: debs/com.opa334.libsandy_1.1.6-4_iphoneos-arm64e.deb
+Size: 19562
+MD5sum: 288946aff58fc1d2a9ec4ab4da6b0d30
+SHA1: 30a1d53cf5f8095a5fa9eacf07707aaf1d213f63
+SHA256: 81a1eeb17480b6ee200f8f4bf815892e6f58cc55f5aea6d7abe899db11da4bb5
+
+Package: ellekit
+Name: ElleKit
+Version: 1.2-1
+Architecture: iphoneos-arm64e
+Maintainer: Dhinak G <dhinak@dhinak.net>
+Conflicts: com.ex.substitute, org.coolstar.libhooker, science.xnu.substitute, mobilesubstrate, com.saurik.substrate.safemode
+Replaces: com.ex.libsubstitute, org.coolstar.libhooker, mobilesubstrate
+Provides: mobilesubstrate (= 99), org.coolstar.libhooker (= 1.6.9)
+Breaks: com.opa334.libsandy (<= 1.1.6-3)
+Author: Evelyn
+Section: 越狱必装五个插件
+Priority: optional
+Icon: https://ellekit.space/logos/logo.png
+Description: ElleKit tweak injection libraries and loader
+Filename: debs/ellekit_1.2-1_iphoneos-arm64e.deb
+Size: 142968
+MD5sum: 988ba4ca7d79ba6e1dd5afada69a8681
+SHA1: 21d1282c30113d033ca41e420339597ed8b8f31b
+SHA256: 50f1b2d60e029592238d80737b32ccc019e74ce9611390c30ffebba75097b41c
+
+Package: preferenceloader
+Description: load preferences in style
+Maintainer: ProcursusTeam <support@procurs.us>
+Author: Dhinak G <dhinak@dhinak.net>
+Name: PreferenceLoader
+Depends: mobilesubstrate
+Section: 越狱必装五个插件
+Architecture: iphoneos-arm64e
+Version: 2.2.8
+Installed-Size: 340
+Filename: debs/preferenceloader_2.2.8_iphoneos-arm64e.deb
+Size: 15816
+MD5sum: 621ec4c3191efae712a22fcd72233690
+SHA1: e691ab207e6a9af4a432af3e53432d83e94d72a7
+SHA256: 3c9cbbd49afea965457d8be48245df1c798270042482b6281476e0534163a4eb
+
 Package: cn.octoforce.squidgesturepro
 Name: SquidGesturePro (无根转换版)
 Depends: mobilesubstrate, preferenceloader, firmware (>= 15.0)
