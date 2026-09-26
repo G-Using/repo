@@ -27,6 +27,16 @@ REPO_BASE_URL = "https://g-using.github.io/repo/"
 # 例如 icons/com.huayuarc.snapper3.urlstamp.png -> 该包 stanza 里出现一行 Icon:
 # 留空字符串 "" 则不启用这个功能。
 REPO_ICONS_DIR = "icons"
+# 按包改写分类：索引层面覆盖 Section 字段，不动 deb 本身。
+# 用途：把别的源搬来的基础设施包归到自己的分类下，在 Sileo / Zebra 里显示成一个目录。
+# 留空字典 {} 则不启用。
+SECTION_OVERRIDES = {
+    "ellekit":              "越狱必装五个插件",
+    "preferenceloader":     "越狱必装五个插件",
+    "com.opa334.altlist":   "越狱必装五个插件",
+    "com.opa334.libsandy":  "越狱必装五个插件",
+    "com.opa334.ccsupport": "越狱必装五个插件",
+}
 # =======================================================
 
 
@@ -203,6 +213,15 @@ def main():
                 if "Icon" not in order:
                     order.append("Icon")
                 print("      [图标]", pkg_id, "->", fields["Icon"])
+        # 按包改写分类：SECTION_OVERRIDES 里配了的包，Section 换成自定义名字。
+        # 这是索引层面覆盖，deb 本身没动（用户装到的仍是官方原包）。
+        if pkg_id and pkg_id in SECTION_OVERRIDES:
+            new_sec = SECTION_OVERRIDES[pkg_id]
+            old_sec = fields.get("Section", "")
+            fields["Section"] = new_sec
+            if "Section" not in order:
+                order.append("Section")
+            print("      [分类]", pkg_id, ":", old_sec, "->", new_sec)
         stanzas.append((fields, order))
         print("  [OK]", fn, "->", fields.get("Name", fields.get("Package")), fields.get("Version"))
 
