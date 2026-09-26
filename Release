@@ -1,5 +1,5 @@
-Origin: A`guang
-Label: A`guang
+Origin: 0A`guang
+Label: 0A`guang
 Suite: stable
 Version: 1.0
 Codename: ios
@@ -7,7 +7,7 @@ Architectures: iphoneos-arm iphoneos-arm64 iphoneos-arm64e
 Components: main
 Icon: https://g-using.github.io/repo/icon.png
 Description: A`guang 自用的 tweak / 插件源
-Date: Sat, 26 Sep 2026 15:40:43 GMT
+Date: Sat, 26 Sep 2026 15:44:54 GMT
 MD5Sum:
  bdbd91b2e1c0be039e95082c4507c16e 14123 Packages
  118f5c5b421ae37ae5a79cb0c7a96352 4813 Packages.gz
