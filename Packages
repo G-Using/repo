@@ -137,6 +137,30 @@ MD5sum: 55a9f999d835d778517979b6569b96ff
 SHA1: 191cde3159d5a2a230a57247e31d9106df228b25
 SHA256: 7e54558d3eb7bc5dcd025f0f9588f5d2c99681b27e4c0dd623c848ef7bb0da14
 
+Package: com.huayuarc.snapper3.urlstamp
+Name: Snapper3 底栏URL
+Description: snapper3拓展插件 增加url功能
+ Snapper 3 扩展插件：在底栏（「关闭 / 截图」那一排）增加一个网址按钮，
+ 点击后触发预设的 URL Scheme（如 dama://redactLast），用于唤起其他插件 / App
+ （长截图、套壳、去水印等），也可填普通网址。
+ 网址可保存多条，在「设置 → 底栏url」里用开关选择当前启用哪一条（同一时间只开一个）。
+ 触发时按「先存相册 → 等 1 秒 → openURL」执行，与 Snapper 原生 URL 插件行为一致，
+ 改完网址立即生效、无需注销。
+ 设置面板右上角另有「注销生效」按钮，供「图标位置」等需要重启 SpringBoard 的选项使用。
+ 需要 Snapper 3 1.2.0 或更高版本。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 14.0), mobilesubstrate, preferenceloader
+Architecture: iphoneos-arm64
+Version: 3.1
+Installed-Size: 588
+Filename: debs/com.huayuarc.snapper3.urlstamp_3.1_iphoneos-arm64.deb
+Size: 75828
+MD5sum: 67723220c166776f45948b076c77bfff
+SHA1: 53c3ed5813cd03d23d22f5c77b6cba197acc6ef4
+SHA256: 8d459e15681d3b8de1810c86dd327c56552d4ba5d680e86c3113b60385b92814
+
 Package: cn.octoforce.squidgesturepro
 Name: SquidGesturePro (无根转换版)
 Depends: mobilesubstrate, preferenceloader, firmware (>= 15.0)
