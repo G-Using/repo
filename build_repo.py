@@ -12,8 +12,8 @@ REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
 DEBS_DIR = os.path.join(REPO_ROOT, "debs")
 
 # ===================== 改成你自己的 =====================
-REPO_NAME = "0A`guang"
-REPO_ORIGIN = "0A`guang"
+REPO_NAME = "光A`guang"
+REPO_ORIGIN = "光A`guang"
 REPO_DESCRIPTION = "A`guang 自用的 tweak / 插件源"
 REPO_SUITE = "stable"
 REPO_CODENAME = "ios"
@@ -329,4 +329,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
