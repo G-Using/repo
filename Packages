@@ -49,6 +49,22 @@ MD5sum: 159331b25d4d9332ca0d34093dd200f5
 SHA1: 5d772acc7bc41f94dc94c319799cc03b829d6f56
 SHA256: 06a7dc96a393b404e42dfb55b8443a87b52da866d722d53d65906e3cbfffb1d0
 
+Package: cn.llld.biaoji
+Name: 截图标记-rootless
+Author: 来了老弟 X: h_h_x_t
+Description: 修复标记无法打字文字问题（已在14promax 16.5设备测试无问题）。给Snapper 或stayShot插件增加标记功能，快速对图进行箭头，打码，复制，方块，涂鸦，保存，高亮，文字等，免去了装第三方软件或者跳转程序的繁琐，14-17可用。改屏幕图标在插件目录下Library/MobileSubstrate/DynamicLibraries/biaoji/pencil.tip.crop.circle.png，设置里图标名为Settings-biaoji.png。修复标记无法打字问题
+Depends: mobilesubstrate
+Maintainer: 来了老弟 X: h_h_x_t
+Section: rootless插件
+Architecture: iphoneos-arm64
+Version: 1.7.1
+Installed-Size: 355
+Filename: debs/cn.llld.biaoji_1.7.1_iphoneos-arm64.deb
+Size: 79976
+MD5sum: d6e2a2647e9ffeb32c279deb43b9f65a
+SHA1: f6046b2e2a7f802371f0d0db88e856d2cec8965b
+SHA256: 0d8314027945ace20bf9f5dfc16e53a3f0711a38cdeb188f7e16d371569e2e29
+
 Package: com.be-huge.floating-view
 Name: floatingView
 Description: 分屏，不必太复杂，一切从简即可。
