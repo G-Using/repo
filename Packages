@@ -242,6 +242,33 @@ SHA1: ed413beb251301ed0539f9776ec3c344f3286202
 SHA256: 2ef340d7a5c2c548e1db05463c8adacecbfa70d437b8e1441f6a1d3922377d09
 Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
 
+Package: com.huayuarc.snapper3.urlstamp
+Name: Snapper3 底栏URL
+Description: snapper3拓展插件 增加url功能
+ Snapper 3 扩展插件：在底栏（「关闭 / 截图」那一排）增加一个网址按钮，
+ 点击后触发预设的 URL Scheme（如 dama://redactLast），用于唤起其他插件 / App
+ （长截图、套壳、去水印等），也可填普通网址。
+ 网址可保存多条，在「设置 → 底栏url」里用开关选择当前启用哪一条（同一时间只开一个）。
+ 触发时按「先存相册 → 等 1 秒 → openURL」执行，与 Snapper 原生 URL 插件行为一致，
+ 改完网址立即生效、无需注销。
+ 底栏那颗按钮的图标可以换成自己的图片：把 PNG 命名为 icon.png 放进
+ /var/mobile/Library/Snapper3URL/ 即可（放进去会有一份说明文件），
+ 杀后台重开 Snapper 生效，删掉图片即恢复默认。
+ 需要 Snapper 3 1.2.0 或更高版本。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 14.0), mobilesubstrate, preferenceloader
+Architecture: iphoneos-arm64
+Version: 3.4
+Installed-Size: 600
+Filename: debs/com.huayuarc.snapper3.urlstamp_3.4_iphoneos-arm64.deb
+Size: 86800
+MD5sum: 6cb122930043d177fce4443e7b0f3839
+SHA1: 553192bff870ecd77a241bba68f95307d57ee697
+SHA256: 3d2084cd50f969a8811c3c3d954fb250671a4fe894d205ddf08736fe51a57cc9
+Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
+
 Package: com.opa334.altlist
 Name: AltList
 Depiction: https://moreinfo.thebigboss.org/moreinfo/depiction.php?file=altlistDp
