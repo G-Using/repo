@@ -7,7 +7,7 @@ Architectures: iphoneos-arm iphoneos-arm64 iphoneos-arm64e
 Components: main
 Icon: https://g-using.github.io/repo/icon.png
 Description: A`guang 自用的 tweak / 插件源
-Date: Mon, 05 Oct 2026 15:01:32 GMT
+Date: Mon, 05 Oct 2026 15:07:08 GMT
 MD5Sum:
  ee3ab7ef3f05265c99772d1a242dbc55 59326 Packages
  d1c97e91c576367875edca9c66ebdfce 13104 Packages.gz
