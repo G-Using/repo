@@ -44,12 +44,12 @@ Section: Tweaks
 Architecture: iphoneos-arm64
 Version: 1.0
 Installed-Size: 96
-icon: https://huayuarc.github.io/icon/snapper.png
 Filename: debs/cn.llld.biaoji_1.0_iphoneos-arm64.deb
 Size: 15924
 MD5sum: a96eb27491a411d62cf6a81195105a6a
 SHA1: 197a0adb07080ae5c07e8a9287b40f762b0e3c4d
 SHA256: 39f424863f6fab4fec1bcbf39e233d8b38602b6354417068989c499a83482935
+Icon: https://g-using.github.io/repo/icons/cn.llld.biaoji.png
 
 Package: cn.llld.biaoji
 Name: Snapper 截图标记
@@ -62,12 +62,12 @@ Architecture: iphoneos-arm64e
 Version: 1.0
 Installed-Size: 96
 Pre-Depends: rootless-compat(>= 0.9)
-icon: https://huayuarc.github.io/icon/snapper.png
 Filename: debs/cn.llld.biaoji_1.0_iphoneos-arm64e.deb
 Size: 15720
 MD5sum: f6d8ec95a6e2e9dd38e8f29f57ef7ece
 SHA1: e9fe03120ab773c5de9a108a113aa9e37cbce4ce
 SHA256: 83a3e018ddccc494e2a1999902f3620b30a055a07346913f07c1042168ddf20b
+Icon: https://g-using.github.io/repo/icons/cn.llld.biaoji.png
 
 Package: cn.llld.biaoji
 Name: Snapper 截图标记
@@ -80,12 +80,12 @@ Architecture: iphoneos-arm64
 Version: 1.1
 Installed-Size: 112
 Conflicts: cn.llld.bioaji
-icon: https://huayuarc.github.io/icon/snapper.png
 Filename: debs/cn.llld.biaoji_1.1_iphoneos-arm64.deb
 Size: 17944
 MD5sum: f8138807cf42cd3042316f64bec8a053
 SHA1: 3817e58f96030d0bdffab8c99e6bf30ca742e741
 SHA256: 7fe06fac87ed1216c7edee3204449759d82d2217dede822bf406f3d3a09a3761
+Icon: https://g-using.github.io/repo/icons/cn.llld.biaoji.png
 
 Package: cn.llld.biaoji
 Name: Snapper 截图标记
@@ -99,12 +99,12 @@ Version: 1.1
 Installed-Size: 112
 Pre-Depends: rootless-compat(>= 0.9)
 Conflicts: cn.llld.bioaji
-icon: https://huayuarc.github.io/icon/snapper.png
 Filename: debs/cn.llld.biaoji_1.1_iphoneos-arm64e.deb
 Size: 17648
 MD5sum: 783d8ad6ed9ec5453bcf0dcf24d57bd8
 SHA1: 370d6896c9b83780799c98f9a281fec5dca16b10
 SHA256: b9fe9bb4f903954d29db8d4f00357531f8c16d4f805392c2da2495ebe149f339
+Icon: https://g-using.github.io/repo/icons/cn.llld.biaoji.png
 
 Package: cn.llld.biaoji
 Name: Snapper 截图标记
@@ -116,12 +116,12 @@ Section: Tweaks
 Architecture: iphoneos-arm64
 Version: 1.2
 Installed-Size: 112
-icon: https://huayuarc.github.io/icon/snapper.png
 Filename: debs/cn.llld.biaoji_1.2_iphoneos-arm64.deb
 Size: 19728
 MD5sum: e587d258e83af7aa4b7e572b871a2129
 SHA1: a2ec03d318f558b871940add0b62457045479812
 SHA256: 9d4e52991734b1a982dfbb56427d07ea85128d451ee21fca7764d6ba6e3eccd6
+Icon: https://g-using.github.io/repo/icons/cn.llld.biaoji.png
 
 Package: cn.llld.biaoji
 Name: Snapper 截图标记
@@ -134,12 +134,12 @@ Architecture: iphoneos-arm64e
 Version: 1.2
 Installed-Size: 112
 Pre-Depends: rootless-compat(>= 0.9)
-icon: https://huayuarc.github.io/icon/snapper.png
 Filename: debs/cn.llld.biaoji_1.2_iphoneos-arm64e.deb
 Size: 19476
 MD5sum: 0f1faf8ab3a8a2bbc0359ac04107ef6f
 SHA1: 0aae219a989aaf1f65dcf4df17181c9c07bc13b7
 SHA256: 1cc65ba7b7c2d260bea9095deb78e899027d966a0bafe0205411d0559123718a
+Icon: https://g-using.github.io/repo/icons/cn.llld.biaoji.png
 
 Package: cn.llld.biaoji
 Name: Snapper 截图标记
@@ -151,12 +151,12 @@ Section: Tweaks
 Architecture: iphoneos-arm64
 Version: 1.3
 Installed-Size: 128
-icon: https://huayuarc.github.io/icon/snapper.png
 Filename: debs/cn.llld.biaoji_1.3_iphoneos-arm64.deb
 Size: 26736
 MD5sum: 8dbf00f312d9eaa1daed08edc2dffb0b
 SHA1: 080ba485e0119af61a5547750c742eb4e4b47376
 SHA256: 0736ddc8c60991e18395f50437c7b6e6b0ab07344a742e4f3da73825e4f7238d
+Icon: https://g-using.github.io/repo/icons/cn.llld.biaoji.png
 
 Package: cn.llld.biaoji
 Name: Snapper 截图标记
@@ -169,12 +169,12 @@ Architecture: iphoneos-arm64e
 Version: 1.3
 Installed-Size: 128
 Pre-Depends: rootless-compat(>= 0.9)
-icon: https://huayuarc.github.io/icon/snapper.png
 Filename: debs/cn.llld.biaoji_1.3_iphoneos-arm64e.deb
 Size: 26356
 MD5sum: d7999a3924e525fe386150296f746f4a
 SHA1: 2b0b757a26a22d5bf245f23e34bfee7ade5d9c87
 SHA256: 17cd263b80d4fab8c8579bbd5be14f964df2fe8408a4b9852b6bf1d49c89b399
+Icon: https://g-using.github.io/repo/icons/cn.llld.biaoji.png
 
 Package: cn.llld.biaoji
 Name: Snapper 截图标记
@@ -186,12 +186,12 @@ Section: Tweaks
 Architecture: iphoneos-arm64
 Version: 1.5
 Installed-Size: 164
-icon: https://huayuarc.github.io/icon/snapper.png
 Filename: debs/cn.llld.biaoji_1.5_iphoneos-arm64.deb
 Size: 36492
 MD5sum: 596f2c95e1b8dbd615b43363baea1d91
 SHA1: 83b4802bc390ad2c698ed4bf85b935969aec6b49
 SHA256: 21fe9615c88fc1e3740f0dcc7658da4de01f66137a1d633f60e98e424cd019f0
+Icon: https://g-using.github.io/repo/icons/cn.llld.biaoji.png
 
 Package: cn.llld.biaoji
 Name: Snapper 截图标记
@@ -204,12 +204,12 @@ Architecture: iphoneos-arm64e
 Version: 1.5
 Installed-Size: 164
 Pre-Depends: rootless-compat(>= 0.9)
-icon: https://huayuarc.github.io/icon/snapper.png
 Filename: debs/cn.llld.biaoji_1.5_iphoneos-arm64e.deb
 Size: 35876
 MD5sum: 713a8479246f0f691e133ea2cb0dbb82
 SHA1: 8908addedef5e4cd20cf8e27f4821cc6dd29fb36
 SHA256: b90eea39b3b5285a9ce50116b0cfd7797f42fe62d6c22d167338029f13dce3d3
+Icon: https://g-using.github.io/repo/icons/cn.llld.biaoji.png
 
 Package: cn.llld.biaoji
 Name: 截图标记-rootless(原生键盘·安装即生效版)
@@ -226,6 +226,7 @@ Size: 64588
 MD5sum: 55afae9a0ba0c7e4977be8d8136e9a1c
 SHA1: 580e5685c6a352ea02d32f4f712805a7b757a29b
 SHA256: d052f0dbc54cf4c02b9d5221e4825cf9cc18c598e3a24a7f0a3fd64b2d320592
+Icon: https://g-using.github.io/repo/icons/cn.llld.biaoji.png
 
 Package: cn.llld.biaoji
 Name: 截图标记-rootless(原生键盘·层级修正版)
@@ -242,6 +243,7 @@ Size: 74460
 MD5sum: 85ebe8bb06d73228b56aa865f0a760fd
 SHA1: 7f95c2641355787837b068442e7829b1f56df94c
 SHA256: d6a24ab563a8c86dc4d628271e74b2c13c573e75e658fd66148d6801e2d14a9d
+Icon: https://g-using.github.io/repo/icons/cn.llld.biaoji.png
 
 Package: cn.llld.biaoji
 Name: 截图标记-rootless(原生键盘·层级修正版)
@@ -258,6 +260,7 @@ Size: 144408
 MD5sum: d04088e766fe895c480c53425441151f
 SHA1: 2237f6afeb26cafde72ed28b2fad6a2b85881f94
 SHA256: 75b9298feaf10ffa4566944050afe1f7a11bb0ca71cc6e0a3c05195631cc075a
+Icon: https://g-using.github.io/repo/icons/cn.llld.biaoji.png
 
 Package: cn.llld.biaoji
 Name: 截图标记-rootless(原生键盘修复·不自动注销)
@@ -274,6 +277,7 @@ Size: 73764
 MD5sum: 3e5753845d7622e57714f3e9dc75a7da
 SHA1: 44c815dddb3b75b0689aee2d67753a483875cace
 SHA256: df04144cd2b97f6dde5c04ad202cd3d7dfcf350b8110d38af89b51480c03ca22
+Icon: https://g-using.github.io/repo/icons/cn.llld.biaoji.png
 
 Package: cn.llld.biaoji
 Name: 截图标记-rootless(原生键盘修复·诊断版)
@@ -290,6 +294,7 @@ Size: 85698
 MD5sum: 0ccaa26ee516797292b388bcc301ab56
 SHA1: cc4704559d5eed85aaa187f20104dd349d383c06
 SHA256: 009eb0966596b005dd2d3ded4c83076e3950e67b95c85af7c0b22b21ecae57f9
+Icon: https://g-using.github.io/repo/icons/cn.llld.biaoji.png
 
 Package: cn.llld.biaoji
 Name: Snapper 截图标记
@@ -301,12 +306,12 @@ Section: Tweaks
 Architecture: iphoneos-arm64
 Version: 1.6
 Installed-Size: 164
-icon: https://huayuarc.github.io/icon/snapper.png
 Filename: debs/cn.llld.biaoji_1.6_iphoneos-arm64.deb
 Size: 38256
 MD5sum: 31bf4951bb9d914c397dfaddaaabc340
 SHA1: e6408867c156f4b4a4b51a1f98a46da0b247269f
 SHA256: f2bb973ae3ae491cb7b4c349c2696390070262311cb74f1f63c7ce084f0898ee
+Icon: https://g-using.github.io/repo/icons/cn.llld.biaoji.png
 
 Package: cn.llld.biaoji
 Name: Snapper 截图标记
@@ -319,12 +324,12 @@ Architecture: iphoneos-arm64e
 Version: 1.6
 Installed-Size: 164
 Pre-Depends: rootless-compat(>= 0.9)
-icon: https://huayuarc.github.io/icon/snapper.png
 Filename: debs/cn.llld.biaoji_1.6_iphoneos-arm64e.deb
 Size: 37576
 MD5sum: 33fdfdf486b83a05bfe23ea1ddc3d0f8
 SHA1: 56417035eaa274e76ac7fd824908ea3ddc5ba7af
 SHA256: d860b83425df5687341f07244d829b6d271c6318f5a895362c7ccf05e93dd44a
+Icon: https://g-using.github.io/repo/icons/cn.llld.biaoji.png
 
 Package: cn.llld.biaoji
 Name: 截图标记-rootless(原生键盘修复·静默版)
@@ -341,6 +346,7 @@ Size: 92078
 MD5sum: 2017b6c5252f18a8986fc2ef7f4181ec
 SHA1: 92c87da58f619a8bcc66ddbfa0d2a6e9e1c9fd74
 SHA256: 619dd32c5b2b380407db87ead6a5df50022e5dbb0126d2589c9e4ff1690e7e4a
+Icon: https://g-using.github.io/repo/icons/cn.llld.biaoji.png
 
 Package: cn.llld.biaoji
 Name: 截图标记-rootless
@@ -357,6 +363,7 @@ Size: 79976
 MD5sum: d6e2a2647e9ffeb32c279deb43b9f65a
 SHA1: f6046b2e2a7f802371f0d0db88e856d2cec8965b
 SHA256: 0d8314027945ace20bf9f5dfc16e53a3f0711a38cdeb188f7e16d371569e2e29
+Icon: https://g-using.github.io/repo/icons/cn.llld.biaoji.png
 
 Package: cn.llld.biaoji
 Name: 截图标记
@@ -368,12 +375,12 @@ Section: Tweaks
 Architecture: iphoneos-arm64
 Version: 2.0-1+debug
 Installed-Size: 328
-icon: https://huayuarc.github.io/icon/snapper.png
 Filename: debs/cn.llld.biaoji_2.0-1+debug_iphoneos-arm64.deb
 Size: 70328
 MD5sum: 272ae78432e857959adfd38cc0e19e67
 SHA1: b440016d3c241980a3107c8ce1a338663a50fe8b
 SHA256: 45e5a85ce5d91015e177002a062e2af0043f6792b3a77510b2095eb3bf20f4a0
+Icon: https://g-using.github.io/repo/icons/cn.llld.biaoji.png
 
 Package: cn.llld.biaoji
 Name: 截图标记
@@ -386,12 +393,12 @@ Architecture: iphoneos-arm64e
 Version: 2.0-1+debug
 Installed-Size: 328
 Pre-Depends: rootless-compat(>= 0.9)
-icon: https://huayuarc.github.io/icon/snapper.png
 Filename: debs/cn.llld.biaoji_2.0-1+debug_iphoneos-arm64e.deb
 Size: 68672
 MD5sum: 888abc585794dd53ff0286375fcaba58
 SHA1: 9ddabd3fac4e15adeea59ab6381bff3d9f40e551
 SHA256: 090920ca993bfa4b5bfd4ef3302c6a7b48364a0d57e411fa91fd4d4b7fb564d4
+Icon: https://g-using.github.io/repo/icons/cn.llld.biaoji.png
 
 Package: com.be-huge.floating-view
 Name: floatingView
@@ -438,13 +445,13 @@ Conflicts: com.squidforce.copyvault
 Architecture: iphoneos-arm64
 Version: 1.9.0k
 Installed-Size: 6220
-icon: https://huayuarc.github.io/icon/CopyVault@2x.png
 Pre-Depends: rootless-compat(>= 0.9)
 Filename: debs/com.bvn.copyvault.rl_1.9.0k_iphoneos-arm64.deb
 Size: 1641900
 MD5sum: f701ddeb2bbfb7c7b82e898d9e563143
 SHA1: 9556faf888c9d3340bdf0440ca135ba854c5cd43
 SHA256: f9a2ab005c9fc1dd1bdbcfd93084154e2b6da3d26c2b81c8de113c141ebbdc4c
+Icon: https://g-using.github.io/repo/icons/com.bvn.copyvault.rl.png
 
 Package: com.bvn.copyvault.rl
 Name: CopyVault VH
@@ -458,13 +465,13 @@ Conflicts: com.squidforce.copyvault
 Architecture: iphoneos-arm64e
 Version: 1.9.0k
 Installed-Size: 6220
-icon: https://huayuarc.github.io/icon/CopyVault@2x.png
 Pre-Depends: rootless-compat(>= 0.9)
 Filename: debs/com.bvn.copyvault.rl_1.9.0k_iphoneos-arm64e.deb
 Size: 1641180
 MD5sum: 4a72a65e22785656b3b327a550055ce3
 SHA1: 848870da0ce21bb749b6d83915be1e2a944ccbb5
 SHA256: 18ea7a930ed18ba42d74bf0b52b1ff0af7d96b22fca73deee870556fb97799eb
+Icon: https://g-using.github.io/repo/icons/com.bvn.copyvault.rl.png
 
 Package: com.gusing.tgsaveanywhere.rootful
 Name: telegram视频下载 (rootful)

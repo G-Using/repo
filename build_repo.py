@@ -37,6 +37,13 @@ SECTION_OVERRIDES = {
     "com.opa334.libsandy":  "越狱必装五个插件",
     "com.opa334.ccsupport": "越狱必装五个插件",
 }
+# 搬来的包，其 deb 内control 自带icon: 字段指向别人的源。
+# 这里配 "<Package>": "<icons/ 下的实际文件名>"，重建索引时改写成自己域名的副本，
+# 不依赖第三方源存活。键不存在于 icons/ 时按原样保留外链。
+ICON_REWRITES = {
+    "cn.llld.biaoji":       "cn.llld.biaoji.png",
+    "com.bvn.copyvault.rl": "com.bvn.copyvault.rl.png",
+}
 # =======================================================
 
 
@@ -208,11 +215,23 @@ def main():
         pkg_id = fields.get("Package", "").strip()
         if REPO_ICONS_DIR and pkg_id:
             icon_path = os.path.join(REPO_ROOT, REPO_ICONS_DIR, pkg_id + ".png")
+            rewritten = None
             if os.path.isfile(icon_path):
-                fields["Icon"] = REPO_BASE_URL + REPO_ICONS_DIR + "/" + pkg_id + ".png"
-                if "Icon" not in order:
-                    order.append("Icon")
-                print("      [图标]", pkg_id, "->", fields["Icon"])
+                rewritten = REPO_BASE_URL + REPO_ICONS_DIR + "/" + pkg_id + ".png"
+            elif pkg_id in ICON_REWRITES:
+                # 搬来的包自带外链图标（指向别人的源），改写成本源已缓存的副本。
+                # 这样不依赖第三方源存活，也避免它改名/下架后整批包显示不出图标。
+                rewritten = REPO_BASE_URL + REPO_ICONS_DIR + "/" + ICON_REWRITES[pkg_id]
+            if rewritten:
+                # 字段名在 APT 里大小写不敏感，源里混用 icon: / Icon: 会被客户端随机读到。
+                # 写入前把所有大小写变体删掉，只留一个规范的大写 Icon:。
+                for k in [k for k in fields if k.lower() == "icon"]:
+                    fields.pop(k)
+                    if k in order:
+                        order.remove(k)
+                fields["Icon"] = rewritten
+                order.append("Icon")
+                print("      [图标]", pkg_id, "->", rewritten)
         # 按包改写分类：SECTION_OVERRIDES 里配了的包，Section 换成自定义名字。
         # 这是索引层面覆盖，deb 本身没动（用户装到的仍是官方原包）。
         if pkg_id and pkg_id in SECTION_OVERRIDES:
