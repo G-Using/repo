@@ -35,24 +35,317 @@ SHA1: 76ca44d3d207ae97d1e09154951d657886a495b8
 SHA256: 196952356175289e0cee776d80c486bc7f88c6f32fd876c0813926031db01ce0
 
 Package: cn.llld.biaoji
-Name: 截图标记-rootless
+Name: Snapper 截图标记
 Author: 来了老弟 X: h_h_x_t
-Description: 修复标记无法打字文字问题（已在14promax 16.5设备测试无问题）。给Snapper 或stayShot插件增加标记功能，快速对图进行箭头，打码，复制，方块，涂鸦，保存，高亮，文字等，免去了装第三方软件或者跳转程序的繁琐，14-17可用。改屏幕图标在插件目录下Library/MobileSubstrate/DynamicLibraries/biaoji/pencil.tip.crop.circle.png，设置里图标名为Settings-biaoji.png
+Description: 给Snappr 截图插件增加标记功能，快速对图进行箭头，打码，复制，保存等，免去了装第三方软件，或者跳转程序的繁琐
+Depends: mobilesubstrate
+Maintainer: 来了老弟 X: h_h_x_t
+Section: Tweaks
+Architecture: iphoneos-arm64
+Version: 1.0
+Installed-Size: 96
+icon: https://huayuarc.github.io/icon/snapper.png
+Filename: debs/cn.llld.biaoji_1.0_iphoneos-arm64.deb
+Size: 15924
+MD5sum: a96eb27491a411d62cf6a81195105a6a
+SHA1: 197a0adb07080ae5c07e8a9287b40f762b0e3c4d
+SHA256: 39f424863f6fab4fec1bcbf39e233d8b38602b6354417068989c499a83482935
+
+Package: cn.llld.biaoji
+Name: Snapper 截图标记
+Author: 来了老弟 X: h_h_x_t
+Description: 给Snappr 截图插件增加标记功能，快速对图进行箭头，打码，复制，保存等，免去了装第三方软件，或者跳转程序的繁琐
+Depends: mobilesubstrate
+Maintainer: 来了老弟 X: h_h_x_t
+Section: Tweaks
+Architecture: iphoneos-arm64e
+Version: 1.0
+Installed-Size: 96
+Pre-Depends: rootless-compat(>= 0.9)
+icon: https://huayuarc.github.io/icon/snapper.png
+Filename: debs/cn.llld.biaoji_1.0_iphoneos-arm64e.deb
+Size: 15720
+MD5sum: f6d8ec95a6e2e9dd38e8f29f57ef7ece
+SHA1: e9fe03120ab773c5de9a108a113aa9e37cbce4ce
+SHA256: 83a3e018ddccc494e2a1999902f3620b30a055a07346913f07c1042168ddf20b
+
+Package: cn.llld.biaoji
+Name: Snapper 截图标记
+Author: 来了老弟 X: h_h_x_t
+Description: 给Snapper 或stayShot插件增加标记功能，快速对图进行箭头，打码，复制，方块，涂鸦，保存等，免去了装第三方软件或者跳转程序的繁琐，14-17可用，改图标在插件目录下/var/jb/Library/MobileSubstrate/DynamicLibraries/biaoji/pencil.tip.crop.circle.png
+Depends: mobilesubstrate
+Maintainer: 来了老弟 X: h_h_x_t
+Section: Tweaks
+Architecture: iphoneos-arm64
+Version: 1.1
+Installed-Size: 112
+Conflicts: cn.llld.bioaji
+icon: https://huayuarc.github.io/icon/snapper.png
+Filename: debs/cn.llld.biaoji_1.1_iphoneos-arm64.deb
+Size: 17944
+MD5sum: f8138807cf42cd3042316f64bec8a053
+SHA1: 3817e58f96030d0bdffab8c99e6bf30ca742e741
+SHA256: 7fe06fac87ed1216c7edee3204449759d82d2217dede822bf406f3d3a09a3761
+
+Package: cn.llld.biaoji
+Name: Snapper 截图标记
+Author: 来了老弟 X: h_h_x_t
+Description: 给Snapper 或stayShot插件增加标记功能，快速对图进行箭头，打码，复制，方块，涂鸦，保存等，免去了装第三方软件或者跳转程序的繁琐，14-17可用，改图标在插件目录下/var/jb/Library/MobileSubstrate/DynamicLibraries/biaoji/pencil.tip.crop.circle.png
+Depends: mobilesubstrate
+Maintainer: 来了老弟 X: h_h_x_t
+Section: Tweaks
+Architecture: iphoneos-arm64e
+Version: 1.1
+Installed-Size: 112
+Pre-Depends: rootless-compat(>= 0.9)
+Conflicts: cn.llld.bioaji
+icon: https://huayuarc.github.io/icon/snapper.png
+Filename: debs/cn.llld.biaoji_1.1_iphoneos-arm64e.deb
+Size: 17648
+MD5sum: 783d8ad6ed9ec5453bcf0dcf24d57bd8
+SHA1: 370d6896c9b83780799c98f9a281fec5dca16b10
+SHA256: b9fe9bb4f903954d29db8d4f00357531f8c16d4f805392c2da2495ebe149f339
+
+Package: cn.llld.biaoji
+Name: Snapper 截图标记
+Author: 来了老弟 X: h_h_x_t
+Description: 给Snapper 或stayShot插件增加标记功能，快速对图进行箭头，打码，复制，方块，涂鸦，保存等，免去了装第三方软件或者跳转程序的繁琐，14-17可用，改屏幕图标在插件目录下/var/jb/Library/MobileSubstrate/DynamicLibraries/biaoji/pencil.tip.crop.circle.png，设置里图标名为Settings-biaoji.png
+Depends: mobilesubstrate
+Maintainer: 来了老弟 X: h_h_x_t
+Section: Tweaks
+Architecture: iphoneos-arm64
+Version: 1.2
+Installed-Size: 112
+icon: https://huayuarc.github.io/icon/snapper.png
+Filename: debs/cn.llld.biaoji_1.2_iphoneos-arm64.deb
+Size: 19728
+MD5sum: e587d258e83af7aa4b7e572b871a2129
+SHA1: a2ec03d318f558b871940add0b62457045479812
+SHA256: 9d4e52991734b1a982dfbb56427d07ea85128d451ee21fca7764d6ba6e3eccd6
+
+Package: cn.llld.biaoji
+Name: Snapper 截图标记
+Author: 来了老弟 X: h_h_x_t
+Description: 给Snapper 或stayShot插件增加标记功能，快速对图进行箭头，打码，复制，方块，涂鸦，保存等，免去了装第三方软件或者跳转程序的繁琐，14-17可用，改屏幕图标在插件目录下/var/jb/Library/MobileSubstrate/DynamicLibraries/biaoji/pencil.tip.crop.circle.png，设置里图标名为Settings-biaoji.png
+Depends: mobilesubstrate
+Maintainer: 来了老弟 X: h_h_x_t
+Section: Tweaks
+Architecture: iphoneos-arm64e
+Version: 1.2
+Installed-Size: 112
+Pre-Depends: rootless-compat(>= 0.9)
+icon: https://huayuarc.github.io/icon/snapper.png
+Filename: debs/cn.llld.biaoji_1.2_iphoneos-arm64e.deb
+Size: 19476
+MD5sum: 0f1faf8ab3a8a2bbc0359ac04107ef6f
+SHA1: 0aae219a989aaf1f65dcf4df17181c9c07bc13b7
+SHA256: 1cc65ba7b7c2d260bea9095deb78e899027d966a0bafe0205411d0559123718a
+
+Package: cn.llld.biaoji
+Name: Snapper 截图标记
+Author: 来了老弟 X: h_h_x_t
+Description: 给Snapper 或stayShot插件增加标记功能，快速对图进行箭头，打码，复制，方块，涂鸦，保存等，免去了装第三方软件或者跳转程序的繁琐，14-17可用，改屏幕图标在插件目录下/var/jb/Library/MobileSubstrate/DynamicLibraries/biaoji/pencil.tip.crop.circle.png，设置里图标名为Settings-biaoji.png
+Depends: mobilesubstrate
+Maintainer: 来了老弟 X: h_h_x_t
+Section: Tweaks
+Architecture: iphoneos-arm64
+Version: 1.3
+Installed-Size: 128
+icon: https://huayuarc.github.io/icon/snapper.png
+Filename: debs/cn.llld.biaoji_1.3_iphoneos-arm64.deb
+Size: 26736
+MD5sum: 8dbf00f312d9eaa1daed08edc2dffb0b
+SHA1: 080ba485e0119af61a5547750c742eb4e4b47376
+SHA256: 0736ddc8c60991e18395f50437c7b6e6b0ab07344a742e4f3da73825e4f7238d
+
+Package: cn.llld.biaoji
+Name: Snapper 截图标记
+Author: 来了老弟 X: h_h_x_t
+Description: 给Snapper 或stayShot插件增加标记功能，快速对图进行箭头，打码，复制，方块，涂鸦，保存等，免去了装第三方软件或者跳转程序的繁琐，14-17可用，改屏幕图标在插件目录下/var/jb/Library/MobileSubstrate/DynamicLibraries/biaoji/pencil.tip.crop.circle.png，设置里图标名为Settings-biaoji.png
+Depends: mobilesubstrate
+Maintainer: 来了老弟 X: h_h_x_t
+Section: Tweaks
+Architecture: iphoneos-arm64e
+Version: 1.3
+Installed-Size: 128
+Pre-Depends: rootless-compat(>= 0.9)
+icon: https://huayuarc.github.io/icon/snapper.png
+Filename: debs/cn.llld.biaoji_1.3_iphoneos-arm64e.deb
+Size: 26356
+MD5sum: d7999a3924e525fe386150296f746f4a
+SHA1: 2b0b757a26a22d5bf245f23e34bfee7ade5d9c87
+SHA256: 17cd263b80d4fab8c8579bbd5be14f964df2fe8408a4b9852b6bf1d49c89b399
+
+Package: cn.llld.biaoji
+Name: Snapper 截图标记
+Author: 来了老弟 X: h_h_x_t
+Description: 给Snapper 或stayShot插件增加标记功能，快速对图进行箭头，打码，复制，方块，涂鸦，保存等，免去了装第三方软件或者跳转程序的繁琐，14-17可用，改屏幕图标在插件目录下Library/MobileSubstrate/DynamicLibraries/biaoji/pencil.tip.crop.circle.png，设置里图标名为Settings-biaoji.png
+Depends: mobilesubstrate
+Maintainer: 来了老弟 X: h_h_x_t
+Section: Tweaks
+Architecture: iphoneos-arm64
+Version: 1.5
+Installed-Size: 164
+icon: https://huayuarc.github.io/icon/snapper.png
+Filename: debs/cn.llld.biaoji_1.5_iphoneos-arm64.deb
+Size: 36492
+MD5sum: 596f2c95e1b8dbd615b43363baea1d91
+SHA1: 83b4802bc390ad2c698ed4bf85b935969aec6b49
+SHA256: 21fe9615c88fc1e3740f0dcc7658da4de01f66137a1d633f60e98e424cd019f0
+
+Package: cn.llld.biaoji
+Name: Snapper 截图标记
+Author: 来了老弟 X: h_h_x_t
+Description: 给Snapper 或stayShot插件增加标记功能，快速对图进行箭头，打码，复制，方块，涂鸦，保存等，免去了装第三方软件或者跳转程序的繁琐，14-17可用，改屏幕图标在插件目录下Library/MobileSubstrate/DynamicLibraries/biaoji/pencil.tip.crop.circle.png，设置里图标名为Settings-biaoji.png
+Depends: mobilesubstrate
+Maintainer: 来了老弟 X: h_h_x_t
+Section: Tweaks
+Architecture: iphoneos-arm64e
+Version: 1.5
+Installed-Size: 164
+Pre-Depends: rootless-compat(>= 0.9)
+icon: https://huayuarc.github.io/icon/snapper.png
+Filename: debs/cn.llld.biaoji_1.5_iphoneos-arm64e.deb
+Size: 35876
+MD5sum: 713a8479246f0f691e133ea2cb0dbb82
+SHA1: 8908addedef5e4cd20cf8e27f4821cc6dd29fb36
+SHA256: b90eea39b3b5285a9ce50116b0cfd7797f42fe62d6c22d167338029f13dce3d3
+
+Package: cn.llld.biaoji
+Name: 截图标记-rootless(原生键盘·安装即生效版)
+Author: 来了老弟 X: h_h_x_t
+Description: 给Snapper 或stayShot插件增加标记功能，快速对图进行箭头，打码，复制，方块，涂鸦，保存，高亮，文字等，免去了装第三方软件或者跳转程序的繁琐，14-17可用。本版修复了文字标注时原生键盘被标注窗口遮挡、无法打字的问题，并在安装后自动重载 SpringBoard，避免"装上不生效、要再覆盖安装一次才生效"。改屏幕图标在插件目录下Library/MobileSubstrate/DynamicLibraries/biaoji/pencil.tip.crop.circle.png，设置里图标名为Settings-biaoji.png
 Depends: mobilesubstrate
 Maintainer: 来了老弟 X: h_h_x_t
 Section: rootless插件
 Architecture: iphoneos-arm64
 Version: 1.6.4
+Installed-Size: 320
 Filename: debs/cn.llld.biaoji_1.6.4_iphoneos-arm64.deb
-Size: 45158
-MD5sum: 159331b25d4d9332ca0d34093dd200f5
-SHA1: 5d772acc7bc41f94dc94c319799cc03b829d6f56
-SHA256: 06a7dc96a393b404e42dfb55b8443a87b52da866d722d53d65906e3cbfffb1d0
+Size: 64588
+MD5sum: 55afae9a0ba0c7e4977be8d8136e9a1c
+SHA1: 580e5685c6a352ea02d32f4f712805a7b757a29b
+SHA256: d052f0dbc54cf4c02b9d5221e4825cf9cc18c598e3a24a7f0a3fd64b2d320592
+
+Package: cn.llld.biaoji
+Name: 截图标记-rootless(原生键盘·层级修正版)
+Author: 来了老弟 X: h_h_x_t
+Description: 给Snapper 或stayShot插件增加标记功能，快速对图进行箭头，打码，复制，方块，涂鸦，保存，高亮，文字等，免去了装第三方软件或者跳转程序的繁琐，14-17可用。本版修正了文字标注时键盘不弹出的真正原因：标注窗口层级被设为 UIWindowLevelStatusBar+1，而系统承载键盘的 UITextEffectsWindow 层级是 10，1.6.3 把标注窗口降到 10 正好与键盘同层、同层时后创建的标注窗口仍压住键盘。本版把标注窗口压到 1.0（严格低于 10），并在键盘出现通知里再兜底一次，文字面板即可正常弹出系统原生键盘。改屏幕图标在插件目录下Library/MobileSubstrate/DynamicLibraries/biaoji/pencil.tip.crop.circle.png，设置里图标名为Settings-biaoji.png
+Depends: mobilesubstrate
+Maintainer: 来了老弟 X: h_h_x_t
+Section: rootless插件
+Architecture: iphoneos-arm64
+Version: 1.6.6
+Installed-Size: 320
+Filename: debs/cn.llld.biaoji_1.6.6_iphoneos-arm64.deb
+Size: 74460
+MD5sum: 85ebe8bb06d73228b56aa865f0a760fd
+SHA1: 7f95c2641355787837b068442e7829b1f56df94c
+SHA256: d6a24ab563a8c86dc4d628271e74b2c13c573e75e658fd66148d6801e2d14a9d
+
+Package: cn.llld.biaoji
+Name: 截图标记-rootless(原生键盘·层级修正版)
+Author: 来了老弟 X: h_h_x_t
+Description: 给Snapper 或stayShot插件增加标记功能，快速对图进行箭头，打码，复制，方块，涂鸦，保存，高亮，文字等，免去了装第三方软件或者跳转程序的繁琐，14-17可用。本版修正文字标注时键盘不弹出的问题。真机验证：1.6.2 时标注窗口层级为 1001、原生键盘照样能弹出来，所以「层级把键盘压住了」并不成立；真正的毛病是输入框 becomeFirstResponder 只在视图还没就位时试了一次、失败就再没有重试（1.6.3 又把窗口层级改成 10，运行中改 windowLevel 还可能顺手丢掉第一响应者）。1.6.7 改为：等面板真正进入窗口 → 标注窗口 makeKeyWindow → 反复让输入框成为第一响应者，直到系统发出 UIKeyboardDidShow 才停；默认完全不修改窗口层级，只有整个流程都失败后才作为最后手段尝试一次。文字面板会随键盘上移，不再遮挡取消/确认。另外：补丁 dylib 同时投放到 RootHide 的两个注入目录（Library/MobileSubstrate/DynamicLibraries 与 usr/lib/TweakInject）并作废旧 roothidepatch 缓存，避免「装了新包却仍在跑旧代码」；安装后不再自动注销 SpringBoard，由包管理器提示，重启或稍后由你自己选；附带 s3respring 命令可随时手动重启。改屏幕图标在插件目录下Library/MobileSubstrate/DynamicLibraries/biaoji/pencil.tip.crop.circle.png，设置里图标名为Settings-biaoji.png
+Depends: mobilesubstrate
+Maintainer: 来了老弟 X: h_h_x_t
+Section: rootless插件
+Architecture: iphoneos-arm64
+Version: 1.6.7
+Installed-Size: 620
+Filename: debs/cn.llld.biaoji_1.6.7_iphoneos-arm64.deb
+Size: 144408
+MD5sum: d04088e766fe895c480c53425441151f
+SHA1: 2237f6afeb26cafde72ed28b2fad6a2b85881f94
+SHA256: 75b9298feaf10ffa4566944050afe1f7a11bb0ca71cc6e0a3c05195631cc075a
+
+Package: cn.llld.biaoji
+Name: 截图标记-rootless(原生键盘修复·不自动注销)
+Author: 来了老弟 X: h_h_x_t
+Description: 给Snapper 或stayShot插件增加标记功能，快速对图进行箭头，打码，复制，方块，涂鸦，保存，高亮，文字等，免去了装第三方软件或者跳转程序的繁琐，14-17可用。本版修正文字标注时键盘不弹出的问题：等面板真正进入窗口 → 标注窗口 makeKeyWindow → 反复让输入框成为第一响应者，直到系统发出 UIKeyboardDidShow 才停；默认完全不修改窗口层级（真机已验证 1.6.2 时期标注窗口层级 1001、原生键盘照样能弹出，「层级压住键盘」的说法不成立），只有整套流程都失败后才作为最后手段尝试一次。文字面板会随键盘上移，不再遮挡取消/确认。1.6.8 修掉 1.6.7 装不上的问题：载荷回到官方那一个注入目录（Library/MobileSubstrate/DynamicLibraries），不再把文件塞进 usr/lib/TweakInject 和 usr/bin（dpkg 解包时那两个目录打不开临时文件，会导致整个安装失败）；镜像副本、作废旧 roothidepatch 缓存、生成 s3respring 命令全部改到安装脚本里尽力而为地做，任何一步失败都不会影响安装。安装后不自动注销 SpringBoard，重启或稍后由你自己选。改屏幕图标在插件目录下Library/MobileSubstrate/DynamicLibraries/biaoji/pencil.tip.crop.circle.png，设置里图标名为Settings-biaoji.png
+Depends: mobilesubstrate
+Maintainer: 来了老弟 X: h_h_x_t
+Section: rootless插件
+Architecture: iphoneos-arm64
+Version: 1.6.8
+Installed-Size: 620
+Filename: debs/cn.llld.biaoji_1.6.8_iphoneos-arm64.deb
+Size: 73764
+MD5sum: 3e5753845d7622e57714f3e9dc75a7da
+SHA1: 44c815dddb3b75b0689aee2d67753a483875cace
+SHA256: df04144cd2b97f6dde5c04ad202cd3d7dfcf350b8110d38af89b51480c03ca22
+
+Package: cn.llld.biaoji
+Name: 截图标记-rootless(原生键盘修复·诊断版)
+Author: 来了老弟 X: h_h_x_t
+Description: 给Snapper 或stayShot插件增加标记功能，快速对图进行箭头，打码，复制，方块，涂鸦，保存，高亮，文字等，免去了装第三方软件或者跳转程序的繁琐，14-17可用。文字标注时键盘调不出来——这一版不再猜原因，而是在打开文字面板时于屏幕上方直接显示一份诊断信息（15 秒后自动消失，截图即可）：补丁是否装上、加载的是哪一份 dylib、进程内有没有重复注入、标注窗口的层级与 key 状态、输入框是什么控件、系统有没有发出键盘显示通知、是否处于硬件键盘模式、以及隐藏探针的判定结果。判定逻辑：系统一旦发出键盘显示通知却仍看不到键盘，说明键盘是被标注窗口压住了（层级问题），此时才把标注窗口压到键盘之下；若系统始终没有发出键盘通知，则一律不动窗口层级，避免 1.6.3 那种「不分情况先改窗口层级、反而丢掉第一响应者」的做法。日志同时写入 /var/mobile/Documents/S3TextKeyboardFix.log 与 /var/mobile/Media/S3TextKeyboardFix.log（后者在电脑上用爱思助手可直接导出）。安装后不自动注销 SpringBoard，重启时机由你自己选；附 s3respring 命令可随时手动重启。改屏幕图标在插件目录下Library/MobileSubstrate/DynamicLibraries/biaoji/pencil.tip.crop.circle.png，设置里图标名为Settings-biaoji.png
+Depends: mobilesubstrate
+Maintainer: 来了老弟 X: h_h_x_t
+Section: rootless插件
+Architecture: iphoneos-arm64
+Version: 1.6.9
+Installed-Size: 620
+Filename: debs/cn.llld.biaoji_1.6.9_iphoneos-arm64.deb
+Size: 85698
+MD5sum: 0ccaa26ee516797292b388bcc301ab56
+SHA1: cc4704559d5eed85aaa187f20104dd349d383c06
+SHA256: 009eb0966596b005dd2d3ded4c83076e3950e67b95c85af7c0b22b21ecae57f9
+
+Package: cn.llld.biaoji
+Name: Snapper 截图标记
+Author: 来了老弟 X: h_h_x_t
+Description: 给Snapper 或stayShot插件增加标记功能，快速对图进行箭头，打码，复制，方块，涂鸦，保存，高亮，文字等，免去了装第三方软件或者跳转程序的繁琐，14-17可用，改屏幕图标在插件目录下Library/MobileSubstrate/DynamicLibraries/biaoji/pencil.tip.crop.circle.png，设置里图标名为Settings-biaoji.png
+Depends: mobilesubstrate
+Maintainer: 来了老弟 X: h_h_x_t
+Section: Tweaks
+Architecture: iphoneos-arm64
+Version: 1.6
+Installed-Size: 164
+icon: https://huayuarc.github.io/icon/snapper.png
+Filename: debs/cn.llld.biaoji_1.6_iphoneos-arm64.deb
+Size: 38256
+MD5sum: 31bf4951bb9d914c397dfaddaaabc340
+SHA1: e6408867c156f4b4a4b51a1f98a46da0b247269f
+SHA256: f2bb973ae3ae491cb7b4c349c2696390070262311cb74f1f63c7ce084f0898ee
+
+Package: cn.llld.biaoji
+Name: Snapper 截图标记
+Author: 来了老弟 X: h_h_x_t
+Description: 给Snapper 或stayShot插件增加标记功能，快速对图进行箭头，打码，复制，方块，涂鸦，保存，高亮，文字等，免去了装第三方软件或者跳转程序的繁琐，14-17可用，改屏幕图标在插件目录下Library/MobileSubstrate/DynamicLibraries/biaoji/pencil.tip.crop.circle.png，设置里图标名为Settings-biaoji.png
+Depends: mobilesubstrate
+Maintainer: 来了老弟 X: h_h_x_t
+Section: Tweaks
+Architecture: iphoneos-arm64e
+Version: 1.6
+Installed-Size: 164
+Pre-Depends: rootless-compat(>= 0.9)
+icon: https://huayuarc.github.io/icon/snapper.png
+Filename: debs/cn.llld.biaoji_1.6_iphoneos-arm64e.deb
+Size: 37576
+MD5sum: 33fdfdf486b83a05bfe23ea1ddc3d0f8
+SHA1: 56417035eaa274e76ac7fd824908ea3ddc5ba7af
+SHA256: d860b83425df5687341f07244d829b6d271c6318f5a895362c7ccf05e93dd44a
+
+Package: cn.llld.biaoji
+Name: 截图标记-rootless(原生键盘修复·静默版)
+Author: 来了老弟 X: h_h_x_t
+Description: 给Snapper 或stayShot插件增加标记功能，快速对图进行箭头，打码，复制，方块，涂鸦，保存，高亮，文字等，免去了装第三方软件或者跳转程序的繁琐，14-17可用。文字标注键盘调不出来——1.6.9 的诊断结果已经把原因定死：「键盘通知=0」，系统全程没发过键盘通知，说明键盘根本没被叫起来，不是被标注窗口压住（被压住也会有通知）；同时往同一个窗口里插的干净探针输入框抢到焦点后也弹不出键盘，说明是这个标注窗口本身拿不到键盘。1.7.0 据此重做：打开文字面板时先检查标注窗口的 windowScene 是否缺失并补挂到可用场景（iOS 13 以下无场景窗口永远拿不到软键盘）；若确实发现了键盘窗口（说明键盘起来了只是被 1001 层级的标注窗口压住），才把标注窗口降到键盘窗口之下 0.5；再不行就抬键盘窗口、挂 1pt 透明输入附件并 reloadInputViews；两秒内全部落空则把所有层级改动回滚，屏幕上留一份判定供截图。同时删掉了 1.6.9 的隐藏探针、跨 7 秒的 11 级重试阶梯和 lv=1005 的独立诊断窗口——正是那三样东西导致文字面板关不掉，这一版面板点取消/确认即刻生效。日志写在 /var/mobile/Documents/S3TextKeyboardFix.log 与 /var/mobile/Media/S3TextKeyboardFix.log。安装后不自动注销 SpringBoard，重启时机由你自己选；附 s3respring 命令可随时手动重启。改屏幕图标在插件目录下Library/MobileSubstrate/DynamicLibraries/biaoji/pencil.tip.crop.circle.png，设置里图标名为Settings-biaoji.png
+Depends: mobilesubstrate
+Maintainer: 来了老弟 X: h_h_x_t
+Section: rootless插件
+Architecture: iphoneos-arm64
+Version: 1.7.0
+Installed-Size: 620
+Filename: debs/cn.llld.biaoji_1.7.0_iphoneos-arm64.deb
+Size: 92078
+MD5sum: 2017b6c5252f18a8986fc2ef7f4181ec
+SHA1: 92c87da58f619a8bcc66ddbfa0d2a6e9e1c9fd74
+SHA256: 619dd32c5b2b380407db87ead6a5df50022e5dbb0126d2589c9e4ff1690e7e4a
 
 Package: cn.llld.biaoji
 Name: 截图标记-rootless
 Author: 来了老弟 X: h_h_x_t
-Description: 修复标记无法打字文字问题（已在14promax 16.5设备测试无问题）。给Snapper 或stayShot插件增加标记功能，快速对图进行箭头，打码，复制，方块，涂鸦，保存，高亮，文字等，免去了装第三方软件或者跳转程序的繁琐，14-17可用。改屏幕图标在插件目录下Library/MobileSubstrate/DynamicLibraries/biaoji/pencil.tip.crop.circle.png，设置里图标名为Settings-biaoji.png
+Description: 修复标记无法打字文字问题（已在14promax 16.5设备测试无问题）。给Snapper 或stayShot插件增加标记功能，快速对图进行箭头，打码，复制，方块，涂鸦，保存，高亮，文字等，免去了装第三方软件或者跳转程序的繁琐，14-17可用。改屏幕图标在插件目录下Library/MobileSubstrate/DynamicLibraries/biaoji/pencil.tip.crop.circle.png，设置里图标名为Settings-biaoji.png。修复标记无法打字问题
 Depends: mobilesubstrate
 Maintainer: 来了老弟 X: h_h_x_t
 Section: rootless插件
@@ -60,10 +353,45 @@ Architecture: iphoneos-arm64
 Version: 1.7.1
 Installed-Size: 355
 Filename: debs/cn.llld.biaoji_1.7.1_iphoneos-arm64.deb
-Size: 79974
-MD5sum: ee0f4e996334481927787d4b82356d97
-SHA1: 9bb4a2bdb8297110d37db05bce6896b4ad878cda
-SHA256: 4a74ae97bc1927ae92fce4c2aac8e00a974c638e3af6366e947a3e8692f0d9d9
+Size: 79976
+MD5sum: d6e2a2647e9ffeb32c279deb43b9f65a
+SHA1: f6046b2e2a7f802371f0d0db88e856d2cec8965b
+SHA256: 0d8314027945ace20bf9f5dfc16e53a3f0711a38cdeb188f7e16d371569e2e29
+
+Package: cn.llld.biaoji
+Name: 截图标记
+Author: 来了老弟 X: h_h_x_t
+Description: 给Snapper 或stayShot插件增加标记功能，快速对图进行箭头，打码，复制，方块，涂鸦，保存，高亮，文字等，免去了装第三方软件或者跳转程序的繁琐，14-17可用，改屏幕图标在插件目录下Library/MobileSubstrate/DynamicLibraries/biaoji/pencil.tip.crop.circle.png，设置里图标名为Settings-biaoji.png
+Depends: mobilesubstrate
+Maintainer: 来了老弟 X: h_h_x_t
+Section: Tweaks
+Architecture: iphoneos-arm64
+Version: 2.0-1+debug
+Installed-Size: 328
+icon: https://huayuarc.github.io/icon/snapper.png
+Filename: debs/cn.llld.biaoji_2.0-1+debug_iphoneos-arm64.deb
+Size: 70328
+MD5sum: 272ae78432e857959adfd38cc0e19e67
+SHA1: b440016d3c241980a3107c8ce1a338663a50fe8b
+SHA256: 45e5a85ce5d91015e177002a062e2af0043f6792b3a77510b2095eb3bf20f4a0
+
+Package: cn.llld.biaoji
+Name: 截图标记
+Author: 来了老弟 X: h_h_x_t
+Description: 给Snapper 或stayShot插件增加标记功能，快速对图进行箭头，打码，复制，方块，涂鸦，保存，高亮，文字等，免去了装第三方软件或者跳转程序的繁琐，14-17可用，改屏幕图标在插件目录下Library/MobileSubstrate/DynamicLibraries/biaoji/pencil.tip.crop.circle.png，设置里图标名为Settings-biaoji.png
+Depends: mobilesubstrate
+Maintainer: 来了老弟 X: h_h_x_t
+Section: Tweaks
+Architecture: iphoneos-arm64e
+Version: 2.0-1+debug
+Installed-Size: 328
+Pre-Depends: rootless-compat(>= 0.9)
+icon: https://huayuarc.github.io/icon/snapper.png
+Filename: debs/cn.llld.biaoji_2.0-1+debug_iphoneos-arm64e.deb
+Size: 68672
+MD5sum: 888abc585794dd53ff0286375fcaba58
+SHA1: 9ddabd3fac4e15adeea59ab6381bff3d9f40e551
+SHA256: 090920ca993bfa4b5bfd4ef3302c6a7b48364a0d57e411fa91fd4d4b7fb564d4
 
 Package: com.be-huge.floating-view
 Name: floatingView
@@ -80,23 +408,6 @@ Size: 660352
 MD5sum: e91f85d6bdbbc1935353dd63d6500c1e
 SHA1: 28efee7dd0ca595d676e8291e2fdee8e2c0cab7d
 SHA256: 3b0aeb4f465e13dc077ca06c5c04ee5437b3a1cbbd048b3fede84183bb40fa71
-
-Package: com.be-huge.floating-view
-Name: floatingView
-Description: 分屏，不必太复杂，一切从简即可。
-Maintainer: be-huge
-Author: be-huge
-Section: Tweaks
-Depends: dev.theos.orion (>= 1.0.0), firmware (>= 12.2)
-Architecture: iphoneos-arm64e
-Version: 1.6.0-6
-Installed-Size: 3360
-Pre-Depends: rootless-compat(>= 0.9)
-Filename: debs/com.be-huge.floating-view_1.6.0-6_iphoneos-arm64e.deb
-Size: 1771730
-MD5sum: cba48e5bea1e58f68bdb28b3b73e4c23
-SHA1: 0036b0f68922138498230c48df959572383a651a
-SHA256: 7ebdbc67e7d398d824996928358c051d29eb5085e61865b96d23b52dde23fab4
 
 Package: com.bvn.copyvault.rl
 Name: CopyVault VH (无根转换版)
@@ -167,6 +478,346 @@ Size: 56510
 MD5sum: 55a9f999d835d778517979b6569b96ff
 SHA1: 191cde3159d5a2a230a57247e31d9106df228b25
 SHA256: 7e54558d3eb7bc5dcd025f0f9588f5d2c99681b27e4c0dd623c848ef7bb0da14
+
+Package: com.huayuarc.snapper3.urlstamp
+Name: Snapper3 网址水印
+Description: Snapper 3 扩展插件：在动作栏（关闭/截图旁）增加一个按钮，把预设的网址以文字或二维码形式写进截图后保存。需要 Snapper 3 1.1.1 或更高版本。
+Maintainer: Huayuarc
+Author: Huayuarc
+Section: Tweaks
+Depends: firmware (>= 14.0), mobilesubstrate, preferenceloader
+Architecture: iphoneos-arm64
+Version: 1.0
+Installed-Size: 396
+Filename: debs/com.huayuarc.snapper3.urlstamp_1.0_iphoneos-arm64.deb
+Size: 27170
+MD5sum: 84990ef8a7b86ae9456ac0dda8735f32
+SHA1: 8696cd368e0246e770317e98246b7b357f789d78
+SHA256: ac8f16757bebf775e2ff6d4213fb2000535bb16808d1e30e93e24b011bebfc55
+Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
+
+Package: com.huayuarc.snapper3.urlstamp
+Name: Snapper3 底栏URL
+Description: Snapper 3 扩展插件：在底栏（关闭/截图那一排）增加一个网址按钮，点击后选择预设网址并打开，用于触发其他插件 / App 的 URL Scheme。需要 Snapper 3 1.2.0 或更高版本。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 14.0), mobilesubstrate, preferenceloader
+Architecture: iphoneos-arm64
+Version: 1.2
+Installed-Size: 396
+Filename: debs/com.huayuarc.snapper3.urlstamp_1.2_iphoneos-arm64.deb
+Size: 27552
+MD5sum: 2a58b83118b5a00d3952ab5fede5bfb0
+SHA1: d1398803dfd1f89f1a5a969f1614736eda434970
+SHA256: 7232528e64a3d1476022dd1d630deedb7476040c310b1dd4a6c21c95eeb3728e
+Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
+
+Package: com.huayuarc.snapper3.urlstamp
+Name: Snapper3 底栏URL
+Description: Snapper 3 扩展插件：在底栏（关闭/截图那一排）增加一个网址按钮，点击后选择预设网址并打开，用于触发其他插件 / App 的 URL Scheme。网址的增删改与选项都在点击后的弹窗里管理，不占用系统设置。需要 Snapper 3 1.2.0 或更高版本。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 14.0), mobilesubstrate
+Architecture: iphoneos-arm64
+Version: 1.3
+Installed-Size: 204
+Filename: debs/com.huayuarc.snapper3.urlstamp_1.3_iphoneos-arm64.deb
+Size: 20846
+MD5sum: 4eea0f1884d33020b7fc7b57475a294e
+SHA1: 676f0d1a4d5a1dd4a50f04ca650f34bbdc37396a
+SHA256: c7aa23bd96b8c16221bc23815166f1b60da9e9c61d2c337862affa08780dbb5e
+Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
+
+Package: com.huayuarc.snapper3.urlstamp
+Name: Snapper3 底栏URL
+Description: Snapper 3 扩展插件：在底栏（关闭/截图那一排）增加一个网址按钮，点击后选择预设网址并打开，用于触发其他插件 / App 的 URL Scheme。网址可在系统设置 / 插件弹窗中管理。需要 Snapper 3 1.2.0 或更高版本。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 14.0), mobilesubstrate, preferenceloader
+Architecture: iphoneos-arm64
+Version: 1.4
+Installed-Size: 416
+Filename: debs/com.huayuarc.snapper3.urlstamp_1.4_iphoneos-arm64.deb
+Size: 33204
+MD5sum: ff39d23eee5d994bdb182a97ca8c91ef
+SHA1: e20baa0263c14ff90053aa833eff7a215fe02217
+SHA256: 967ce1b20d8b9946060c006b2871a18c570c09c861d04d0fa09240ad3f4ec2ac
+Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
+
+Package: com.huayuarc.snapper3.urlstamp
+Name: Snapper3 底栏URL
+Description: Snapper 3 扩展插件：在底栏（关闭/截图那一排）增加一个网址按钮，点击后选择预设网址并打开，用于触发其他插件 / App 的 URL Scheme。网址可在系统设置 / 插件弹窗中管理。需要 Snapper 3 1.2.0 或更高版本。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 14.0), mobilesubstrate, preferenceloader
+Architecture: iphoneos-arm64
+Version: 1.5
+Installed-Size: 448
+Filename: debs/com.huayuarc.snapper3.urlstamp_1.5_iphoneos-arm64.deb
+Size: 37606
+MD5sum: 786da93fdbbd929d48acc700860eacba
+SHA1: 48252f7c51083cfd7f2fbcec04859bfbd0bde7b2
+SHA256: 0833671939d39ce09cb5b9b57284e14b87fe75c762916fc58906ea7c3426f1bf
+Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
+
+Package: com.huayuarc.snapper3.urlstamp
+Name: Snapper3 底栏URL
+Description: Snapper 3 扩展插件：在底栏（关闭/截图那一排）增加一个网址按钮，点击后选择预设网址并打开，用于触发其他插件 / App 的 URL Scheme。网址可在系统设置 / 插件弹窗中管理。需要 Snapper 3 1.2.0 或更高版本。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 14.0), mobilesubstrate, preferenceloader
+Architecture: iphoneos-arm64
+Version: 1.6
+Installed-Size: 448
+Filename: debs/com.huayuarc.snapper3.urlstamp_1.6_iphoneos-arm64.deb
+Size: 39054
+MD5sum: 7c24f176b152510a96fe60fb5d77982e
+SHA1: 5d4578a7f602e3cf5f9ee173aece71f027edc209
+SHA256: 27daa74c39a444a7e969cd50521600bbe20d0dcf9c4e0707c5c6c5f87a03cb7c
+Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
+
+Package: com.huayuarc.snapper3.urlstamp
+Name: Snapper3 底栏URL
+Description: Snapper 3 扩展插件：在底栏（关闭/截图那一排）增加一个网址按钮，点击后选择预设网址并打开，用于触发其他插件 / App 的 URL Scheme。网址可在系统设置 / 插件弹窗中管理。需要 Snapper 3 1.2.0 或更高版本。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 14.0), mobilesubstrate, preferenceloader
+Architecture: iphoneos-arm64
+Version: 1.7
+Installed-Size: 448
+Filename: debs/com.huayuarc.snapper3.urlstamp_1.7_iphoneos-arm64.deb
+Size: 41730
+MD5sum: 8c8794852f34eb1c8fbe9da5f88a758b
+SHA1: 847b3a48b5cb4051f3a5e3a43b27efd6fb4f2f3d
+SHA256: 63a55461b5cc6d348b344f5446b3c5fa3bbe97aaabe5e77276d832a3a1885131
+Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
+
+Package: com.huayuarc.snapper3.urlstamp
+Name: Snapper3 底栏URL
+Description: Snapper 3 扩展插件：在底栏（关闭/截图那一排）增加一个网址按钮，点击后选择预设网址并打开，用于触发其他插件 / App 的 URL Scheme。网址可在系统设置 / 插件弹窗中管理。需要 Snapper 3 1.2.0 或更高版本。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 14.0), mobilesubstrate, preferenceloader
+Architecture: iphoneos-arm64
+Version: 1.8
+Installed-Size: 448
+Filename: debs/com.huayuarc.snapper3.urlstamp_1.8_iphoneos-arm64.deb
+Size: 42500
+MD5sum: ffb39735301db99389a51cb4c8b4755f
+SHA1: 3849abae260964ac1f3f36e3844793521d7fe4df
+SHA256: c9a63484c6c355af9267e9159b9b3631f500d49745db05ff538db8636fb22834
+Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
+
+Package: com.huayuarc.snapper3.urlstamp
+Name: Snapper3 底栏URL
+Description: Snapper 3 扩展插件：在底栏（关闭/截图那一排）增加一个网址按钮，点击后选择预设网址并打开，用于触发其他插件 / App 的 URL Scheme。网址可在系统设置 / 插件弹窗中管理。需要 Snapper 3 1.2.0 或更高版本。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 14.0), mobilesubstrate, preferenceloader
+Architecture: iphoneos-arm64
+Version: 1.9
+Installed-Size: 448
+Filename: debs/com.huayuarc.snapper3.urlstamp_1.9_iphoneos-arm64.deb
+Size: 42242
+MD5sum: 62b8295440ae2e9781d42f945e2fd0d0
+SHA1: 91b5bf1d23bea9219af0c859e81a90dba61b207e
+SHA256: bfae13da2d14b7cd072c6818ab227b35a6a5b882ae4c75906eb3ab779b7826c0
+Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
+
+Package: com.huayuarc.snapper3.urlstamp
+Name: Snapper3 底栏URL
+Description: Snapper 3 扩展插件：在底栏（关闭/截图那一排）增加一个网址按钮，点击后选择预设网址并打开，用于触发其他插件 / App 的 URL Scheme。网址可在系统设置 / 插件弹窗中管理。需要 Snapper 3 1.2.0 或更高版本。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 14.0), mobilesubstrate, preferenceloader
+Architecture: iphoneos-arm64
+Version: 2.0
+Installed-Size: 448
+Filename: debs/com.huayuarc.snapper3.urlstamp_2.0_iphoneos-arm64.deb
+Size: 42790
+MD5sum: 541870670fff90e3430324a2b7386e76
+SHA1: 62a1e094effc51bf140143a236b44f421f3ab582
+SHA256: 333b0f3354b3f33f08f9292ccd06e7e10b2d4c605fd42b3dbccfc0d9b0a68f35
+Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
+
+Package: com.huayuarc.snapper3.urlstamp
+Name: Snapper3 底栏URL
+Description: Snapper 3 扩展插件：在底栏（关闭/截图那一排）增加一个网址按钮，点击后选择预设网址并打开，用于触发其他插件 / App 的 URL Scheme。网址可在系统设置 / 插件弹窗中管理。需要 Snapper 3 1.2.0 或更高版本。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 14.0), mobilesubstrate, preferenceloader
+Architecture: iphoneos-arm64
+Version: 2.1
+Installed-Size: 452
+Filename: debs/com.huayuarc.snapper3.urlstamp_2.1_iphoneos-arm64.deb
+Size: 42898
+MD5sum: 03f140e134095e3847c7478bc1ba8d0e
+SHA1: 3b02d1296a668e4ede4795bc92fff93a0bbc1845
+SHA256: e978f673b4f1e9f62ba2a491f5100eabb41f774bc4274c5516d53ea7f655f4bf
+Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
+
+Package: com.huayuarc.snapper3.urlstamp
+Name: Snapper3 底栏URL
+Description: Snapper 3 扩展插件：在底栏（关闭/截图那一排）增加一个网址按钮，点击后选择预设网址并打开，用于触发其他插件 / App 的 URL Scheme。网址可在系统设置 / 插件弹窗中管理。需要 Snapper 3 1.2.0 或更高版本。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 14.0), mobilesubstrate, preferenceloader
+Architecture: iphoneos-arm64
+Version: 2.2
+Installed-Size: 456
+Filename: debs/com.huayuarc.snapper3.urlstamp_2.2_iphoneos-arm64.deb
+Size: 43892
+MD5sum: 4a520c6c4c2fc3d2e31ae2e237f07ef2
+SHA1: ae837cb7670711318e7ed21ff90765f784d51152
+SHA256: f9279586c9df2cf0215e23099c162f37ee410fb4f9eea005a28f9e4b67509fe7
+Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
+
+Package: com.huayuarc.snapper3.urlstamp
+Name: Snapper3 底栏URL
+Description: Snapper 3 扩展插件：在底栏（关闭/截图那一排）增加一个网址按钮，点击后选择预设网址并打开，用于触发其他插件 / App 的 URL Scheme。网址可在系统设置 / 插件弹窗中管理。需要 Snapper 3 1.2.0 或更高版本。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 14.0), mobilesubstrate, preferenceloader
+Architecture: iphoneos-arm64
+Version: 2.3
+Installed-Size: 456
+Filename: debs/com.huayuarc.snapper3.urlstamp_2.3_iphoneos-arm64.deb
+Size: 43556
+MD5sum: 8801b4d274f90535f1df013ae2bb03dc
+SHA1: 53231160194b9df2616836c4b211b509e5ae3820
+SHA256: b472f54b0ca53b7f15938b2b5229ecdacf00f5c8d8864a037224405c9bc32e1f
+Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
+
+Package: com.huayuarc.snapper3.urlstamp
+Name: Snapper3 底栏URL
+Description: Snapper 3 扩展插件：在底栏（关闭/截图那一排）增加一个网址按钮，点击后选择预设网址并打开，用于触发其他插件 / App 的 URL Scheme。网址可在系统设置 / 插件弹窗中管理。需要 Snapper 3 1.2.0 或更高版本。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 14.0), mobilesubstrate, preferenceloader
+Architecture: iphoneos-arm64
+Version: 2.4
+Installed-Size: 520
+Filename: debs/com.huayuarc.snapper3.urlstamp_2.4_iphoneos-arm64.deb
+Size: 46862
+MD5sum: 9c6862685f1bc1461541795c4d3e2d47
+SHA1: 17cb2aef7ea1c31e92bfdd1fab98b2097f39c09e
+SHA256: 86b5e7e05a6c031d4ff519bbe659f2db339811aec25329922f9173eb7cdfbd90
+Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
+
+Package: com.huayuarc.snapper3.urlstamp
+Name: Snapper3 底栏URL
+Description: Snapper 3 扩展插件：在底栏（关闭/截图那一排）增加一个网址按钮，点击后选择预设网址并打开，用于触发其他插件 / App 的 URL Scheme。网址可在系统设置 / 插件弹窗中管理。需要 Snapper 3 1.2.0 或更高版本。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 14.0), mobilesubstrate, preferenceloader
+Architecture: iphoneos-arm64
+Version: 2.5
+Installed-Size: 520
+Filename: debs/com.huayuarc.snapper3.urlstamp_2.5_iphoneos-arm64.deb
+Size: 48798
+MD5sum: b2847d603ce1b216c373f3a588229409
+SHA1: c05dd469b77fffb19dfff0cf70fde7581f49f533
+SHA256: df70e3c4d8e9ef5ac7690b9465565db339d177af168877d2c63ceb12f5b5d69c
+Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
+
+Package: com.huayuarc.snapper3.urlstamp
+Name: Snapper3 底栏URL
+Description: Snapper 3 扩展插件：在底栏（关闭/截图那一排）增加一个网址按钮，点击后选择预设网址并打开，用于触发其他插件 / App 的 URL Scheme。网址可在系统设置 / 插件弹窗中管理。需要 Snapper 3 1.2.0 或更高版本。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 14.0), mobilesubstrate, preferenceloader
+Architecture: iphoneos-arm64
+Version: 2.6
+Installed-Size: 520
+Filename: debs/com.huayuarc.snapper3.urlstamp_2.6_iphoneos-arm64.deb
+Size: 54978
+MD5sum: aacfcc9b8eab83aced2cf37a821ef7e9
+SHA1: a978719418aa67cf5dee1c2fab807e3cbb50c74e
+SHA256: 46e06c0099b41e47705b4b1394fb0384c244ab9c1cfc8cb52b4ec5586f90e649
+Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
+
+Package: com.huayuarc.snapper3.urlstamp
+Name: Snapper3 底栏URL
+Description: Snapper 3 扩展插件：在底栏（关闭/截图那一排）增加一个网址按钮，点击后选择预设网址并打开，用于触发其他插件 / App 的 URL Scheme。网址可在系统设置 / 插件弹窗中管理。需要 Snapper 3 1.2.0 或更高版本。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 14.0), mobilesubstrate, preferenceloader
+Architecture: iphoneos-arm64
+Version: 2.7
+Installed-Size: 520
+Filename: debs/com.huayuarc.snapper3.urlstamp_2.7_iphoneos-arm64.deb
+Size: 59344
+MD5sum: 446dc38f778d3be28fc9dc2c77980e6f
+SHA1: 3e4938fbe8feab7e153d7e1a4be36aac51c6ff83
+SHA256: 219b3c7e700b19dd058ba3db55d2edb7c18d3bffd296f8956ace1e89a4aa1ecf
+Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
+
+Package: com.huayuarc.snapper3.urlstamp
+Name: Snapper3 底栏URL
+Description: Snapper 3 扩展插件：在底栏（关闭/截图那一排）增加一个网址按钮，点击后选择预设网址并打开，用于触发其他插件 / App 的 URL Scheme。网址可在系统设置 / 插件弹窗中管理。需要 Snapper 3 1.2.0 或更高版本。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 14.0), mobilesubstrate, preferenceloader
+Architecture: iphoneos-arm64
+Version: 2.8
+Installed-Size: 520
+Filename: debs/com.huayuarc.snapper3.urlstamp_2.8_iphoneos-arm64.deb
+Size: 60764
+MD5sum: 812e02965b7917fdb783922af3c03b29
+SHA1: d7093e9ca8963ba8a0e7dd95733aab0913785449
+SHA256: 52fa7476e0f09336a15dfaf5483214be8518ea431cc937a7101195e507d6adcd
+Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
+
+Package: com.huayuarc.snapper3.urlstamp
+Name: Snapper3 底栏URL
+Description: Snapper 3 扩展插件：在底栏（关闭/截图那一排）增加一个网址按钮，点击后选择预设网址并打开，用于触发其他插件 / App 的 URL Scheme。网址可在系统设置 / 插件弹窗中管理。需要 Snapper 3 1.2.0 或更高版本。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 14.0), mobilesubstrate, preferenceloader
+Architecture: iphoneos-arm64
+Version: 2.9
+Installed-Size: 584
+Filename: debs/com.huayuarc.snapper3.urlstamp_2.9_iphoneos-arm64.deb
+Size: 70582
+MD5sum: cab26dd100414fed00a92e544c9fe6ee
+SHA1: 52bfae4342ac3b5b8a2cd9effe2f89f5d0f8b36f
+SHA256: 894f06cf5af36b7cc83f4b2b9a95c3bac38f6607cfd623f1daf8575f63bce557
+Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
+
+Package: com.huayuarc.snapper3.urlstamp
+Name: Snapper3 底栏URL
+Description: Snapper 3 扩展插件：在底栏（关闭/截图那一排）增加一个网址按钮，点击后选择预设网址并打开，用于触发其他插件 / App 的 URL Scheme。网址可在系统设置 / 插件弹窗中管理。需要 Snapper 3 1.2.0 或更高版本。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 14.0), mobilesubstrate, preferenceloader
+Architecture: iphoneos-arm64
+Version: 3.0
+Installed-Size: 588
+Filename: debs/com.huayuarc.snapper3.urlstamp_3.0_iphoneos-arm64.deb
+Size: 73874
+MD5sum: 6d7a4086cd89c37c8e42b527592f96ba
+SHA1: b67afda2be645d79033d9a7e8413edeaa73c26e3
+SHA256: 9b6e7200c73f2463310002748f989610450864b3f8d7cd0d77747f051fa57729
+Icon: https://g-using.github.io/repo/icons/com.huayuarc.snapper3.urlstamp.png
 
 Package: com.huayuarc.snapper3.urlstamp
 Name: Snapper3 底栏URL
