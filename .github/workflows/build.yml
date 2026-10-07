@@ -8,31 +8,16 @@ on:
 permissions:
   contents: write
 
+# 多个推送几乎同时到达时排队，而不是让两次索引重建互相把对方 push 掉
+concurrency:
+  group: repo-index
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install deps (zstandard for control.tar.zst)
-        run: pip install zstandard
-
-      - name: Generate index (auto rename non-ASCII deb + rebuild)
-        run: python build_repo.py
-
-      - name: Commit and push index
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
-          if git diff --cached --quiet; then
-            echo "索引无变化，跳过提交"
-          else
-            git commit -m "auto: 重建索引 (含 deb 英文名规范化)"
-            git push
-          fi
+      - name: Rebuild index and push
+        uses: ./.github/actions/rebuild-index

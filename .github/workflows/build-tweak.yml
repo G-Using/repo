@@ -112,18 +112,56 @@ jobs:
           path: tgsaveanywhere/packages/*.deb
           if-no-files-found: warn
 
-      - name: Publish to debs/
-        if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.publish }}
+  # 发布单独一个 job：原先写在 matrix 里，rootless / rootful 两个 job 会同时
+  # commit + push debs/，必然有一个被拒。合并到这里一次提交就没这问题。
+  publish:
+    needs: [build-dylib, build]
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.publish }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Collect debs outside the repo
         run: |
-          mkdir -p debs
-          cp tgsaveanywhere/packages/*.deb debs/
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add debs
-          if git diff --cached --quiet; then
-            echo "debs 无变化，跳过提交"
-          else
-            git commit -m "feat: TGSaveAnywhere (${{ matrix.scheme }}) deb"
-            git pull --rebase origin main
-            git push
-          fi
+          set -euo pipefail
+          mkdir -p /tmp/newdebs
+          find artifacts -name '*.deb' -type f -exec cp -n {} /tmp/newdebs/ \;
+          ls -lh /tmp/newdebs/
+          test -n "$(ls -A /tmp/newdebs)" || { echo "::error::没有产物 deb"; exit 1; }
+
+      - name: Commit debs (retry against concurrent pushes)
+        env:
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: github-actions[bot]@users.noreply.github.com
+        run: |
+          set -uo pipefail
+          for attempt in 1 2 3 4 5; do
+            # 每次都从远端重来：deb 文件已经存在 /tmp/newdebs，不会丢。
+            # 这样"本地有陈旧索引 + 远端有新提交"永远不会变成需要人工解的冲突。
+            git fetch origin main
+            git reset --hard origin/main
+            mkdir -p debs
+            cp -n /tmp/newdebs/*.deb debs/ 2>/dev/null || true
+
+            git add debs
+            if git diff --cached --quiet; then
+              echo "debs 无变化，跳过提交。"
+              break
+            fi
+            git commit -m "feat: TGSaveAnywhere deb (rootless + rootful + dylib)"
+            if git push; then
+              echo "debs 推送成功。"
+              break
+            fi
+            echo "::warning::debs push 被拒（第 ${attempt} 次），重新基于 origin/main 重试"
+          done
+
+      - name: Rebuild index and push
+        uses: ./.github/actions/rebuild-index

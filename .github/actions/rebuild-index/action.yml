@@ -1,0 +1,71 @@
+name: Rebuild index and push
+description: 扫 debs/ 重建 APT 索引，校验 Release 哈希，然后安全提交并推送到 main
+
+inputs:
+  commit-message:
+    description: 索引提交信息
+    required: false
+    default: "auto: 重建索引 (含 deb 英文名规范化)"
+  setup-python:
+    description: 是否由本 action 配置 Python（被别的 workflow 复用时传 false）
+    required: false
+    default: "true"
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Python
+      if: inputs.setup-python == 'true'
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install deps (zstandard for control.tar.zst)
+      shell: bash
+      run: pip install zstandard
+
+    - name: Generate index (auto rename non-ASCII deb + rebuild)
+      shell: bash
+      run: python build_repo.py
+
+    - name: Verify Release checksums match Packages files
+      shell: bash
+      run: python build_repo.py --check
+
+    - name: Commit and push index
+      shell: bash
+      env:
+        COMMIT_MESSAGE: ${{ inputs.commit-message }}
+      run: |
+        set -uo pipefail
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+        # 索引（Packages*/Release）完全是 debs/ 的派生产物。
+        # 所以任何冲突都不需要人工合并：丢掉本地生成物，基于最新 origin/main 重跑一次即可。
+        # 这样 push 被拒 / 别人抢先推送都不会留下不一致的索引。
+        for attempt in 1 2 3 4 5; do
+          git add -A
+          if git diff --cached --quiet; then
+            echo "索引与远端一致，无需提交。"
+            exit 0
+          fi
+          git commit -m "$COMMIT_MESSAGE"
+
+          git fetch origin main
+          if git merge-base --is-ancestor HEAD origin/main; then
+            if git push; then
+              echo "推送成功。"
+              exit 0
+            fi
+            echo "::warning:: push 被拒（第 ${attempt} 次），重试"
+          else
+            echo "远端出现了新提交，丢弃本地索引改动并重新生成（第 ${attempt} 次）"
+          fi
+
+          git reset --hard origin/main
+          python build_repo.py
+        done
+
+        echo "::error::重试 5 次仍未能推送索引"
+        exit 1

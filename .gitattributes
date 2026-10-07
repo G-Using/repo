@@ -1,0 +1,11 @@
+# 索引文件必须逐字节可复现：Release 里记的是 Packages* 的哈希，
+# 一旦被git 转成 CRLF，哈希就变了，手机端会报校验失败。
+Packages    text eol=lf
+Packages.gz binary
+Packages.bz2 binary
+Release     text eol=lf
+
+# 大文件（deb / 图标）不当文本处理，避免任何换行/编码转换
+*.deb  binary
+*.png  binary
+*.dylib binary

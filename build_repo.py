@@ -6,7 +6,7 @@
 纯 Python，无需 dpkg。支持 control.tar.{gz,xz,zst}。
 用法:  python build_repo.py
 """
-import os, io, gzip, bz2, hashlib, tarfile, time, email.utils
+import os, io, gzip, bz2, hashlib, tarfile, time, email.utils, sys
 
 REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
 DEBS_DIR = os.path.join(REPO_ROOT, "debs")
@@ -169,6 +169,65 @@ def rename_nonascii_debs(debs_dir):
         existing.add(new)
         renamed.append((f, new))
     return renamed
+
+
+def check_release():
+    """校验 Release 里记录的 MD5/SHA1/SHA256 与磁盘上的 Packages* 文件一致。
+    不一致说明索引被半途改坏（常见于 git 冲突后只解了一半），必须报错。
+    用法: python build_repo.py --check
+    """
+    rel_path = os.path.join(REPO_ROOT, "Release")
+    if not os.path.exists(rel_path):
+        print("!! 没有 Release 文件")
+        return False
+    text = open(rel_path, "rb").read().decode("utf-8", "replace")
+
+    # 解析 Release 里的三组校验块
+    recorded = {"MD5Sum": {}, "SHA1": {}, "SHA256": {}}
+    section = None
+    for line in text.split("\n"):
+        if line.startswith("MD5Sum:"):
+            section = "MD5Sum"; continue
+        if line.startswith("SHA1:"):
+            section = "SHA1"; continue
+        if line.startswith("SHA256:"):
+            section = "SHA256"; continue
+        if section and line.startswith(" "):
+            parts = line.split()
+            if len(parts) == 3:
+                recorded[section][parts[2]] = (parts[0], int(parts[1]))
+
+    hashers = {"MD5Sum": hashlib.md5, "SHA1": hashlib.sha1, "SHA256": hashlib.sha256}
+    ok = True
+    for algo, hfun in hashers.items():
+        for fn in ("Packages", "Packages.gz", "Packages.bz2"):
+            p = os.path.join(REPO_ROOT, fn)
+            if not os.path.exists(p):
+                continue
+            if fn not in recorded[algo]:
+                print(f"  [缺失] Release 的 {algo} 里没有 {fn}")
+                ok = False
+                continue
+            digest, size = recorded[algo][fn]
+            blob = open(p, "rb").read()
+            real = hfun(blob).hexdigest()
+            if real != digest:
+                print(f"  [不符] {algo} {fn}: Release 记 {digest[:12]}… 实际 {real[:12]}…")
+                ok = False
+            elif len(blob) != size:
+                print(f"  [不符] {algo} {fn}: Release 记 {size} 字节 实际 {len(blob)} 字节")
+                ok = False
+            else:
+                print(f"  [OK] {algo} {fn}")
+
+    # 反向检查：磁盘上存在但 Release 没记录的索引文件
+    for fn in ("Packages", "Packages.gz", "Packages.bz2"):
+        if os.path.exists(os.path.join(REPO_ROOT, fn)) and fn not in recorded["MD5Sum"]:
+            print(f"  [多余] {fn} 存在但 Release 未记录")
+            ok = False
+
+    print("Release 校验通过。" if ok else "!! Release 校验不通过")
+    return ok
 
 
 def main():
@@ -347,6 +406,8 @@ def main():
 
 
 if __name__ == "__main__":
+    if "--check" in sys.argv:
+        raise SystemExit(0 if check_release() else 1)
     main()
 
 
