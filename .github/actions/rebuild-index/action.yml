@@ -50,20 +50,20 @@ runs:
             echo "索引与远端一致，无需提交。"
             exit 0
           fi
-          git commit -m "$COMMIT_MESSAGE"
+          git commit -m "$COMMIT_MESSAGE" || true
 
-          git fetch origin main
-          if git merge-base --is-ancestor HEAD origin/main; then
-            if git push; then
-              echo "推送成功。"
-              exit 0
-            fi
-            echo "::warning:: push 被拒（第 ${attempt} 次），重试"
-          else
-            echo "远端出现了新提交，丢弃本地索引改动并重新生成（第 ${attempt} 次）"
+          # checkout 默认是浅克隆(depth=1)，merge-base 的父提交不在本地，
+          # 用它判断"能否快进"会恒为假 -> 永远走重建分支 -> 5 次后放弃。
+          # 所以这里不再判断，直接尝试 push，失败再基于最新远端重建。
+          if git push; then
+            echo "推送成功。"
+            exit 0
           fi
 
-          git reset --hard origin/main
+          echo "::warning:: push 被拒（第 ${attempt} 次），基于最新远端重建索引"
+          git fetch origin main
+          # --soft 保留工作区（debs/ 里新加的包不会被抹掉），只把 HEAD 挪到远端最新
+          git reset --soft origin/main
           python build_repo.py
         done
 
