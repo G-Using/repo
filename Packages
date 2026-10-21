@@ -8815,6 +8815,24 @@ MD5sum: cf614be74b57336e49fec3f371ebd74a
 SHA1: d0d80b4a9e72cce984848752d655b3be159eb93e
 SHA256: d51a389aa11657367c3cddd011e1196dd53a3410fa2ba71d73a85f9607f6b29f
 
+Package: com.gusing.ivglassplayer.arm64e
+Name: 相册文件视频进度条 (arm64e)
+Description: iOS 26 风格的玻璃视频控制层。底部胶囊进度条、长按展开为可拖动时间轴、中央玻璃按钮组（后退15秒 / 暂停 / 前进15秒），用于「照片」与「文件」App 的全屏视频播放。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 14.0), mobilesubstrate
+Architecture: iphoneos-arm64e
+Version: 0.6.9
+Conflicts: com.gusing.ivglassplayer
+Replaces: com.gusing.ivglassplayer
+Installed-Size: 122
+Filename: debs/com.gusing.ivglassplayer.arm64e_0.6.9_iphoneos-arm64e.deb
+Size: 30540
+MD5sum: f7a3d38d62346126f2597f51e9347533
+SHA1: b61e6da212abe8ac18b80d1c89711c42f8231f3c
+SHA256: 5dbaae487c3ef4c25b20d6a271c742ed2d63922a4d2483858dfe8ad4c0b3f532
+
 Package: com.gusing.ivglassplayer
 Name: 相册文件视频进度条
 Description: iOS 26 风格的玻璃视频控制层。底部胶囊进度条、长按展开为可拖动时间轴、中央玻璃按钮组（后退15秒 / 暂停 / 前进15秒），用于「照片」与「文件」App 的全屏视频播放。
