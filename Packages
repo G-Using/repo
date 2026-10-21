@@ -24486,6 +24486,7 @@ Size: 25032
 MD5sum: e4c0d2ea20b2b3572917db244c7652e9
 SHA1: b13b0bd41e1612913ffc20ed5e33d0dd5f397c4f
 SHA256: 79f4e5865b5937c0e68a38126a1dd3215bcfcff10ff0e723a14b9e3274f22055
+Icon: https://g-using.github.io/repo/icons/com.shiyi.volumeglass.png
 
 Package: com.shiyi.volumeglass
 Name: 音量玻璃
@@ -24507,6 +24508,51 @@ Size: 25040
 MD5sum: 4ffcb2bf7ac2f9118b9729c690f2fc9f
 SHA1: 7effe814a910bbe50a316193eae24061e1090632
 SHA256: ffe8b1a3710653a6c7e1e6099032a608d3134a309fcb8f98f25b34b94cb40b7b
+Icon: https://g-using.github.io/repo/icons/com.shiyi.volumeglass.png
+
+Package: com.shiyi.volumeglass
+Name: 音量玻璃
+Description: 把系统音量 HUD 的方角改成圆角
+ 保留 iOS 原生材质（半透明、随壁纸变化、模糊），只在其上设置圆角，
+ 所以外观和系统原样一致，只是方角变圆角，收缩态保持原生胶囊形状。
+ 支持圆角百分比无级调节、可选的额外底色/描边/模糊、侧面滑入动画，
+ 亮度 HUD 可选同样生效。
+ 适配 iOS 15 - 16，rootless 与 RootHide。
+Maintainer: shiyi
+Author: shiyi
+Section: Tweaks
+Depends: mobilesubstrate (>= 0.9.5000)
+Architecture: iphoneos-arm64
+Version: 0.4.2
+Installed-Size: 400
+Filename: debs/com.shiyi.volumeglass_0.4.2_iphoneos-arm64.deb
+Size: 31218
+MD5sum: 616adcb62383581ea756eeb2ba56ce53
+SHA1: 6d177505b4c3c3fa83fd9daaef79b20da0a933bc
+SHA256: cc2b1d64b06e7d7076876c9d0787974c51aded8f5a180bb51b4d6ca151e684c4
+Icon: https://g-using.github.io/repo/icons/com.shiyi.volumeglass.png
+
+Package: com.shiyi.volumeglass
+Name: 音量玻璃
+Description: 把系统音量 HUD 的方角改成圆角
+ 保留 iOS 原生材质（半透明、随壁纸变化、模糊），只在其上设置圆角，
+ 所以外观和系统原样一致，只是方角变圆角，收缩态保持原生胶囊形状。
+ 支持圆角百分比无级调节、可选的额外底色/描边/模糊、侧面滑入动画，
+ 亮度 HUD 可选同样生效。
+ 适配 iOS 15 - 16，rootless 与 RootHide。
+Maintainer: shiyi
+Author: shiyi
+Section: Tweaks
+Depends: mobilesubstrate (>= 0.9.5000)
+Architecture: iphoneos-arm64e
+Version: 0.4.2
+Installed-Size: 400
+Filename: debs/com.shiyi.volumeglass_0.4.2_iphoneos-arm64e.deb
+Size: 31238
+MD5sum: d7d9eabf9519a26a1f79c048dccb06c0
+SHA1: dd9c8306e8d4f378874abcd3f5f2bdba598d9224
+SHA256: a5cfbf974552f97e71970c68418f104a2a9c9df0f987d57ec608288566a861a4
+Icon: https://g-using.github.io/repo/icons/com.shiyi.volumeglass.png
 
 Package: com.simon.ccglow
 Name: 控制中心发光
