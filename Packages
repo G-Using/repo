@@ -8823,15 +8823,31 @@ Author: G-Using
 Section: Tweaks
 Depends: firmware (>= 14.0)
 Architecture: iphoneos-arm64e
-Version: 0.7.5
+Version: 0.7.6
 Conflicts: com.gusing.ivglassplayer
 Replaces: com.gusing.ivglassplayer
 Installed-Size: 139
-Filename: debs/com.gusing.ivglassplayer.arm64e_0.7.5_iphoneos-arm64e.deb
-Size: 38914
-MD5sum: 655e0014873c1fb8571637569faaa26f
-SHA1: a81cfa32bc3dc6487170d0b83c43a85a92d89d21
-SHA256: e67f4b312e42a7512583e2486a89ea4970a6fcc81a5139c3fa8143e5d2ac52ad
+Filename: debs/com.gusing.ivglassplayer.arm64e_0.7.6_iphoneos-arm64e.deb
+Size: 40362
+MD5sum: ce8e1b6f207bf025b4fe7a9615729665
+SHA1: 9975c70485a9b29b9001a66ad5332535f8dbeb67
+SHA256: e4bf4eb604b637cb794a03e3f25511857ece98ef485faac381d1d41c0e9b8ed5
+
+Package: com.gusing.ivglassplayer
+Name: 相册文件视频进度条
+Description: iOS 26 风格的玻璃视频控制层。底部胶囊进度条、长按展开为可拖动时间轴、中央玻璃按钮组（后退15秒 / 暂停 / 前进15秒），用于「照片」与「文件」App 的全屏视频播放。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 14.0)
+Architecture: iphoneos-arm64
+Version: 0.7.6
+Installed-Size: 324
+Filename: debs/com.gusing.ivglassplayer_0.7.6_iphoneos-arm64.deb
+Size: 43762
+MD5sum: ee3e47538f3a409e4de62ee2ecad9ffd
+SHA1: 74968d48b0fb30008e346ca6690e6db43e0f4453
+SHA256: 70aea4cea5ca82dd9513da07703a19e8ae3aef584b9e070cd039b085ab00cd60
 
 Package: com.gusing.tgsaveanywhere.rootful
 Name: telegram视频下载 (rootful)
