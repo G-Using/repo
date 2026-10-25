@@ -8841,15 +8841,15 @@ Author: G-Using
 Section: Tweaks
 Depends: firmware (>= 14.0)
 Architecture: iphoneos-arm64e
-Version: 0.8.0
+Version: 0.8.1
 Conflicts: com.gusing.ivglassplayer
 Replaces: com.gusing.ivglassplayer
 Installed-Size: 139
-Filename: debs/com.gusing.ivglassplayer.arm64e_0.8.0_iphoneos-arm64e.deb
-Size: 42380
-MD5sum: b768f51dc001269341f24482c38454f7
-SHA1: db7b4ed03ac198ff3fbbaef57853107062a689cd
-SHA256: 1652a28346b9fe4d4242e9aaaf13d1a3afecbb1c48edbb25cabc7966239258f3
+Filename: debs/com.gusing.ivglassplayer.arm64e_0.8.1_iphoneos-arm64e.deb
+Size: 42454
+MD5sum: 418d7bafe17b3e662211d59b4429e47d
+SHA1: ddaeff88d9097886ea969946850bd552f2f1f2fd
+SHA256: 5feb51dabe5e54c94c0fc7aa8b3d91549695fa45635779f45bd1a12256192bc3
 
 Package: com.gusing.ivglassplayer
 Name: 相册文件视频进度条
@@ -8875,13 +8875,13 @@ Author: G-Using
 Section: Tweaks
 Depends: firmware (>= 14.0)
 Architecture: iphoneos-arm64
-Version: 0.8.0
+Version: 0.8.1
 Installed-Size: 324
-Filename: debs/com.gusing.ivglassplayer_0.8.0_iphoneos-arm64.deb
-Size: 45834
-MD5sum: 314e736777ebe6a737d7d0290b28dc06
-SHA1: a13ce5c067f629c00ed299dfefd016fb64d70cb3
-SHA256: 23403495d6472f7b52cbfe59d2228500b1d38a4c57923722d762004a95cbb630
+Filename: debs/com.gusing.ivglassplayer_0.8.1_iphoneos-arm64.deb
+Size: 45828
+MD5sum: 4a2ccd039ea890889cf1b7495209ef3e
+SHA1: f4ba6cb4acb132cfe80b6eab594f40878c420e98
+SHA256: ae30e7b4752fc3822aad5b28099738b06662679ae042333d36dc116d97aacd35
 
 Package: com.gusing.tgsaveanywhere.rootful
 Name: telegram视频下载 (rootful)
