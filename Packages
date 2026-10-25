@@ -19829,21 +19829,21 @@ SHA256: e4bf4eb604b637cb794a03e3f25511857ece98ef485faac381d1d41c0e9b8ed5
 
 Package: com.gusing.ivglassplayer.arm64e
 Name: 相册文件视频进度条 (arm64e)
-Description: iOS 26 风格的玻璃视频控制层。底部胶囊进度条、长按展开为可拖动时间轴、中央玻璃按钮组（后退15秒 / 暂停 / 前进15秒），用于「照片」与「文件」App 的全屏视频播放。
+Description: 透明风格视频控制层。底部一条透明细进度线 + 播放/静音图标，中央深色半透明圆形按钮组（后退15秒 / 暂停 / 前进15秒），用于「照片」与「文件」App 的全屏视频播放。
 Maintainer: G-Using
 Author: G-Using
 Section: Tweaks
 Depends: firmware (>= 14.0)
 Architecture: iphoneos-arm64e
-Version: 0.8.1
+Version: 0.9.0
 Conflicts: com.gusing.ivglassplayer
 Replaces: com.gusing.ivglassplayer
 Installed-Size: 139
-Filename: debs/com.gusing.ivglassplayer.arm64e_0.8.1_iphoneos-arm64e.deb
-Size: 42454
-MD5sum: 418d7bafe17b3e662211d59b4429e47d
-SHA1: ddaeff88d9097886ea969946850bd552f2f1f2fd
-SHA256: 5feb51dabe5e54c94c0fc7aa8b3d91549695fa45635779f45bd1a12256192bc3
+Filename: debs/com.gusing.ivglassplayer.arm64e_0.9.0_iphoneos-arm64e.deb
+Size: 43104
+MD5sum: 2110da29ec5b0f9aee92c3b32cf70baf
+SHA1: 7cc74e296a3c541949c5cec999dce421978fec84
+SHA256: fb9284f82476f3213e4b3d6f0a0fe41a50068b6d15fae54c8a197f5e17d847e0
 
 Package: com.gusing.ivglassplayer
 Name: 相册文件视频进度条
@@ -19863,19 +19863,19 @@ SHA256: 70aea4cea5ca82dd9513da07703a19e8ae3aef584b9e070cd039b085ab00cd60
 
 Package: com.gusing.ivglassplayer
 Name: 相册文件视频进度条
-Description: iOS 26 风格的玻璃视频控制层。底部胶囊进度条、长按展开为可拖动时间轴、中央玻璃按钮组（后退15秒 / 暂停 / 前进15秒），用于「照片」与「文件」App 的全屏视频播放。
+Description: 透明风格视频控制层。底部一条透明细进度线 + 播放/静音图标，中央深色半透明圆形按钮组（后退15秒 / 暂停 / 前进15秒），用于「照片」与「文件」App 的全屏视频播放。
 Maintainer: G-Using
 Author: G-Using
 Section: Tweaks
 Depends: firmware (>= 14.0)
 Architecture: iphoneos-arm64
-Version: 0.8.1
+Version: 0.9.0
 Installed-Size: 324
-Filename: debs/com.gusing.ivglassplayer_0.8.1_iphoneos-arm64.deb
-Size: 45828
-MD5sum: 4a2ccd039ea890889cf1b7495209ef3e
-SHA1: f4ba6cb4acb132cfe80b6eab594f40878c420e98
-SHA256: ae30e7b4752fc3822aad5b28099738b06662679ae042333d36dc116d97aacd35
+Filename: debs/com.gusing.ivglassplayer_0.9.0_iphoneos-arm64.deb
+Size: 45898
+MD5sum: beba0f7eec49e3b0cebe346e1e31d7e5
+SHA1: e44709d86f69c060b09afc0ecafd0bb052064d6f
+SHA256: 7e204ef28aaaf511db331847212f4a11630f7a439876dc093e51345b60d35eba
 
 Package: com.gusing.tgsaveanywhere.rootful
 Name: telegram视频下载 (rootful)
