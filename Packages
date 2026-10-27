@@ -2512,25 +2512,6 @@ MD5sum: c4f3e9b66c39fce43738be69ed786849
 SHA1: cd28ef82904753f91b1a1ab036550d7466bcfbf5
 SHA256: b5959da5e8e35398d9c4f14b605a4dabeab38a071cdfe75e9bc95432286f14ac
 
-Package: com.Axs.bigshot
-Version: 1.1
-Section: Tweaks
-Maintainer: Axs
-Depends: mobilesubstrate, firmware(>=14.0), preferenceloader
-Conflicts: com.jontelang.snapper, com.jontelang.bigshotsnapper3plugin
-Architecture: iphoneos-arm64
-Name: BigShot长截图
-Author: Axs
-Sponsor: Axs
-Description: 注意：此插件需要购买正版Snapper3。支持Snapper3调用，安装以后呼出Snapper3会有一个长截图按钮，已汉化提示。也支持通过控制中心添加BigShot模块使用。
-Icon: https://axs66.github.io/pro/icon/bigshot.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/bigshot/js.json
-Filename: debs/com.Axs.bigshot_1.1_iphoneos-arm64.deb
-Size: 19260
-MD5sum: 4cd3562d4ef6fe55c6e0501d15a04807
-SHA1: 673ac9df93649901ccb96a6a4ed704aa03afe296
-SHA256: ef565e82fd0368aff47323576a3fd88fe6b23e30ee325b0061a9304c8b7d93a2
-
 Package: com.Axs.bizhi
 Name: 壁纸vip
 Description: 壁纸(5.0.3版本)解锁会员
@@ -11004,43 +10985,6 @@ Size: 68492
 MD5sum: 09d80a93c85194b1a64e48d7f6b075de
 SHA1: 077394d38afe015a5066d1cf04a67bff3f4c8943
 SHA256: 3569dd966b62e8013d867152cbad0ea1133e8d54b958d028cf14f0a042af6814
-
-Package: com.dcsyhi.airaw
-Version: 1.6.7
-Section: Tweaks
-Maintainer: Dcsyhi
-Depends: mobilesubstrate, preferenceloader, firmware (>=14.0), ws.hbang.common,com.opa334.ccsupport
-Architecture: iphoneos-arm64e
-Installed-Size: 13502
-Name: Airaw（CarPlay）
-Author: Dcsyhi
-Sponsor: Dcsyhi
-icon: https://huayuarc.github.io/icon/airaw.png
-Description: 一款Carplay拓展插件，可以改壁纸，让不是全屏显示的软件变成全屏，配合carbrige插件使用，改图标个数比例，有汽车的人会用的到，原价4美元，小组件好像不行！大家可以下载体验一下这个功能菜单，有经济能力的购买正版，支持作者！
-Pre-Depends: rootless-compat(>= 0.9)
-Filename: debs/com.dcsyhi.airaw-1.6.7-roothide.deb
-Size: 10348684
-MD5sum: 5f8806c61322f6b95c4d3593187d5f48
-SHA1: e1ac57697052089f3fb6a08b9837c4a568592153
-SHA256: ee2ed960988cde0651d87a26469bbf6119d75eba0627c31282237dd6289bdf27
-
-Package: com.dcsyhi.airaw
-Version: 1.6.7
-Section: Tweaks
-Maintainer: Dcsyhi
-Depends: mobilesubstrate, preferenceloader, firmware (>=14.0), ws.hbang.common,com.opa334.ccsupport
-Architecture: iphoneos-arm64
-Installed-Size: 13502
-Name: Airaw（CarPlay）
-Author: Dcsyhi
-Sponsor: Dcsyhi
-icon: https://huayuarc.github.io/icon/airaw.png
-Description: 一款Carplay拓展插件，可以改壁纸，让不是全屏显示的软件变成全屏，配合carbrige插件使用，改图标个数比例，有汽车的人会用的到，原价4美元，小组件好像不行！大家可以下载体验一下这个功能菜单，有经济能力的购买正版，支持作者！
-Filename: debs/com.dcsyhi.airaw-1.6.7-rootless.deb
-Size: 10357836
-MD5sum: f6469e7dd4af71a06d69ae6473c8bf42
-SHA1: b07b90f0e800a8db31fb717d56d38abaec3ba7ab
-SHA256: 78cdd164e7d2e1c0db73462dd0f2e44c8e79514b3d194d0ad1a948f5b415a8b9
 
 Package: com.developlab.appbadge
 Name: AppBadge顶部显示当前app图标及名称
