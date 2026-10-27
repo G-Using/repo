@@ -8683,23 +8683,6 @@ MD5sum: 7645b774e177e88f6faaf0b2db544833
 SHA1: 8ed5c103a309136baaea7c008e1e458e65161580
 SHA256: 3d25f72857143c1ad3e48e9b43ff7bbba23cb6b9ea1ad46e90b1c7a1bf03b488
 
-Package: com.axs.sileo
-Name: Sileo越狱源介绍
-Depends: mobilesubstrate, firmware (>= 12.0)
-Description: Axs
-Maintainer: https://axs66.github.io/pro
-Author: Axs
-Section: Axs-Tweaks
-Architecture: iphoneos-arm64
-Version: 1.0
-Icon: https://axs66.github.io/pro/images/cjms.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/sileo/js.json
-Filename: debs/com.axs.sileo_1.0_iphoneos-arm64.deb
-Size: 872
-MD5sum: 392b3872389d639f9c655e8d2e80f1c0
-SHA1: 93fcff240f50aeddb806873b7b4ed87cebf191d0
-SHA256: 831332f810abc419b095c1d749510583184a439fd023a91bc9561833e0fdb90c
-
 Package: com.axs.snapper3tag
 Name: Snapper3 Expand
 Description: Snapper3 功能扩展，目前包含：截图标记 + 长截图 + OCR识别 + 翻译 + AI互译 + AI问答 + Sileo长按翻译，修复了原snapper3主体插件第7个图标遮挡一半的bug；将菜单工具栏最后一个“关闭”图标进行固定，增加滑动视觉效果。
