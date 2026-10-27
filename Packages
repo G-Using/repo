@@ -26481,7 +26481,7 @@ SHA256: 6f34857e22951b90e83922a4409b6ff15c4cc87294648c63cadaaef80290cd6d
 
 Package: ellekit
 Name: ElleKit
-Version: 1.2-1
+Version: 1.2-3
 Architecture: iphoneos-arm64e
 Maintainer: Dhinak G <dhinak@dhinak.net>
 Conflicts: com.ex.substitute, org.coolstar.libhooker, science.xnu.substitute, mobilesubstrate, com.saurik.substrate.safemode
@@ -26493,11 +26493,11 @@ Section: 越狱必装五个插件
 Priority: optional
 Icon: https://ellekit.space/logos/logo.png
 Description: ElleKit tweak injection libraries and loader
-Filename: debs/ellekit_1.2-1_iphoneos-arm64e.deb
-Size: 142968
-MD5sum: 988ba4ca7d79ba6e1dd5afada69a8681
-SHA1: 21d1282c30113d033ca41e420339597ed8b8f31b
-SHA256: 50f1b2d60e029592238d80737b32ccc019e74ce9611390c30ffebba75097b41c
+Filename: debs/ellekit_1.2-3_iphoneos-arm64e.deb
+Size: 127496
+MD5sum: 2473c5e45b18fbb060dce0d12e141431
+SHA1: 47c2d19c67ea5189d5d75e67083fdd475b6e6e97
+SHA256: 741d3ffd332290c12b06a28f12e79443132203876d5539c7dd92ad18ab6a14d3
 
 Package: emt.paisseon.xinamine
 Name: Xinamine
