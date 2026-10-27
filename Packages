@@ -10251,30 +10251,6 @@ MD5sum: e13d33080d02d19cfb55fefd593606fd
 SHA1: 757ebfbc6cfeb22a417cc6ec899cc506208b1154
 SHA256: 2cef869a2aad196ee6cfe289e19a18e2ef858a978e8fb656859b1f91cef0e36e
 
-Package: com.crassna.appcardlite
-Name: App Lecard
-Description: Jailbrea!分屏
- * 首次使用：从左至右或从右至左划出圆盘并拖动至边缘进入插件设置页面。当圆盘中心由X变成★代表验证通过。点击★进入app选择页面，将用户或系统应用选至收藏即可在圆环中添加。圆环内app可小窗存在亦可挂机存在。
- * 手势：快切可呼出关闭所有小窗或挂机app，拖动可呼出圆盘。
- * 圆盘：左右呼出滑至圆盘中心可悬停并选定app以显示小窗，选定app并滑出圆环外以切至大屏。（彩蛋老式拨号电话：双指旋转可放大增加圆环显示app数量，缩小圆环或调整app在圆环内位置）。
- * 小窗：小横条上滑关闭当前小窗，小横条快速下滑可切至大屏，单击小横条可切至挂机模式。拖动边缘移动位置，长按边缘上下滑动放大缩小，单击边缘置顶小窗。
- * 挂机：单击图标显示小窗，长按图标关闭当前app。
- * 特色功能：通知激活小窗，窗口自适应大小，横竖屏裁切画面，小窗主动避让主视图键盘等等。
-Maintainer: Crassna
-Author: Crassna
-Section: Tweaks
-Depends: dev.theos.orion (>= 1.0.0), firmware (>= 15.0)
-Architecture: iphoneos-arm64e
-Version: 3.3.3-END
-Installed-Size: 1948
-icon: https://huayuarc.github.io/icon/appcardlite.jpg
-Pre-Depends: rootless-compat(>= 0.9)
-Filename: debs/com.crassna.appcardlite-3.3.3-END-roothide.deb
-Size: 400912
-MD5sum: 84761667a155b65329a5968e91931d1c
-SHA1: be812582ec5158ec90325ddd506a67bf3ed30353
-SHA256: 9c729ec21ec85d1e471e46ef601cceb33ed80871033d8ac443e1df4cdddae4da
-
 Package: com.crctdd.cranedd
 Name: Crane Drop Down
 Description: 下拉桌面图标弹出多开应用容器，无设置项。(支持iOS 15-17)
@@ -17670,24 +17646,6 @@ Size: 290180
 MD5sum: bfd38ad11de48d6668dcdea7a8eee5e3
 SHA1: f62a4d9d40eac6b1b2913f9830c6840aa9a21604
 SHA256: ab1d3ab073d0972f262d5559ff89514234253c6c0e04a9a483652be6ebb5d05e
-
-Package: com.nx.appcardlite
-Name: App Lecard 分屏插件
-Description: Jailbrea!
-Maintainer: Crassna
-Author: Crassna
-Section: 分屏插件
-Depends: dev.theos.orion (>= 1.0.0), firmware (>= 15.0)
-Architecture: iphoneos-arm64
-Version: 3.3.3-END
-Installed-Size: 1948
-Icon: https://axs66.github.io/pro/icon/applecard.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/applecard/js.json
-Filename: debs/com.nx.appcardlite_3.3.3-END_iphoneos-arm64.deb
-Size: 409128
-MD5sum: 5eb09772dceba5336e6eb3216dd13e93
-SHA1: f3daecb3a85aa76155424a473f6f378086555305
-SHA256: cf82af154bc2dbb80da5f3382d3cbe7793d65fdff528f61af0ef2d6e84dc92c8
 
 Package: com.opa334.altlist
 Name: AltList
