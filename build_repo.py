@@ -138,8 +138,9 @@ def parse_stanza(text):
 
 
 def sanitize_deb_name(name):
-    # 只保留 ASCII（中文名会拖进 URL 导致装不上），保留 .deb 后缀
-    base = "".join(c for c in name if ord(c) < 128)
+    # 只保留可打印 ASCII（中文名会拖进 URL 导致装不上；控制字符如 \r 会让
+    # 索引里的 Filename 带上 %0D，客户端下载 404），保留 .deb 后缀
+    base = "".join(c for c in name if 32 <= ord(c) < 128)
     if not base.lower().endswith(".deb"):
         base = (base if base.lower().endswith(".deb") else base + ".deb")
     if len(base) <= 4:  # 只剩 ".deb"
@@ -148,18 +149,15 @@ def sanitize_deb_name(name):
 
 
 def rename_nonascii_debs(debs_dir):
-    # 把 debs/ 里中文名的 .deb 自动改成英文名，返回 [(旧名, 新名)]
+    # 把 debs/ 里中文名或含控制字符的 .deb 自动改成干净英文名，返回 [(旧名, 新名)]
     renamed = []
     existing = set(os.listdir(debs_dir))
     n = 0
     for f in list(existing):
         if not f.lower().endswith(".deb"):
             continue
-        try:
-            f.encode("ascii")
-            continue  # 已经是英文名
-        except UnicodeEncodeError:
-            pass
+        if all(32 <= ord(c) < 128 for c in f):
+            continue  # 已是干净英文名
         new = sanitize_deb_name(f)
         while new in existing or new == f:
             n += 1
