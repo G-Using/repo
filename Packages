@@ -96,6 +96,40 @@ MD5sum: 837cfeea16a870753907e5d28c40342f
 SHA1: 76ca44d3d207ae97d1e09154951d657886a495b8
 SHA256: 196952356175289e0cee776d80c486bc7f88c6f32fd876c0813926031db01ce0
 
+Package: hongguofn
+Name: 红果净化
+Maintainer: Junhong
+Author: Junhong
+Description: 红果短剧界面净化、短剧广告控制、原生独立设置开关、时长显示及原生下载
+Section: Tweaks
+Depends: firmware (>= 15.0)
+Homepage: https://hongguo.goforit.si
+Architecture: iphoneos-arm64
+Version: 2.0.3
+Installed-Size: 4568
+Filename: debs/_2.0.3_.deb
+Size: 1974682
+MD5sum: aeb05160f015eb79d58b963ada66444f
+SHA1: e23c393d9724a028750a14c4f4dae6158f31d5bd
+SHA256: d4e5f601a1442b2127dbb42ec40c33836de993fce68946c70c67be7af65feaad
+
+Package: fanqiefn
+Name: 番茄净化
+Maintainer: junhong
+Author: junhong
+Description: 番茄小说通知/小组件伪装、阅读及听书广告净化、关闭章末圈子、评价邀请和听读赚钱挂件、会员状态伪装与原生设置开关，保留催更与更新历史
+Section: Tweaks
+Depends: firmware (>= 15.0), mobilesubstrate
+Homepage: https://fanqie.goforit.si
+Architecture: iphoneos-arm64
+Version: 3.3.0
+Installed-Size: 3412
+Filename: debs/_3.3.0_.deb
+Size: 1494246
+MD5sum: e1bdfa537da80fdae96726a0af4a49a1
+SHA1: 7d7e2434f8ce61098c4008cee7b9a3b9f141733d
+SHA256: fc217a3d8ce03324b15c3e3c9c8821e8dffbab1ce55ead0732f5db039d47dc21
+
 Package: ai-config-gui
 Name: AI-Config-GUI
 Description: Claude Code / Codex API 配置管理工具 内置ai终端，双指缩放页面，需要先安装大飞源里面的ai，claude和codex然后执行一次“claude”和“codex”命令初始化文件，更新面板显示🤔
