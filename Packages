@@ -11634,6 +11634,23 @@ MD5sum: 055b42eddb4ee92ce9e3b47bf35d7f5c
 SHA1: 06f6acbd4e917908e2481cbafd2d4a0fae6e7d88
 SHA256: 56d8f2fc42e6293728dd134cc473cc5d5fd06c5b5e96993fe29a287c96b744d7
 
+Package: com.gusing.dockpager
+Name: Dock多页
+Description: 让 Dock 容纳超过 4 个应用，左右滑动翻页；一屏 4~6 个可自选，应用和文件夹数量不限
+Maintainer: G-Using
+Author: G-Using
+Section: G-Using-Tweaks
+Depends: mobilesubstrate, preferenceloader
+Icon: https://g-using.github.io/repo/icons/com.gusing.dockpager.png
+Architecture: iphoneos-arm64
+Version: 1.1.1
+Installed-Size: 792
+Filename: debs/com.gusing.dockpager_1.1.1_iphoneos-arm64.deb
+Size: 123350
+MD5sum: 5a105f82a24152c181f75ac39f6f615b
+SHA1: 8fa5e67798c5d8dc4004ba2fa6c4b7dcf79e275f
+SHA256: 5bb0f14963170aac783a0fb55ae0d7e680e646a010bc3e3baf7ccd1eac1fb76c
+
 Package: com.gusing.ivglassplayer.arm64e
 Name: 相册文件视频进度条 (arm64e)
 Description: 透明风格视频控制层。底部一条透明细进度线 + 播放/静音图标，中央深色半透明圆形按钮组（后退15秒 / 暂停 / 前进15秒），用于「照片」与「文件」App 的全屏视频播放。
