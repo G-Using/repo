@@ -29847,3 +29847,21 @@ Size: 1613428
 MD5sum: 4281e22a42df03a2aec73a6439fda9d1
 SHA1: 53e120b9bfadc4084540633115e1b759eb4571a5
 SHA256: e4146710fbae4f9e0f33fb3ccc3b61c6376074e8ab4b73b2d8609e0f86354c6b
+
+Package: hongguofn
+Name: 红果净化
+Maintainer: Junhong
+Author: Junhong
+Description: 兼容红果短剧与红果漫剧 7.4.1，提供界面净化、广告控制、倍速清屏与视频保存。
+ 兼容红果短剧与红果漫剧，版本适配7.4.1，低版本可能存在兼容问题不再适配，请更新至7.4.1版本使用。
+Section: Tweaks
+Depends: firmware (>= 15.0), mobilesubstrate
+Homepage: https://hongguo.goforit.si
+Architecture: iphoneos-arm64
+Version: 2.2.0
+Installed-Size: 5052
+Filename: debs/红果短剧净化_2.2.0_无根.deb
+Size: 2197328
+MD5sum: fdc215d65e38d5a148d07b811c53ead7
+SHA1: ad4be7442dec56260cec222486f982e2dc782df0
+SHA256: faa0b5f9ecfc3d3d87da2bcff793f3e9153a833e1e3a411039fa5608725442a4
