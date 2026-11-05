@@ -5,7 +5,7 @@ inputs:
   commit-message:
     description: 索引提交信息
     required: false
-    default: "auto: 重建索引 (含 deb 英文名规范化)"
+    default: "auto: 重建索引 (保留中文文件名，仅剔除控制字符 / URL 特殊字符)"
   setup-python:
     description: 是否由本 action 配置 Python（被别的 workflow 复用时传 false）
     required: false
@@ -24,7 +24,7 @@ runs:
       shell: bash
       run: pip install zstandard
 
-    - name: Generate index (auto rename non-ASCII deb + rebuild)
+    - name: Generate index (保留中文文件名，仅剔除控制字符 / URL 特殊字符，然后重建索引)
       shell: bash
       run: python build_repo.py
 
