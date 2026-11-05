@@ -137,27 +137,43 @@ def parse_stanza(text):
     return fields, order
 
 
+# 文件名里允许保留的字符：
+#   - 普通可打印 ASCII（字母 / 数字 / 标点 / 空格）
+#   - 中文等 Unicode（ord >= 128）
+# 只剔除会破坏 URL / 索引的字符：控制字符、路径分隔符，以及 URL 里具有特殊含义的字符。
+_UNSAFE = set('/\\<>:"|?*%#')
+
+def _is_safe_char(c):
+    if ord(c) < 32 or ord(c) == 127:   # 控制字符（含 \r \n \t）-> 污染 URL(%0D) 与索引
+        return False
+    if c in _UNSAFE:                    # 路径分隔符 / URL 特殊字符
+        return False
+    return True
+
 def sanitize_deb_name(name):
-    # 只保留可打印 ASCII（中文名会拖进 URL 导致装不上；控制字符如 \r 会让
-    # 索引里的 Filename 带上 %0D，客户端下载 404），保留 .deb 后缀
-    base = "".join(c for c in name if 32 <= ord(c) < 128)
+    # 保留中文等 Unicode，只剔除控制字符 / 路径分隔符 / URL 特殊字符。
+    # 中文名可正常保留：Sileo / Zebra 下载时会自动对文件路径做百分号编码，
+    # 中文 URL 能正常拉取；但 \r 这类控制字符会让 Filename 带上 %0D 导致 404。
+    base = "".join(c for c in name if _is_safe_char(c))
+    base = base.strip()                 # 去掉首尾空白（网页 / 拖拽上传常带空格）
     if not base.lower().endswith(".deb"):
-        base = (base if base.lower().endswith(".deb") else base + ".deb")
-    if len(base) <= 4:  # 只剩 ".deb"
+        base = base + ".deb"
+    if len(base) <= 4:                  # 只剩 ".deb"
         base = "package.deb"
     return base
 
 
-def rename_nonascii_debs(debs_dir):
-    # 把 debs/ 里中文名或含控制字符的 .deb 自动改成干净英文名，返回 [(旧名, 新名)]
+def rename_dirty_debs(debs_dir):
+    # 把 debs/ 里含控制字符 / 路径分隔符 / URL 特殊字符的 .deb 自动规范成安全名，
+    # 中文等 Unicode 文件名【保留不动】。返回 [(旧名, 新名)]。
     renamed = []
     existing = set(os.listdir(debs_dir))
     n = 0
     for f in list(existing):
         if not f.lower().endswith(".deb"):
             continue
-        if all(32 <= ord(c) < 128 for c in f):
-            continue  # 已是干净英文名
+        if all(_is_safe_char(c) for c in f):
+            continue  # 已是安全名（含中文也 OK）
         new = sanitize_deb_name(f)
         while new in existing or new == f:
             n += 1
@@ -231,8 +247,9 @@ def check_release():
 def main():
     if not os.path.isdir(DEBS_DIR):
         os.makedirs(DEBS_DIR)
-    # 先规范文件名（中文名 -> 英文），否则手机端下载会失败
-    renamed = rename_nonascii_debs(DEBS_DIR)
+    # 先规范文件名：只把含控制字符 / 路径分隔符 / URL 特殊字符的 .deb 改名，
+    # 中文等 Unicode 文件名原样保留（客户端下载时会自动编码）。
+    renamed = rename_dirty_debs(DEBS_DIR)
     for old, new in renamed:
         print(f"  [改名] {old} -> {new}")
     debs = sorted(
