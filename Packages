@@ -11651,6 +11651,39 @@ MD5sum: 5a105f82a24152c181f75ac39f6f615b
 SHA1: 8fa5e67798c5d8dc4004ba2fa6c4b7dcf79e275f
 SHA256: 5bb0f14963170aac783a0fb55ae0d7e680e646a010bc3e3baf7ccd1eac1fb76c
 
+Package: com.gusing.dockpager
+Name: Dock多页
+Description: Dock 支持左右滑动翻页、条目数量不设上限；长按图标拎起来，左右拖换位置、往上拖出 Dock 即移出，桌面上的 App / 文件夹拖进 Dock 即加入
+Maintainer: G-Using
+Author: G-Using
+Section: G-Using-Tweaks
+Depends: mobilesubstrate, preferenceloader
+Icon: https://g-using.github.io/repo/icons/com.gusing.dockpager.png
+Architecture: iphoneos-arm64
+Version: 1.2.12
+Installed-Size: 848
+Filename: debs/com.gusing.dockpager_1.2.12_iphoneos-arm64.deb
+Size: 141936
+MD5sum: 7cc4cc0af53c93d1922ae2de298d1187
+SHA1: ff21e3959bff5a9cc16f95ccdf6cf2e39d13c0d3
+SHA256: 451d1a2ea8cc946beff43e509eb8bd9840e8aa321191bbc8b68a70889c27fbb8
+
+Package: com.gusing.dockpager
+Name: Dock多页
+Version: 1.2.12
+Architecture: iphoneos-arm64e
+Description: Dock 支持左右滑动翻页、条目数量不设上限；长按图标拎起来，左右拖换位置、往上拖出 Dock 即移出，桌面上的 App / 文件夹拖进 Dock 即加入
+Maintainer: G-Using
+Author: G-Using
+Section: G-Using-Tweaks
+Depends: mobilesubstrate, preferenceloader
+Icon: https://g-using.github.io/repo/icons/com.gusing.dockpager.png
+Filename: debs/com.gusing.dockpager_1.2.12_iphoneos-arm64e.deb
+Size: 242214
+MD5sum: 6795bb3da2ce449544e8cffe181de3f9
+SHA1: 4cc88e321101ccbb6ca6214cd713057653bdcfbd
+SHA256: 4d724855ca8e22eafab868dd635f52d2ad6ae6ebe0d54b6d5ffedb8464925089
+
 Package: com.gusing.ivglassplayer.arm64e
 Name: 相册文件视频进度条 (arm64e)
 Description: 透明风格视频控制层。底部一条透明细进度线 + 播放/静音图标，中央深色半透明圆形按钮组（后退15秒 / 暂停 / 前进15秒），用于「照片」与「文件」App 的全屏视频播放。
