@@ -10010,57 +10010,6 @@ MD5sum: 18b9ef95a4b3bbec7b3c30c520849f24
 SHA1: e314953939f897b7cb3cc7949b728158073d9e44
 SHA256: 39358adc2cfcf9f8dfd8ac973859b60f8c9e90f5e521e85dff9b72d008c1d06f
 
-Package: com.colorblack.pan123noads
-Name: 123PanNoAds
-Description: 移除123盘启动广告及一些内置广告弹窗等   QQ 群：205928931
-Maintainer: ColorBlack
-Author: ColorBlack
-Section: Tweaks
-Depends: firmware (>= 15.0), mobilesubstrate
-Architecture: iphoneos-arm64e
-Version: 1.0.17-2+debug
-Icon: https://huayuarc.github.io/icon/123.jpg
-Installed-Size: 532
-Filename: debs/com.colorblack.pan123noads_1.0.17-2+debug_iphoneos-arm64e.deb
-Size: 69076
-MD5sum: 7d5bf3cda3033e6cf801110da8d37998
-SHA1: c84fe521728c752ec40fec09c22a4ac8220a3ef5
-SHA256: a5778568699223742e4f6656ff68055790397348965d1a8dc75766bc40df9c00
-
-Package: com.colorblack.shouji360noad
-Name: 360Shouji-NoAd
-Description: 去掉 360 手机卫士开屏广告、首页广告位和一些不必要的天气及其他模块，保留了主要功能。 QQ群 205928931
-Maintainer: colorblack
-Author: colorblack
-Section: Tweaks
-Depends: mobilesubstrate
-Architecture: iphoneos-arm64e
-Version: 0.0.3
-Installed-Size: 236
-Icon: https://huayuarc.github.io/icon/360.jpg
-Filename: debs/com.colorblack.shouji360noad-0.0.3-roothide.deb
-Size: 23084
-MD5sum: fb56acd1546faca02d7c840575fc4370
-SHA1: f2cafc98f98b5bbca2f3a3009c99f99c1e2743d5
-SHA256: c876d4f232cf834a2f735d121e819b14789eddcd707f80976c0918841a6a3d68
-
-Package: com.colorblack.shouji360noad
-Name: 360Shouji-NoAd
-Description: 去掉 360 手机卫士开屏广告、首页广告位和一些不必要的天气及其他模块，保留了主要功能。 QQ群 205928931
-Maintainer: colorblack
-Author: colorblack
-Section: Tweaks
-Depends: mobilesubstrate
-Architecture: iphoneos-arm64
-Version: 0.0.3
-Installed-Size: 236
-Icon: https://huayuarc.github.io/icon/360.jpg
-Filename: debs/com.colorblack.shouji360noad-0.0.3-rootless.deb
-Size: 23304
-MD5sum: 5295df65e6d322fa69ed926739dc6513
-SHA1: 1f3f03ccf84c096a556024cffa6208ef69934f80
-SHA256: 5d73901f14335abb6ad17f6d3ace69b5403bbe4fcab027ced06c74b1182da024
-
 Package: com.colorblack.tencentguanjia.nosplash
 Name: TencentGuanjia-NoSplash
 Depends: mobilesubstrate
