@@ -330,26 +330,6 @@ MD5sum: fbb7e8b331e8a295d2dd5fcfb9550b33
 SHA1: 9fa9b65692a978a7cccf70e5ee26969a178f30f6
 SHA256: 99fcd01eb6c91aea0703bf60cddc50926dfed4cc97e697894a9e410f89f6f8ab
 
-Package: com.82flex.ohmyinsetss
-Name: Oh My Insets 控制中心五列
-Description: 
- 控制中心模块五列显示
- * Control Center module five-column layout
-Maintainer: Lessica
-Author: Lessica
-Section: 控制中心
-Depends: firmware (>= 15.0), mobilesubstrate, preferenceloader
-Architecture: iphoneos-arm64
-Version: 1.2
-Installed-Size: 236
-icon: https://axs66.github.io/pro/icon/ohmyinsets.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/ohmyinsetss/js.json
-Filename: debs/com.82flex.ohmyinsetss_1.2_iphoneos-arm64.deb
-Size: 209964
-MD5sum: b624a73ce966e859e073f281282287d2
-SHA1: 714358745be4b093b42b2d2b797e4d5b8f37fa9d
-SHA256: 6468c16749537e64d3655642b7694918a7ca9443cab6e472252c19ce418bfcb6
-
 Package: com.82flex.removewidgetbg
 Name: Remove Widget Background
 Description: Remove the background of the widgets on the home screen.
@@ -895,25 +875,6 @@ MD5sum: ae922fd8c7d1312d0505c7b41e851893
 SHA1: d20ae3748b1bafcbca0eadbe2943d3ec5d4da701
 SHA256: 061a6ad31ce64961a84d6c7bfbc3aacc4855ca0647c7830c451380196769dfa1
 
-Package: com.Axs.aria
-Version: 0.9.8~RC
-Section: 控制中心
-Maintainer: Axs
-Depends: mobilesubstrate, preferenceloader
-Architecture: iphoneos-arm64
-Installed-Size: 680
-Name: Aria控制中心背景图
-Author: Luki
-Sponsor: Axs
-Description: 修改控制中心背景图，用第二个Stock就行了
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/aria/js.json
-Icon: https://axs66.github.io/pro/icon/Aria.png
-Filename: debs/com.Axs.aria_0.9.8~RC_iphoneos-arm64.deb
-Size: 93276
-MD5sum: 3f8f284c26bcb1fa19daafdaf8f1586c
-SHA1: d3962bd0388fabaa2079fdcccbe36d2d2f66cb68
-SHA256: 898c751945294ea065af3ca298852126c0e5b762920c838e5317dd417d59523e
-
 Package: com.Axs.arizona
 Section: 插件
 Installed-Size: 796
@@ -1058,24 +1019,6 @@ Size: 6808184
 MD5sum: 4dfd99e618ef64966746d7824d6329b3
 SHA1: 42a7bb7733cca40fdfa47243c89bd25fe6b5bc10
 SHA256: 0281a8c064a904466e64e0560e658a25394a16e57bfac77443ca04e56e9cf983
-
-Package: com.Axs.bettercc
-Maintainer: Axs
-Depiction: Axs
-Name: BetterCC 自定义控制中心
-Version: 0.0.55
-Section: 控制中心
-Architecture: iphoneos-arm64
-Depends: mobilesubstrate, firmware (>= 14), ws.hbang.common (>= 1.17), com.opa334.ccsupport
-Author: Miguelaka95
-Description: 自定义您的控制中心！隐形模块。重新排列连接切换。更改模块大小。天气小部件。
-Icon: https://axs66.github.io/pro/icon/bettercc.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/bettercc/js.json
-Filename: debs/com.Axs.bettercc_0.0.55_iphoneos-arm64.deb
-Size: 148544
-MD5sum: 3077979c9280525a89448af29c6b2e7c
-SHA1: 68947eb5041c6b1fe288b0445a86a7b89c55313c
-SHA256: 5dfeb62a7fadd5042cadfa03f4ae55467a4922445ea2896dc85a2baaf973b2e5
 
 Package: com.Axs.betteruiswitch
 Architecture: iphoneos-arm64
@@ -1293,191 +1236,6 @@ MD5sum: 3cfb7e64b8679a2da7fbe4f1504c0770
 SHA1: 7db4f2ded2d237be791973422ce2b2ed1892a4ca
 SHA256: c07f8e60884b25620ee671be1b8a0b73177e0c42c0356bac55d87ce02928edcb
 
-Package: com.Axs.cc18
-Section: 控制中心
-Installed-Size: 376
-Maintainer: Axs
-Architecture: iphoneos-arm64
-Version: 1.1.0-1+debug
-Depends: mobilesubstrate (>= 0.9.5000), firmware (<= 18.0)
-Description: iOS18样式控制中心 基于作者dvntm的开源文件编译 并增加更多玩法!
-Name: CC18(带设置项)
-Author: dvntm & liuf
-Icon: https://axs66.github.io/pro/icon/cc18.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/cc18/js.json
-Filename: debs/com.Axs.cc18_1.1.0-1+debug_iphoneos-arm64.deb
-Size: 24412
-MD5sum: a33798a7fbe0c7658de434eb6fc82b22
-SHA1: 9ef3754520213c0345cfd15cb5b085f0d2412df7
-SHA256: dedfe4226c4e59f952ebe84d0ab91e7c23c931d3efd199e94918d24cba6561a6
-
-Package: com.Axs.cc18s
-Name: 仿ios18控制中心圆角
-Description: 
- iOS 18 圆角控制中心
- * Round CC modules replication, like in iOS 18
-Maintainer: Axs
-Author: dvntm
-Section: 控制中心
-Depends: mobilesubstrate (>= 0.9.5000), firmware (< 18.0)
-Architecture: iphoneos-arm64
-Version: 0.0.3
-Installed-Size: 152
-Conflicts: com.dvntm.cc18
-Icon: https://axs66.github.io/pro/icon/cc18s.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/cc18s/js.json
-Filename: debs/com.Axs.cc18s_0.0.3_iphoneos-arm64.deb
-Size: 4616
-MD5sum: 3dd137ab1b4bfb5695850b2567f5991b
-SHA1: b55ee20d4f8c543e379d1164644597f47b6efa5a
-SHA256: 5159462f5f7f1cf4b6dc3a7273a0b00d3728273ffc6450a6c16cfe9e7906e55d
-
-Package: com.Axs.ccaudioplay
-Name: CCAudioPlay控制中心播放器
-Description: 播放器美化 不支IOS15
-Maintainer: Axs
-Author: thefool
-Section: 控制中心
-Depends: mobilesubstrate (>= 0.9.5000)
-Architecture: iphoneos-arm64
-Version: 0.0.1-94+debug
-Installed-Size: 29540
-Icon: https://axs66.github.io/pro/icon/ccaudioplay.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/ccaudioplay/js.json
-Filename: debs/com.Axs.ccaudioplay_0.0.1-94+debug_iphoneos-arm64.deb
-Size: 25090852
-MD5sum: 6173a6c3780916fff1a046077ba38e14
-SHA1: 54d7c3fe28c733a900adff57dca21145d56383c0
-SHA256: ce49c801fbd504679d3797daa65af198abdae1067dc8631395d5de3f2e7e2d07
-
-Package: com.Axs.ccbadgeclear
-Name: CCBadgeClear 控制中心清理角标
-Depends: firmware (>= 15.0), mobilesubstrate, com.opa334.ccsupport
-Description: Quickly clean up all red badge on desktop via Control Center, Support iOS15+。快速通过控制中心清理桌面上的所有红色徽章，支持ios15+
-Maintainer: Axs
-Author: Netskao
-Section: 控制中心
-Architecture: iphoneos-arm64
-Version: 1.2-6
-Installed-Size: 224
-Icon: https://axs66.github.io/pro/icon/ccbadgeclear.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/ccbadgeclear/js.json
-Filename: debs/com.Axs.ccbadgeclear_1.2-6_iphoneos-arm64.deb
-Size: 25844
-MD5sum: 95e0dba0e018bab95cd975b9a458c9e6
-SHA1: e03625be8b63a13583a1f19b8e76ed510e8604dc
-SHA256: cd35c1572017df3596627c1fa28c96f291cfd9ea49616dbc673c6b7f0b445e59
-
-Author: fiore
-Architecture: iphoneos-arm64
-Description: 像CoolCC一样，删除控制中心模块背景并添加边框，控制中心发光。
-Maintainer: Axs
-Version: 1.1.1
-Depends: mobilesubstrate, firmware (>= 14.0), ws.hbang.alderis
-Name: CCBorder控制中心发光
-Section: 控制中心
-Conflicts: com.fiore.ccborder, alias20.coolcc, com.dao.coolcc, com.hk.coolcc, com.4nni3.coolcc
-Sponsor: Axs
-Installed-Size: 404
-Package: com.Axs.ccborder
-Icon: https://axs66.github.io/pro/icon/ccborder.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/ccborder/js.json
-Filename: debs/com.Axs.ccborder_1.1.1_iphoneos-arm64.deb
-Size: 28360
-MD5sum: 431dca615a84c65c4d3edbc120ffa86a
-SHA1: e1cbf908d60bc368838ff7b797913dbe6749d527
-SHA256: b7e1d391d41a88acae87c2c21dc06b81e823b7f295de7511f3e492fa94ea3046
-
-Package: com.Axs.ccglow
-Name: 控制中心发光
-Description: 控制中心发光
-Maintainer: Simon
-Author: Simon
-Section: 控制中心
-Depends: mobilesubstrate
-Architecture: iphoneos-arm64
-Version: 2.0.3
-Installed-Size: 384
-Icon: https://axs66.github.io/pro/icon/togglow.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/ccglow/js.json
-Filename: debs/com.Axs.ccglow_2.0.3_iphoneos-arm64.deb
-Size: 24228
-MD5sum: aec7eef03cc17ca6049907b12f9810e8
-SHA1: 2d41588cc6003bfaa941f528304abf05cf1db906
-SHA256: 5c278f708bec98090ddad48e158846ecf80fc72cd84b8860f7089f31793f98b4
-
-Package: com.Axs.cclifttowake
-Name: CCLiftToWake 控制中心唤醒
-Depends: firmware (>= 15.0), mobilesubstrate, com.opa334.ccsupport
-Description: Quickly enable or disable Wake on Lift from Control Center, Support iOS15+。快速启用或禁用从控制中心的升降机上的唤醒，支持ios15+
-Maintainer: Axs
-Author: Netskao
-Section: 控制中心
-Architecture: iphoneos-arm64
-Version: 1.1-1
-Installed-Size: 172
-Icon: https://axs66.github.io/pro/icon/cclifttowake.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/cclifttowake/js.json
-Filename: debs/com.Axs.cclifttowake_1.1-1_iphoneos-arm64.deb
-Size: 16480
-MD5sum: b7dc691fdb21a0c98e8657c21d7dbfd0
-SHA1: 4be4207d96cabde33bc86f283a027ca0b19bd4b2
-SHA256: 41cc0fe96ae6ca84203c7dd41214f7e7d26a4273defa4bee8a02c301d6864aac
-
-Package: com.Axs.ccmusic
-Name: 控制中心音乐模块动画
-Depends: mobilesubstrate, firmware (>= 13.0)
-Description: 为控制中心的音乐模块添加动画
-Maintainer: simon
-Author: simon
-Section: 控制中心
-Architecture: iphoneos-arm64
-Version: 2.4
-Installed-Size: 564
-Icon: https://axs66.github.io/pro/icon/ccmusic.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/ccmusic/js.json
-Filename: debs/com.Axs.ccmusic_2.4_iphoneos-arm64.deb
-Size: 75616
-MD5sum: 568c044e5d14cecf325df3efd1a711f8
-SHA1: 77f03b2ac6f9012458b5d06502e263198495f426
-SHA256: 47b364cb97cb428b6bec942887229f3330ec58ffdc2f915cf9f46769629012a0
-
-Package: com.Axs.ccuiplayer
-Name: CCUIPlayer 控制中心音频背景
-Description: 控制中心音频窗口背景插件
-Maintainer: Axs
-Author: 🐶
-Section: 控制中心
-Depends: mobilesubstrate, preferenceloader
-Architecture: iphoneos-arm64
-Version: 1.0.7
-Installed-Size: 436
-Icon: https://axs66.github.io/pro/icon/ccuiplayer.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/ccuiplayer/js.json
-Filename: debs/com.Axs.ccuiplayer_1.0.7_iphoneos-arm64.deb
-Size: 45924
-MD5sum: e6880d09318892c4ac49ecbe3b0ffbe3
-SHA1: e69233ddf5f1779559d9f03fd868e3f1f8017b6c
-SHA256: a6bfdf726e8f7b3225a0ade94dccc5241975f149c8eade0e6ea092f6e80dd98d
-
-Package: com.Axs.ccweathermodule
-Name: 控制中心天气
-Description: 控制中心的天气模块。 显示当前天气、温度和每小时预报。
-Maintainer: Axs
-Author: simon
-Section: 控制中心
-Depends: mobilesubstrate, firmware (>= 14.0)
-Architecture: iphoneos-arm64
-Version: 1.0.4
-Installed-Size: 356
-Icon: https://axs66.github.io/pro/icon/ccweathermodule.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/js.json
-Filename: debs/com.Axs.ccweathermodule_1.0.4_iphoneos-arm64.deb
-Size: 92732
-MD5sum: 09e4c1533416a2636626b2ff6d8eaa0a
-SHA1: 2b2429cbc3cc0aa84479a6193fdd973840bbb290
-SHA256: 7c927994f103e4bfd8b9285d20e6bc5e60b593b85c9230deaf834bf5892a7e7e
-
 Package: com.Axs.cellbadge
 Name: CellBadge 系统设置前缀图标
 Section: Axs-Tweaks
@@ -1680,42 +1438,6 @@ Size: 19212
 MD5sum: fa7dd2800206f59c37f7943fc1a094e2
 SHA1: 16a3d7df73bba25216f4749f4e6cbfd02aa07eb3
 SHA256: 8f40398b3a4665eb7ec6953b2317c2d8f977fef67b5fc5fef9bb88d3946645d9
-
-Package: com.Axs.collection
-Name: Collection
-Depends: firmware (>= 14.0), mobilesubstrate
-Description: 全局日月开关，控制中心中的（音量和亮度）水平滑块，键盘设置等三个功能。
-Maintainer: Axs
-Author: A
-Section: 控制中心
-Architecture: iphoneos-arm64
-Version: 1.0
-Installed-Size: 520
-Icon: https://axs66.github.io/pro/icon/collection.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/collection/js.json
-Filename: debs/com.Axs.collection_1.0_iphoneos-arm64.deb
-Size: 56872
-MD5sum: 034e6fc8ac432fd87db0661746400c8d
-SHA1: 256dbc729d471c32447688dfdd4c866878248f7a
-SHA256: 11f7399070257341641e8da6382ebf8f047e6e4ab61350e00c26d402d085ebde
-
-Package: com.Axs.controlcenterlayout
-Name: 控制中心模块
-Description: 用于部分自用控制中心模块2x1布局以及素材替换，半越狱不再卑微。
-Maintainer: Axs
-Author: Simon
-Section: 控制中心
-Depends: mobilesubstrate
-Architecture: iphoneos-arm64
-Version: 2.1
-Installed-Size: 620
-Icon: https://axs66.github.io/pro/icon/controlcenterlayout.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/controlcenterlayout/js.json
-Filename: debs/com.Axs.controlcenterlayout_2.1_iphoneos-arm64.deb
-Size: 90644
-MD5sum: 2cca39d3a74f3e687f48a81c18d52103
-SHA1: 1fa947f6523a3a16e7b70ca200f1e3878c3e6654
-SHA256: 1fb1fd084c5eb1a5b0ab93feaae8388c8d35548d5ba3d6ad25cb0d25a0b77686
 
 Package: com.Axs.copylog
 Name: CopyLog剪贴板
@@ -2596,24 +2318,6 @@ MD5sum: 0bf04a2ee469971b3a826f86d882f6c2
 SHA1: 8288bf99bd24b5518241be68e2168323fa6cfb49
 SHA256: 9201107d57f5b388b0ac9a7417e6bcf332a4f44d9bdb3b0bbe509539d11e344b
 
-Package: com.Axs.horizontalsliders
-Name: HorizontalSliders控制中心水平滑动
-Description: 使控制中心的亮度和音量滑块水平滑动。
-Maintainer: Axs
-Author: Nightwind
-Section: 控制中心
-Depends: mobilesubstrate (>= 0.9.5000), firmware (>= 13.0)
-Architecture: iphoneos-arm64
-Version: 0.0.1
-Installed-Size: 172
-Icon: https://axs66.github.io/pro/icon/horizontalsliders.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/horizontalsliders/js.json
-Filename: debs/com.Axs.horizontalsliders_0.0.1_iphoneos-arm64.deb
-Size: 10608
-MD5sum: 8ed15dc90fded9d1d275e447543484fa
-SHA1: f932abee0b7e85887244ea78d08d4f174ea32d2e
-SHA256: fd1f349507ef112ee6a5e11f08303f316be697143166c24680fc7bda9c30f0e8
-
 Package: com.Axs.ibisPaintX
 Name: 爱笔思画X 解锁VIP
 Version: 0.1-1
@@ -3433,23 +3137,6 @@ MD5sum: d99aafcff1a57673ad9e52021c63f794
 SHA1: fc85e519434bf319f9766e683e61866b7c275743
 SHA256: 30ae9b061180ec3aa8612479459f0c87081252c2b9154421afcfe015b25c8e9c
 
-Package: com.Axs.musicplayer
-Name: iOS18 音乐播放器
-Author: liuf
-Description: 控制中心音乐播放器仿ios18样式!
-Maintainer: Axs
-Section: 控制中心
-Architecture: iphoneos-arm64
-Version: 0.0.1
-Installed-Size: 168
-Icon: https://axs66.github.io/pro/icon/musicplayer.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/musicplayer/js.json
-Filename: debs/com.Axs.musicplayer_0.0.1_iphoneos-arm64.deb
-Size: 5788
-MD5sum: b677bbce4470c16d1304cf130f863b32
-SHA1: 10da4f486edb295dc365024180b8cccc68abb383
-SHA256: f4ec6def902c042df73e0df8cfa3ab19c713b63b8a752cbd78ad7737ebff19be
-
 Package: com.Axs.musicrotation
 Name: 音乐旋转
 Description: 控制中心音乐专辑旋转。
@@ -3647,59 +3334,6 @@ Size: 25292
 MD5sum: 39a79fa921978c435bc9be1cd26533a6
 SHA1: af6663e6ad19e715a011e734fab5c387d4c83525
 SHA256: fe39049133c9bceb6d815acdb3eac6a5cb48aa1397c9ec2e216a441d5321c112
-
-Package: com.Axs.picturemodule
-Maintainer: Axs
-Depiction: Axs
-Section: 控制中心
-Architecture: iphoneos-arm64
-Version: 1.2
-Depends: firmware (>= 12.0), mobilesubstrate, com.opa334.ccsupport, oldabi
-Conflicts: com.4nni3.picturemodule
-Description: Decorate your control center with photos, videos and widgets!
-Name: PictureModule控制中心视频
-Author: 4nni3
-Icon: https://axs66.github.io/pro/icon/picturemodel.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/picturemodule/js.json
-Filename: debs/com.Axs.picturemodule_1.2_iphoneos-arm64.deb
-Size: 6689568
-MD5sum: cad6c30e2c64783818fd1b3bc7424fbb
-SHA1: 5276ce8714302824b8db24bd4991ee3b3aa61945
-SHA256: 2e313deb41b3476a3585538fea9d1f4caab43ef1c0fe9757a0b4f1966f9ce1cf
-
-Package: com.Axs.plampycc
-Maintainer: Axs
-Name: PlampyCC 自定义背景图
-Description: 控制中心UI美化，自定义背景图
-Author: A
-Section: 控制中心
-Depends: mobilesubstrate, preferenceloader, ws.hbang.common
-Architecture: iphoneos-arm64
-Version: 1.0.2
-Icon: https://axs66.github.io/pro/icon/plampycc.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/plampycc/js.json
-Filename: debs/com.Axs.plampycc_1.0.2_iphoneos-arm64.deb
-Size: 1577692
-MD5sum: 070aa3b0cf47f0473e61303c2d218be9
-SHA1: ce8d5577f75dfd6c048f905edd524dcca2416e27
-SHA256: d6473f2aae747a470aaea58cf195fad66448b7888b7dfc1acea2a35c9b5173f4
-
-Package: com.Axs.plamyuipro
-Version: 1.0
-Depends: mobilesubstrate, preferenceloader, ws.hbang.common
-Description: 支持 iOS15/16 的控制中心美化工具，可修改原生模块的图标/效果，修改控制中心背景壁纸等。
-Name: PlampyUIPro
-Architecture: iphoneos-arm64
-Author: Phuc Do
-Maintainer: Phuc Do
-Section: 控制中心
-Icon: https://axs66.github.io/pro/icon/plamyuipro.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/plamyuipro/js.json
-Filename: debs/com.Axs.plamyuipro_1.0_iphoneos-arm64.deb
-Size: 727924
-MD5sum: ee311e6ebceed531532707fbc3a6d76b
-SHA1: 1c2942227d653c9acbfde5d10f911d455fda5c25
-SHA256: 30e0118de551c8a42e25d454ac7c1d2c10a04f380b55a4dbbdbf9e4ac076577e
 
 Package: com.Axs.pogr
 Name: AirPods Grant耳机弹窗
@@ -4772,23 +4406,6 @@ MD5sum: a9c20fcdb689942061e80d52f54db81a
 SHA1: 49112d639978f25480df91d1eeba83c87131ee11
 SHA256: 641b0490cded9c587e37e12342ce37752a0096605c335c4026f5014f33f4964d
 
-Package: com.Axs.togglow
-Architecture: iphoneos-arm64
-Name: Togglow 控制中心发光
-Version: 1.0.8
-Description: Make the control center your own !控制中心美化，发光
-Author: smokin1337 <qiaozhani000@163.com>
-Section: 控制中心
-Depends: mobilesubstrate, org.thebigboss.libcolorpicker,oldabi
-Icon: https://axs66.github.io/pro/icon/togglow.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/togglow/js.json
-Maintainer: Axs <qiaozhani000@163.com>
-Filename: debs/com.Axs.togglow_1.0.8_iphoneos-arm64.deb
-Size: 184776
-MD5sum: ccb1b77bc6416a748ae8e60609e02121
-SHA1: 41c637bede5d85ce1910c84335918c9885ead2a4
-SHA256: 4ffbaeff9879f14367144f91db5545f3f95299e0c7079b09d660037a6b747a02
-
 Package: com.Axs.touchvis
 Maintainer: Axs
 Sileodepiction: https://axs66.github.io/pro/sileodepiction/touchvis/js.json
@@ -5389,30 +5006,6 @@ Size: 29096
 MD5sum: c6fefa6a1ae860cea06fcba9034dd9eb
 SHA1: 407c7e6821f2adb637688db2368f9e71fbff6dfc
 SHA256: 49c1a1883923e19def721735bf30cb8946af7a26aa760b81199fbe243023e061
-
-Name: 控制中心圆角
-Package: com.Axs.whiteccborders
-Priority: optional
-Depends: mobilesubstrate, firmware (>= 13.0), preferenceloader
-Version: 1.0.0
-Architecture: iphoneos-arm64
-Description: 自定义控制中心边宽宽度及圆角弧度！
-Homepage: https://alist.138686.xyz
-Depiction: https://axs66.github.io/pro
-Sponsor: thebigboss.org
-Maintainer: Axs
-Author: CydiaGeek
-Section: 控制中心
-Tag: purpose::extension
-Installed-Size: 388
-dev: lucaluca86
-Icon: https://axs66.github.io/pro/icon/whiteccborders.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/whiteccborders/js.json
-Filename: debs/com.Axs.whiteccborders_1.0.0_iphoneos-arm64.deb
-Size: 44008
-MD5sum: c90a9e73ece6f5e5700920655dbd2969
-SHA1: 4f1f9792ec87b2c723cfa17b2c59a8adf4baac68
-SHA256: 024c708400b71a80b51377f3d685bf483b664eeb5fd20cbc145f35d9581213fa
 
 Package: com.Axs.wifimasterkeyadkiller
 Name: WiFi万能钥匙去广告
