@@ -2604,6 +2604,30 @@ MD5sum: 5417e64b48cf6f0fea19b3871ddc4e24
 SHA1: f61435ed82e889f6e3c70b018acf220a163409a2
 SHA256: 09edec95ea074f2f992b938884908f5b908a1451a4b6063bd1769ca0c82d42c0
 
+Package: com.g-using.volumeglass
+Name: 控制中心音量与亮度圆角
+Description: 系统音量 HUD 与控制中心展开滑条圆角
+ 安装即启用，固定为原圆角设置的 100%，不提供设置面板。
+ 保留原生材质及填充，支持控制中心音量、亮度和白点/夜览附加滑条。
+ 沿用局部去阴影与去描边处理；旧版本偏好不会影响启用或圆角。
+ 面向 iOS 15 - 16，Rootless 构建。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: mobilesubstrate (>= 0.9.5000)
+Architecture: iphoneos-arm64
+Version: 0.4.15
+Installed-Size: 240
+Conflicts: com.shiyi.volumeglass
+Replaces: com.shiyi.volumeglass
+Provides: com.shiyi.volumeglass (= 0.4.15)
+Filename: debs/com.G-Using.volumeglass_0.4.15_iphoneos-arm64.deb
+Size: 31780
+MD5sum: 9081cf0c04956bf46a87a3f5badf45ac
+SHA1: d4f09717124ddebe0d7e5496d56f7d4f008eefc1
+SHA256: 87a6c9d1ab7fd4dd7b56eb638e912c2174e3eca73114c3328c755f5eafb0fe6b
+Icon: https://g-using.github.io/repo/icons/com.g-using.volumeglass.png
+
 Package: com.anthopak.quickprefs-rootless
 Maintainer: Axs
 Depiction: https://axs66.github.io/pro
