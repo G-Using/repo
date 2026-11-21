@@ -5714,44 +5714,6 @@ MD5sum: a40434207c0ee2da59b352abbfb11890
 SHA1: 4d86ff3a1304f1d5122d12741e6edd87dc609487
 SHA256: dd57846480d21fe3082a351171aa5a49f5e0d71a891409c2ee2dff7c66d1f294
 
-Package: com.axs.cpufree
-Name: CPU Free
-Description: 一个强大的 iOS 温控管理插件，接管系统温控决策，让 iPhone 发热时不再被强行降频、降亮度。
- * 一、双防护层拦截
- * 1. IOKit 层：拦截传感器温度读取、降频指令、限频属性写入和高温广播，从源头掐断降频动作；
- * 2. ObjC 层：钩住内部决策类，阻止决策树评估、软化控制力度、改写热配置表，并把热状态重置为正常。
- * 二、双功率模式
- * 1. 防温控：减少降频、防止降亮度，重载场景尽量维持满血频率；
- * 2. 低功耗：限制 CPU 最高 2016MHz，不抬高待机频率，兼顾省电与性能。
- * 三、独立开关
- * 1. CPU 防降频、屏幕防降亮度、屏蔽高温提醒（含设置内的散热建议）均可单独开关；
- * 2. 保留 70°C 安全阀：温度超过 70°C 或读温失败时自动放行系统保护，防止异常发热与黑屏。
- * 四、控制中心模块
- * 1. 功率模式切换：一键在「防温控 / 低功耗」之间切换；
- * 2. CPU实时频率：显示大核最大驻留档位（实际工作频率），低功耗模式下不超过上限 2016MHz。
- * 五、状态栏显示
- * 1. 状态栏显示大核实时频率 + 整机 CPU 占用率（形如 3468MHz 42%），文字颜色跟随状态栏；
- * 2. 位置可用面板的「水平 / 垂直偏移」微调，避开其它状态栏插件。
- * 六、机型适配
- * 1. 内置 A11–A17 Pro 大核上限表（2390 / 2490 / 2650 / 3090 / 3230 / 3468 / 3780MHz），按机型自动匹配上限。
- * 七、刷新率管理
- * 1. 支持 10 / 30 / 60 / 80 / 120Hz 优选帧率、全局注入及应用排除；
- * 2. 提供系统调试 HUD 与 120fps 系统录屏支持，实际效果受设备和系统限制。
-Maintainer: Axs<qiaozhani000@163.com>
-Author: Axs<qiaozhani000@163.com>
-Section: Axs-Tweaks
-Depends: mobilesubstrate, preferenceloader, com.opa334.altlist
-Icon: https://axs66.github.io/pro/icon/cpufree.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/cpufree/js.json
-Architecture: iphoneos-arm64
-Version: 5.2.0-72
-Installed-Size: 1492
-Filename: debs/com.axs.cpufree_5.2.0-72_iphoneos-arm64.deb
-Size: 117642
-MD5sum: aefd8477d9f2d2430e11e09f3316c5d6
-SHA1: 24b4f9eb3f054fc040ea65605a79c61a11252523
-SHA256: 4375c912e981c2c0aea2fbab01980503b69737c96dde209b5d1237d37d94f637
-
 Package: com.axs.duostatus
 Name: DuoStatus
 Description: 状态栏信号/网络/电量三合一圆环图标。
@@ -6063,28 +6025,6 @@ Size: 25188
 MD5sum: e5504085561907f5ece0ad419b033fd5
 SHA1: f3e606fd88a2055980d09d84a9dfebf9364d74ad
 SHA256: 47c53c1decd9b9956302683669a5b8c8904a24114aaee5050a3b9b4159692261
-
-Package: com.axs.screenlocktime
-Name: ScreenLock Time
-Description: 为原生锁屏时间添加五色渐变，沿用系统字体。
- * 支持自定义五种颜色，固定从左到右渐变。
- * 可选日期与农历渐变，使用系统显示的文字。
- * 支持调整时间大小与上下位置，设置即时生效。
- * 支持兼容BigTime插件。
-Maintainer: Axs
-Author: Axs
-Section: Axs-Tweaks
-Depends: mobilesubstrate, preferenceloader
-Icon: https://axs66.github.io/pro/icon/screenlocktime.png
-Sileodepiction: https://axs66.github.io/pro/sileodepiction/screenlocktime/js.json
-Architecture: iphoneos-arm64
-Version: 5.2.0-8
-Installed-Size: 496
-Filename: debs/com.axs.screenlocktime_5.2.0-8_iphoneos-arm64.deb
-Size: 62246
-MD5sum: 19f5fb5010d60de52393c8b954ab171f
-SHA1: b7fabdafe90324f4d7709b490967dd78fbbb599e
-SHA256: 0ec6b866e4aceeb88f22b796b07cebc3cdca6929bd7e5b914b2c041bbe6f4ac6
 
 Package: com.axs.snapper3tag
 Name: Snapper3 Expand
@@ -8587,40 +8527,6 @@ MD5sum: a6f38b8079eeb3352f4680388b28fe8d
 SHA1: 2db38e3e52df8015c66c7a431ffe398e87c0ee97
 SHA256: 3acec8f930cd51d593091711cf9a56f4b74b4e8721fb7df3ea8db1f3209c8c1b
 
-Package: netskao.alipayscan
-Version: 1.2-2
-Section: Tweaks
-Maintainer: Nets
-Depends: firmware (>= 15.0), mobilesubstrate, com.opa334.ccsupport
-Architecture: iphoneos-arm64e
-Installed-Size: 160
-Name: AlipayScan
-Author: Netskao
-Description: 通过控制中心快捷打开支付宝扫一扫，设置-控制中心-自定控制内添加后使用
-Pre-Depends: rootless-compat(>= 0.9)
-icon: https://huayuarc.github.io/icon/alipayscan.png
-Filename: debs/netskao.alipayscan-1.2-2-roothide.deb
-Size: 16772
-MD5sum: b74ec4fccbd9317a4a832cc857425933
-SHA1: 3ab970dadbf5ec36b78defdcf5a155e2caca8b91
-SHA256: 4afeedacd4df0168103c5088bea30d74e166d0339be9a7fd9e55dd4766e0d10f
-
-Package: netskao.alipayscan
-Architecture: iphoneos-arm64
-Name: AlipayScan
-Version: 1.2-2
-Description: 通过控制中心快捷打开支付宝扫一扫，设置-控制中心-自定控制内添加后使用
-Author: Netskao <xuanhua880@gmail.com>
-Section: Tweaks
-Depends: firmware (>= 15.0), mobilesubstrate, com.opa334.ccsupport
-Maintainer: Nets <xuanhua880@gmail.com>
-icon: https://huayuarc.github.io/icon/alipayscan.png
-Filename: debs/netskao.alipayscan-1.2-2-rootless.deb
-Size: 16612
-MD5sum: 823a2d7eef39b0c1e73b0d8959a54318
-SHA1: 2263dc96e69536e8c2caee807c52c29d813c8301
-SHA256: a7068f0e836a3e3f8f742bd7672a5f3a661cb90d9f993d5a460c70966db635c0
-
 Package: netskao.ccsim
 Version: 1.1-9
 Section: Tweaks
@@ -8727,40 +8633,6 @@ Size: 6273688
 MD5sum: 69a6fc01bfb8f2cf84aa27079caeca67
 SHA1: d85005b83b3a56cf0efaba7a371f36366a95b7a6
 SHA256: b9fa232c22900ef2536b178afa2926c7e4d5a0c2edc1495e31ddd34f01ba9fb0
-
-Package: netskao.wechatscan
-Version: 1.2-2
-Section: Tweaks
-Maintainer: Nets
-Depends: firmware (>= 15.0), mobilesubstrate, com.opa334.ccsupport
-Architecture: iphoneos-arm64e
-Installed-Size: 160
-Name: WeChatScan
-Author: Netskao
-Description: 通过控制中心快捷打开微信扫一扫，设置-控制中心-自定控制内添加后使用
-Pre-Depends: rootless-compat(>= 0.9)
-icon: https://huayuarc.github.io/icon/wechatscan.png
-Filename: debs/netskao.wechatscan-1.2-2-roothide.deb
-Size: 17456
-MD5sum: 7a7cdc6d81e1bd35b8ea5200a28cc0dc
-SHA1: 56ca9dacfc9d82b3a8f2db8e871919251c62fd31
-SHA256: 0e515a979c121c5e266d6c77537862e7de001e7d2405510353209dc017609c5b
-
-Package: netskao.wechatscan
-Architecture: iphoneos-arm64
-Name: WeChatScan
-Version: 1.2-2
-Description: 通过控制中心快捷打开微信扫一扫，设置-控制中心-自定控制内添加后使用
-Author: Netskao <xuanhua880@gmail.com>
-Section: Tweaks
-Depends: firmware (>= 15.0), mobilesubstrate, com.opa334.ccsupport
-Maintainer: Nets <xuanhua880@gmail.com>
-icon: https://huayuarc.github.io/icon/wechatscan.png
-Filename: debs/netskao.wechatscan-1.2-2-rootless.deb
-Size: 17280
-MD5sum: f53802b157e4b982a2815b822db27dfe
-SHA1: 64e1ab9a7c55c21c6f0d995828bc8edd5a625389
-SHA256: dc6ccf3386093e4b26d7c7e5ad7338eaae7ed9df82ef64607b078b92522d1a4b
 
 Architecture: iphoneos-arm64
 Author: Evelyn
@@ -9011,59 +8883,3 @@ Size: 13312448
 MD5sum: a89dbdff9b2900df5e990a0ca3fd74a5
 SHA1: 31e706cd51e61a757f9f428c5e7ce671d2ffb715
 SHA256: 6d0b19544533ec87ca6823d073b6e481ad995826ea96ff6d2076cac00a57ffdb
-
-Package: xyz.cypwn.backgrounderaction15
-Maintainer: CyPwn
-Section: Tweaks
-Architecture: iphoneos-arm64e
-Version: 0.1.0-1
-Depends: mobilesubstrate, com.opa334.ccsupport
-Provides: jp.akusio.backgrounderaction15 (= 0.1.0)
-Replaces: jp.akusio.backgrounderaction15
-Conflicts: jp.akusio.backgrounderaction15
-Description: [iOS15]Add "Toggle Background Mode" action to ControlCenter.
-Name: BackgrounderAction15 CCSupport
-Author: @akusio_RR
-Pre-Depends: rootless-compat(>= 0.9)
-Icon: https://huayuarc.github.io/icon/backgrounderaction.jpg
-Filename: debs/xyz.cypwn.backgrounderaction15-0.1.0-1-roothide.deb
-Size: 9440
-MD5sum: b8dc8b1172855492018aaf888f1d46f8
-SHA1: 14d8737747fea1c1e7e4598fda677c8e842fe54b
-SHA256: 80f7f1b83df553da6811a08d1d268d2a434c4e22afe35040f899f782860508fc
-
-Package: xyz.cypwn.backgrounderaction15
-Maintainer: CyPwn
-Icon: https://huayuarc.github.io/icon/backgrounderaction.jpg
-Section: Tweaks
-Architecture: iphoneos-arm64
-Version: 0.1.0-1
-Depends: mobilesubstrate, com.opa334.ccsupport
-Provides: jp.akusio.backgrounderaction15 (= 0.1.0)
-Replaces: jp.akusio.backgrounderaction15
-Conflicts: jp.akusio.backgrounderaction15
-Description: [iOS15]Add "Toggle Background Mode" action to ControlCenter.
-Name: BackgrounderAction15 CCSupport
-Author: @akusio_RR
-Filename: debs/xyz.cypwn.backgrounderaction15-0.1.0-1-rootless.deb
-Size: 9892
-MD5sum: 8f59a2bafd0033e1e341ce222956319a
-SHA1: 6881d751af14d57eb21222e117f13e6eb1a9f396
-SHA256: 8bf1b27c3839d0911a6dfed220a317657bc451fa130e1eb3279fcbdf90441794
-
-Package: xyz.cypwn.backgrounderaction15autostate
-Maintainer: CyPwn
-Name: BackgrounderAction15AutoState
-Description: Save Action state for BackgrounderAction15 CC Toggle
-Author: 0xkuj
-Section: Tweaks
-Depends: xyz.cypwn.backgrounderaction15, com.opa334.altlist
-Architecture: iphoneos-arm64e
-Version: 1.0.3
-Icon: https://huayuarc.github.io/icon/backgrounderaction.jpg
-Pre-Depends: rootless-compat(>= 0.9)
-Filename: debs/xyz.cypwn.backgrounderaction15autostate_1.0.3_iphoneos-arm64e.deb
-Size: 33640
-MD5sum: 582be6eb5b893f0a4757825f2ac91f31
-SHA1: 6446bf2c8d8c315ed5ca98a80323b6db9529775b
-SHA256: 6da8fc29207bf13481ec77293189bfdb420f1ea9b97092384aefdd0f738b5359
