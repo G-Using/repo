@@ -4960,3 +4960,35 @@ Size: 13312448
 MD5sum: a89dbdff9b2900df5e990a0ca3fd74a5
 SHA1: 31e706cd51e61a757f9f428c5e7ce671d2ffb715
 SHA256: 6d0b19544533ec87ca6823d073b6e481ad995826ea96ff6d2076cac00a57ffdb
+
+Package: com.gusing.ivglassplayer
+Name: 相册文件视频进度条
+Description: 透明风格视频控制层。底部一条透明细进度线 + 播放/静音图标 + 当前时长/总时长（拖动时显示在进度条正上方），中央深色半透明圆形按钮组（后退15秒 / 暂停 / 前进15秒），用于「照片」与「文件」App 的全屏视频播放。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 15.0), ellekit
+Architecture: iphoneos-arm64
+Version: 0.10.3
+Installed-Size: 336
+Filename: debs/无根相册文件视频进度条Rootless_iphoneos-arm64_0.10.3.deb
+Size: 95254
+MD5sum: 9f2bffa8ddd615c0cfe342b43c1a8824
+SHA1: 2ab2df70126ea533ffddf22c10a804a7009954f2
+SHA256: 52947703d0de85801a047da75c7e0e391f9e8331ec52ddc0aa7ec5d62b36c807
+
+Package: com.gusing.ivglassplayer
+Name: 相册文件视频进度条
+Description: 透明风格视频控制层。底部一条透明细进度线 + 播放/静音图标 + 当前时长/总时长（拖动时显示在进度条正上方），中央深色半透明圆形按钮组（后退15秒 / 暂停 / 前进15秒），用于「照片」与「文件」App 的全屏视频播放。
+Maintainer: G-Using
+Author: G-Using
+Section: Tweaks
+Depends: firmware (>= 15.0), ellekit
+Architecture: iphoneos-arm64e
+Version: 0.10.3
+Installed-Size: 336
+Filename: debs/隐根相册文件视频进度条RootHide_iphoneos-arm64e_0.10.3.deb
+Size: 95178
+MD5sum: 3ecb60877d5144a60da8da4bc14fe57c
+SHA1: 026ceea9535325a7b747aa8f5bb1a4ca222ba4a2
+SHA256: 3e5f6e7011635d637a84de3de8d2c81e6335a3d7b6e176e89a9da6eac2eee2d1
