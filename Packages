@@ -4135,6 +4135,40 @@ MD5sum: 34d0165e80912a7ae6d14ee3d72a02ae
 SHA1: 6e1e2116fc821191968ec2d289ba81a2376c7229
 SHA256: 0b201b225dd04e16345931325a803d5cdaa7d243f84192b290279460b81799b6
 
+Package: com.netskao.perfectgrabber
+Name: Ntonia-PreferenceLoader
+Description: 横屏游戏时自动常驻显示时间与电量（单排），支持自定义背景色；后台听歌时显示歌名并可点按切换/暂停、上一首下一首
+Maintainer: Huayuarc
+Author: NetSkao
+Section: Tweaks
+icon: https://huayuarc.github.io/icon/NtoniaPGIcon.png
+Depends: mobilesubstrate, preferenceloader, firmware (>= 15.0)
+Architecture: iphoneos-arm64e
+Version: 1.1-38+roothide
+Installed-Size: 848
+Filename: debs/com.netskao.perfectgrabber-1.1-38-roothide.deb
+Size: 350868
+MD5sum: 6323fdebe079f5ae692917641ea63217
+SHA1: 1b7449a3052f2675e945efa0103a6b4032623790
+SHA256: 3ad6a0811791f36914f4cd81d7e95a2cafb3afe8a3bbdfec7f4b5d6eaf2d561b
+
+Package: com.netskao.perfectgrabber
+Name: Ntonia-PreferenceLoader
+Description: 横屏游戏时自动常驻显示时间与电量（单排），支持自定义背景色；后台听歌时显示歌名并可点按切换/暂停、上一首下一首
+Maintainer: Huayuarc
+Author: NetSkao
+Section: Tweaks
+icon: https://huayuarc.github.io/icon/NtoniaPGIcon.png
+Depends: mobilesubstrate, preferenceloader, firmware (>= 15.0)
+Architecture: iphoneos-arm64
+Version: 1.1-38
+Installed-Size: 848
+Filename: debs/com.netskao.perfectgrabber-1.1-38-rootless.deb
+Size: 269136
+MD5sum: 9ead3e5d48239fab045c07cd5bc4fd16
+SHA1: 68a915b33b0aa8b643cf765da4905a22d29c399b
+SHA256: c4a512b2d9762b1a4d1712fe359da3a848af16e92958d9693352f6793633d53f
+
 Package: com.netskao.pulloverpro
 Name: PullOver Pro
 Description: A better way to multitask! Fix support for iOS15+
