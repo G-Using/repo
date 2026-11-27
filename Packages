@@ -5053,6 +5053,21 @@ MD5sum: 9f2bffa8ddd615c0cfe342b43c1a8824
 SHA1: 2ab2df70126ea533ffddf22c10a804a7009954f2
 SHA256: 52947703d0de85801a047da75c7e0e391f9e8331ec52ddc0aa7ec5d62b36c807
 
+Package: com.kalert.tweak
+Name: KAlert
+Description: KAlert popup tweak
+Maintainer: tanxiaolin
+Author: tanxiaolin
+Section: Tweaks
+Architecture: iphoneos-arm
+Version: 5.0.2-1+debug
+Installed-Size: 456
+Filename: debs/番茄全系通用_5.0.2-1.deb
+Size: 58532
+MD5sum: adf3d6f05b4a5c7523e967384a049186
+SHA1: 84831557137feada4a4ed750ee821fa9ab4f7e57
+SHA256: 78ddbfdd38801eb55c4140688462bc7d23fa548f74d521ce4b0c21b1bd42fd03
+
 Package: com.gusing.ivglassplayer
 Name: 相册文件视频进度条
 Description: 透明风格视频控制层。底部一条透明细进度线 + 播放/静音图标 + 当前时长/总时长（拖动时显示在进度条正上方），中央深色半透明圆形按钮组（后退15秒 / 暂停 / 前进15秒），用于「照片」与「文件」App 的全屏视频播放。
