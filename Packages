@@ -4951,6 +4951,58 @@ MD5sum: a89dbdff9b2900df5e990a0ca3fd74a5
 SHA1: 31e706cd51e61a757f9f428c5e7ce671d2ffb715
 SHA256: 6d0b19544533ec87ca6823d073b6e481ad995826ea96ff6d2076cac00a57ffdb
 
+Package: xhs.x
+Conflicts: com.xx.xhshook
+Replaces: com.xx.xhshook
+Name: 小红薯
+Description: 自用
+Maintainer: 𝙓
+Author: 𝙓
+Section: Tweaks
+Depends: mobilesubstrate (>= 0.9.5000)
+Architecture: iphoneos-arm64
+Version: 2.1.5
+Installed-Size: 10464
+Filename: debs/小红薯_2.1.5_无根.deb
+Size: 4152926
+MD5sum: c31a60e1677923fab757ac6a6638dd7f
+SHA1: b83e6cbf4d56da207259b70c3abf861f59ce52de
+SHA256: c7c8bfc6966cb31e2cf36d9e7852c5fdabad1946f165792cf588fa285e669ca7
+
+Package: com.mjh.wctabbarglass.roothide
+Name: 微信底栏玻璃 (Roothide)
+Description: 为微信底部导航栏添加实时模糊、胶囊底板与选中高光。
+Maintainer: Junhong
+Author: Junhong
+Section: Tweaks
+Depends: firmware (>= 15.0)
+Architecture: iphoneos-arm64e
+Version: 1.0.01
+Installed-Size: 1334
+Filename: debs/微信底栏玻璃_1.0.01_arm64e.deb
+Size: 658644
+MD5sum: 9fda0fb8805d3b2023f133d8cd777c20
+SHA1: 8f477b2fd15e58499a03bcb715c164fb6418287b
+SHA256: 0a30b0f21d3cb231888f482323e2e327bff973ba7b43c0043f3c7ce624a9b4be
+
+Package: com.xuuz.douyinhelper
+Name: 抖音助手
+Description: 三指长按/设置页面/长按视频/聊天界面➕菜单 调出！
+Homepage: https://tc.uddz.cc/xuuz
+Section: Tweaks
+Depends: firmware (>= 5.0), mobilesubstrate
+Priority: optional
+Maintainer: XUUᶻ
+Author: XUUᶻ
+Architecture: iphoneos-arm64
+Version: 2.3-0
+Installed-Size: 17808
+Filename: debs/抖音助手_2.3-0_无根.deb
+Size: 6875944
+MD5sum: 6fc4e456f8130c1bea5e0da573bb6130
+SHA1: 2f400f8fec5ac477e8b4add030887aa166c8b313
+SHA256: 200daf25ece13ba27aecbc211802a541ad50a42ca655d6c139d3a86917c78723
+
 Package: com.gusing.ivglassplayer
 Name: 相册文件视频进度条
 Description: 透明风格视频控制层。底部一条透明细进度线 + 播放/静音图标 + 当前时长/总时长（拖动时显示在进度条正上方），中央深色半透明圆形按钮组（后退15秒 / 暂停 / 前进15秒），用于「照片」与「文件」App 的全屏视频播放。
