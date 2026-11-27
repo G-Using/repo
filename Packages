@@ -54,6 +54,22 @@ MD5sum: 837cfeea16a870753907e5d28c40342f
 SHA1: 76ca44d3d207ae97d1e09154951d657886a495b8
 SHA256: 196952356175289e0cee776d80c486bc7f88c6f32fd876c0813926031db01ce0
 
+Package: com.huamidev.xhsnative.roothide
+Name: XHSNative (Roothide)
+Description: 为小红书提供悬浮液态玻璃底栏、顶栏、笔记与视频控件玻璃效果，支持底栏标签排序、隐藏及玻璃不透明度调节。
+Maintainer: huami1314
+Author: huami1314
+Section: Tweaks
+Depends: mobilesubstrate, firmware (>= 15.0)
+Architecture: iphoneos-arm64e
+Version: 1.5+1
+Installed-Size: 636
+Filename: debs/XHSNative 小红书伪液态-1.5+1_roothide.deb
+Size: 146142
+MD5sum: 2b4b4b019e24324161981647695b2d62
+SHA1: a98cf9d9f025c7075b88d870cc222ef48fd9684c
+SHA256: 8badeb8f9a09aa4f5a79e75523b6f762aba16e5a6cf4d862dbd7b9e680bc5bce
+
 Package: cn.octoforce.squidgesturepro
 Name: SquidGesturePro(激活码)
 Depends: mobilesubstrate, preferenceloader, firmware (>= 14.0)
@@ -4950,6 +4966,24 @@ Size: 13312448
 MD5sum: a89dbdff9b2900df5e990a0ca3fd74a5
 SHA1: 31e706cd51e61a757f9f428c5e7ce671d2ffb715
 SHA256: 6d0b19544533ec87ca6823d073b6e481ad995826ea96ff6d2076cac00a57ffdb
+
+Package: xhs.x
+Conflicts: com.xx.xhshook
+Replaces: com.xx.xhshook
+Name: 小红薯
+Description: 自用
+Maintainer: 𝙓
+Author: 𝙓
+Section: Tweaks
+Depends: mobilesubstrate (>= 0.9.5000)
+Architecture: iphoneos-arm64
+Version: 2.1.5
+Installed-Size: 10464
+Filename: debs/小红薯2.1.5无根.deb
+Size: 4152926
+MD5sum: c31a60e1677923fab757ac6a6638dd7f
+SHA1: b83e6cbf4d56da207259b70c3abf861f59ce52de
+SHA256: c7c8bfc6966cb31e2cf36d9e7852c5fdabad1946f165792cf588fa285e669ca7
 
 Package: xhs.x
 Conflicts: com.xx.xhshook
