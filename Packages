@@ -3725,6 +3725,22 @@ MD5sum: 6795bb3da2ce449544e8cffe181de3f9
 SHA1: 4cc88e321101ccbb6ca6214cd713057653bdcfbd
 SHA256: 4d724855ca8e22eafab868dd635f52d2ad6ae6ebe0d54b6d5ffedb8464925089
 
+Package: com.gusing.dockpager
+Name: Dock多页
+Version: 1.7.27
+Architecture: iphoneos-arm64e
+Description: Dock 多页使用系统 App 图标，支持原生拖入、拖出和横滑。1.7.27 修「打开桌面文件夹后 Dock 图标变大、整排比屏幕宽、两头被切、底板不见」：文件夹的缩放转场是给桌面容器上 transform，读不到动画、也不在 Dock 祖先链上，以前会被当成真实尺寸写进图标坐标；现在开着文件夹时一个字节都不写，收起后整体重排一次。
+Maintainer: G-Using
+Author: G-Using
+Section: G-Using-Tweaks
+Depends: mobilesubstrate, preferenceloader
+Icon: https://g-using.github.io/repo/icons/com.gusing.dockpager.png
+Filename: debs/com.gusing.dockpager_1.7.27_iphoneos-arm64e.deb
+Size: 322824
+MD5sum: 1ab6b8de8ab0594747d82e11a9ef512a
+SHA1: 56909983448bc2c2f2b30198232814dec8fb9d1e
+SHA256: 6fab0a47ad51b80b4a338b133ac4c3af67222cebcc14b62811089117a29314ff
+
 Package: com.gusing.ivglassplayer.arm64e
 Name: 相册文件视频进度条 (arm64e)
 Description: 透明风格视频控制层。底部一条透明细进度线 + 播放/静音图标，中央深色半透明圆形按钮组（后退15秒 / 暂停 / 前进15秒），用于「照片」与「文件」App 的全屏视频播放。
