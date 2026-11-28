@@ -3856,6 +3856,25 @@ MD5sum: 0a94eb8b05a2190f93e03d5c4b04e2ed
 SHA1: eb2602e30edcb7a9d8a00dec854d97220c26ff0a
 SHA256: 048ea34a54e1e03d4dd153317247cc9b027554f7d0bf11d843b6a4b659950953
 
+Package: com.huami.dyyy
+Name: DYYY
+Description: 仅供学习交流，请在 24 小时内自觉删除。
+Homepage: https://github.com/huami1314/DYYY
+Section: Tweaks
+Depends: firmware (>= 5.0), mobilesubstrate
+Priority: optional
+Maintainer: huami
+Author: huami
+Icon: https://Mieing.Github.io/repo/file/TikTok.png
+Architecture: iphoneos-arm64
+Version: 3.0.2
+Installed-Size: 2248
+Filename: debs/com.huami.dyyy_3.0.2_iphoneos-arm64.deb
+Size: 477572
+MD5sum: d10197c8912f19775f92689f10035602
+SHA1: c56933df731164d64c5888fee94238f08c027967
+SHA256: 21a8c170200f1f7755dea1594ae28ad9b87f6538bc71279fdbcd2d8ddcb525e1
+
 Package: com.huayuarc.cputhermal
 Name: CPU智能温控
 Author: Huayuarc
